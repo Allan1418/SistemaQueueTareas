@@ -27,19 +27,19 @@ CREATE TABLE Users (
 
 -- Tabla de Estados
 CREATE TABLE Estados (
-    id_estado INT AUTO_INCREMENT PRIMARY KEY,
+    id_estado INT IDENTITY(1,1) PRIMARY KEY,
     descripcion VARCHAR(50) UNIQUE NOT NULL
 );
 
 -- Tabla de Prioridades
 CREATE TABLE Prioridades (
-    id_prioridad INT AUTO_INCREMENT PRIMARY KEY,
+    id_prioridad INT IDENTITY(1,1) PRIMARY KEY,
     descripcion VARCHAR(50) UNIQUE NOT NULL
 );
 
 -- Tabla de TAREAS
 CREATE TABLE Tareas (
-    id_tarea INT AUTO_INCREMENT PRIMARY KEY,
+    id_tarea INT IDENTITY(1,1) PRIMARY KEY,
     id_usuario INT NOT NULL,
     nombre VARCHAR(100) NOT NULL,
     descripcion TEXT,
@@ -55,7 +55,7 @@ CREATE TABLE Tareas (
 
 -- Tabla de NOTIFICACIONES
 CREATE TABLE Notificaciones (
-    id_notificacion INT AUTO_INCREMENT PRIMARY KEY,
+    id_notificacion INT IDENTITY(1,1) PRIMARY KEY,
     id_usuario INT NOT NULL,
     mensaje TEXT NOT NULL,
     fecha_envio DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -65,19 +65,19 @@ CREATE TABLE Notificaciones (
 
 -- Tabla de HISTORIAL DE EJECUCIÓN
 CREATE TABLE Historial_Ejecucion (
-    id_historial INT AUTO_INCREMENT PRIMARY KEY,
+    id_historial INT IDENTITY(1,1) PRIMARY KEY,
     id_tarea INT NOT NULL,
     fecha_inicio DATETIME NOT NULL,
     fecha_fin DATETIME NULL,
     id_resultado INT NOT NULL,
     detalle_log TEXT,
-    FOREIGN KEY (id_tarea) REFERENCES Tareas(id_tarea)
+    FOREIGN KEY (id_tarea) REFERENCES Tareas(id_tarea),
     FOREIGN KEY (id_resultado) REFERENCES Resultados(id_resultado)
 );
 
 -- Tabla de RESULTADOS
 CREATE TABLE Resultados (
-    id_resultado INT AUTO_INCREMENT PRIMARY KEY,
+    id_resultado INT IDENTITY(1,1) PRIMARY KEY,
     descripcion VARCHAR(50) UNIQUE NOT NULL
 );
 
