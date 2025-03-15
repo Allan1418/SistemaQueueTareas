@@ -72,10 +72,11 @@ CREATE TABLE Historial_Ejecucion (
     id_resultado INT NOT NULL,
     detalle_log TEXT,
     FOREIGN KEY (id_tarea) REFERENCES Tareas(id_tarea)
+    FOREIGN KEY (id_resultado) REFERENCES Resultados(id_resultado)
 );
 
 -- Tabla de RESULTADOS
-CREATE TABLE RESULTADOS (
+CREATE TABLE Resultados (
     id_resultado INT AUTO_INCREMENT PRIMARY KEY,
     descripcion VARCHAR(50) UNIQUE NOT NULL
 );
