@@ -59,7 +59,7 @@ CREATE TABLE Notificaciones (
     id_usuario INT NOT NULL,
     mensaje TEXT NOT NULL,
     fecha_envio DATETIME DEFAULT CURRENT_TIMESTAMP,
-    leido BOOLEAN DEFAULT FALSE,
+    leido BIT DEFAULT 0,
     FOREIGN KEY (id_usuario) REFERENCES Users(id_usuario)
 );
 
@@ -71,14 +71,7 @@ CREATE TABLE Historial_Ejecucion (
     fecha_fin DATETIME NULL,
     id_resultado INT NOT NULL,
     detalle_log TEXT,
-    FOREIGN KEY (id_tarea) REFERENCES Tareas(id_tarea),
-    FOREIGN KEY (id_resultado) REFERENCES Resultados(id_resultado)
-);
-
--- Tabla de RESULTADOS
-CREATE TABLE Resultados (
-    id_resultado INT IDENTITY(1,1) PRIMARY KEY,
-    descripcion VARCHAR(50) UNIQUE NOT NULL
+    FOREIGN KEY (id_tarea) REFERENCES Tareas(id_tarea)
 );
 
 
