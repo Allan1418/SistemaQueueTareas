@@ -12,24 +12,28 @@ namespace SistemaQueueTareas.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class User
+    public partial class Tarea
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public User()
+        public Tarea()
         {
-            this.Notificaciones = new HashSet<Notificacione>();
-            this.Tareas = new HashSet<Tarea>();
+            this.Historial_Ejecucion = new HashSet<Historial_Ejecucion>();
         }
     
         public int id { get; set; }
-        public string Nombre { get; set; }
-        public string Apellido { get; set; }
-        public string Email { get; set; }
-        public string Telefono { get; set; }
+        public int id_usuario { get; set; }
+        public string nombre { get; set; }
+        public string descripcion { get; set; }
+        public int id_prioridad { get; set; }
+        public int id_estado { get; set; }
+        public Nullable<System.DateTime> fecha_creacion { get; set; }
+        public Nullable<System.DateTime> fecha_ejecucion { get; set; }
+        public Nullable<System.DateTime> fecha_finalizacion { get; set; }
     
+        public virtual Estado Estado { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Notificacione> Notificaciones { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Tarea> Tareas { get; set; }
+        public virtual ICollection<Historial_Ejecucion> Historial_Ejecucion { get; set; }
+        public virtual Prioridade Prioridade { get; set; }
+        public virtual User User { get; set; }
     }
 }

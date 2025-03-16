@@ -53,6 +53,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Estado.cs">
+      <DependentUpon>SistemaQueueTareasContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Historial_Ejecucion.cs">
+      <DependentUpon>SistemaQueueTareasContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Notificacione.cs">
+      <DependentUpon>SistemaQueueTareasContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Prioridade.cs">
+      <DependentUpon>SistemaQueueTareasContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SistemaQueueTareasContext.Context.cs">
       <AutoGen>True</AutoGen>
@@ -68,6 +80,9 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SistemaQueueTareasContext.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Tarea.cs">
+      <DependentUpon>SistemaQueueTareasContext.tt</DependentUpon>
     </Compile>
     <Compile Include="User.cs">
       <DependentUpon>SistemaQueueTareasContext.tt</DependentUpon>

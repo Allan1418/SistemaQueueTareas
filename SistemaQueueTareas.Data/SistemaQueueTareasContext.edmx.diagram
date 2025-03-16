@@ -4,8 +4,18 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="8700f52b5eb14ad8822c385f0d85ae82" Name="Diagram1">
-        <EntityTypeShape EntityType="SistemaQueueTareasModel.User" Width="1.5" PointX="0.75" PointY="0.75" />
+      <Diagram DiagramId="8700f52b5eb14ad8822c385f0d85ae82" Name="Diagram1" ZoomLevel="55">
+        <EntityTypeShape EntityType="SistemaQueueTareasModel.Estado" Width="1.5" PointX="0.75" PointY="7.125" />
+        <EntityTypeShape EntityType="SistemaQueueTareasModel.Historial_Ejecucion" Width="1.5" PointX="5.25" PointY="3.5" />
+        <EntityTypeShape EntityType="SistemaQueueTareasModel.Notificacione" Width="1.5" PointX="3" PointY="7.875" />
+        <EntityTypeShape EntityType="SistemaQueueTareasModel.Prioridade" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="SistemaQueueTareasModel.Tarea" Width="1.5" PointX="3" PointY="3" />
+        <EntityTypeShape EntityType="SistemaQueueTareasModel.User" Width="1.5" PointX="0.75" PointY="3.5" />
+        <AssociationConnector Association="SistemaQueueTareasModel.FK__Tareas__id_estad__4222D4EF" />
+        <AssociationConnector Association="SistemaQueueTareasModel.FK__Historial__id_ta__49C3F6B7" />
+        <AssociationConnector Association="SistemaQueueTareasModel.FK__Notificac__id_us__46E78A0C" />
+        <AssociationConnector Association="SistemaQueueTareasModel.FK__Tareas__id_prior__412EB0B6" />
+        <AssociationConnector Association="SistemaQueueTareasModel.FK__Tareas__id_usuar__403A8C7D" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
