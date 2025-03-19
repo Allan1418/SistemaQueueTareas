@@ -7,13 +7,13 @@ using SistemaQueueTareas.Data;
 
 namespace SistemaQueueTareas.Repository
 {
-    public interface IRepositoryUser : IRepositoryBase<User>
+    public interface IRepositoryPrioridad: IRepositoryBase<Prioridade>
     {
     }
-    public class RepositoryUser : RepositoryBase<User>, IRepositoryUser
+    public class RepositoryPrioridad: RepositoryBase<Prioridade>, IRepositoryPrioridad
     {
-        public RepositoryUser() : base()
-        { 
+        public RepositoryPrioridad() : base()
+        {
         }
     }
 }
