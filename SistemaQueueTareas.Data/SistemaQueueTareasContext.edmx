@@ -5,151 +5,107 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="SistemaQueueTareasModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="Estados">
+        <EntityType Name="Executions">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="descripcion" Type="varchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Historial_Ejecucion">
-          <Key>
-            <PropertyRef Name="id_historial" />
-          </Key>
-          <Property Name="id_historial" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="id_tarea" Type="int" Nullable="false" />
+          <Property Name="id_task" Type="int" Nullable="false" />
           <Property Name="fecha_inicio" Type="datetime" Nullable="false" />
           <Property Name="fecha_fin" Type="datetime" />
-          <Property Name="id_resultado" Type="int" Nullable="false" />
           <Property Name="detalle_log" Type="text" />
         </EntityType>
-        <EntityType Name="Notificaciones">
+        <EntityType Name="Notifications">
           <Key>
-            <PropertyRef Name="id_notificacion" />
+            <PropertyRef Name="id" />
           </Key>
-          <Property Name="id_notificacion" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="id_usuario" Type="int" Nullable="false" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_user" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="mensaje" Type="text" Nullable="false" />
           <Property Name="fecha_envio" Type="datetime" />
           <Property Name="leido" Type="bit" />
         </EntityType>
-        <EntityType Name="Prioridades">
+        <EntityType Name="Priorities">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="descripcion" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
-        <EntityType Name="Tareas">
+        <EntityType Name="States">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="id_usuario" Type="int" Nullable="false" />
-          <Property Name="nombre" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="descripcion" Type="text" />
-          <Property Name="id_prioridad" Type="int" Nullable="false" />
-          <Property Name="id_estado" Type="int" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tasks">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_user" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="description" Type="text" />
+          <Property Name="id_priority" Type="int" Nullable="false" />
+          <Property Name="id_state" Type="int" Nullable="false" />
           <Property Name="fecha_creacion" Type="datetime" />
           <Property Name="fecha_ejecucion" Type="datetime" />
           <Property Name="fecha_finalizacion" Type="datetime" />
         </EntityType>
-        <EntityType Name="Users">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="int" Nullable="false" />
-          <Property Name="Nombre" Type="varchar" MaxLength="50" />
-          <Property Name="Apellido" Type="varchar" MaxLength="50" />
-          <Property Name="Email" Type="varchar" MaxLength="100" />
-          <Property Name="Telefono" Type="varchar" MaxLength="20" />
-        </EntityType>
-        <Association Name="FK__Historial__id_ta__49C3F6B7">
-          <End Role="Tareas" Type="Self.Tareas" Multiplicity="1" />
-          <End Role="Historial_Ejecucion" Type="Self.Historial_Ejecucion" Multiplicity="*" />
+        <Association Name="FK__Execution__id_ta__5535A963">
+          <End Role="Tasks" Type="Self.Tasks" Multiplicity="1" />
+          <End Role="Executions" Type="Self.Executions" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Tareas">
+            <Principal Role="Tasks">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="Historial_Ejecucion">
-              <PropertyRef Name="id_tarea" />
+            <Dependent Role="Executions">
+              <PropertyRef Name="id_task" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Notificac__id_us__46E78A0C">
-          <End Role="Users" Type="Self.Users" Multiplicity="1" />
-          <End Role="Notificaciones" Type="Self.Notificaciones" Multiplicity="*" />
+        <Association Name="FK__Tasks__id_priori__4CA06362">
+          <End Role="Priorities" Type="Self.Priorities" Multiplicity="1" />
+          <End Role="Tasks" Type="Self.Tasks" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Users">
+            <Principal Role="Priorities">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="Notificaciones">
-              <PropertyRef Name="id_usuario" />
+            <Dependent Role="Tasks">
+              <PropertyRef Name="id_priority" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Tareas__id_estad__4222D4EF">
-          <End Role="Estados" Type="Self.Estados" Multiplicity="1" />
-          <End Role="Tareas" Type="Self.Tareas" Multiplicity="*" />
+        <Association Name="FK__Tasks__id_state__4D94879B">
+          <End Role="States" Type="Self.States" Multiplicity="1" />
+          <End Role="Tasks" Type="Self.Tasks" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Estados">
+            <Principal Role="States">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="Tareas">
-              <PropertyRef Name="id_estado" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Tareas__id_prior__412EB0B6">
-          <End Role="Prioridades" Type="Self.Prioridades" Multiplicity="1" />
-          <End Role="Tareas" Type="Self.Tareas" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Prioridades">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Tareas">
-              <PropertyRef Name="id_prioridad" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Tareas__id_usuar__403A8C7D">
-          <End Role="Users" Type="Self.Users" Multiplicity="1" />
-          <End Role="Tareas" Type="Self.Tareas" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Tareas">
-              <PropertyRef Name="id_usuario" />
+            <Dependent Role="Tasks">
+              <PropertyRef Name="id_state" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="SistemaQueueTareasModelStoreContainer">
-          <EntitySet Name="Estados" EntityType="Self.Estados" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Historial_Ejecucion" EntityType="Self.Historial_Ejecucion" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Notificaciones" EntityType="Self.Notificaciones" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Prioridades" EntityType="Self.Prioridades" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Tareas" EntityType="Self.Tareas" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Historial__id_ta__49C3F6B7" Association="Self.FK__Historial__id_ta__49C3F6B7">
-            <End Role="Tareas" EntitySet="Tareas" />
-            <End Role="Historial_Ejecucion" EntitySet="Historial_Ejecucion" />
+          <EntitySet Name="Executions" EntityType="Self.Executions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Priorities" EntityType="Self.Priorities" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="States" EntityType="Self.States" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tasks" EntityType="Self.Tasks" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Execution__id_ta__5535A963" Association="Self.FK__Execution__id_ta__5535A963">
+            <End Role="Tasks" EntitySet="Tasks" />
+            <End Role="Executions" EntitySet="Executions" />
           </AssociationSet>
-          <AssociationSet Name="FK__Notificac__id_us__46E78A0C" Association="Self.FK__Notificac__id_us__46E78A0C">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Notificaciones" EntitySet="Notificaciones" />
+          <AssociationSet Name="FK__Tasks__id_priori__4CA06362" Association="Self.FK__Tasks__id_priori__4CA06362">
+            <End Role="Priorities" EntitySet="Priorities" />
+            <End Role="Tasks" EntitySet="Tasks" />
           </AssociationSet>
-          <AssociationSet Name="FK__Tareas__id_estad__4222D4EF" Association="Self.FK__Tareas__id_estad__4222D4EF">
-            <End Role="Estados" EntitySet="Estados" />
-            <End Role="Tareas" EntitySet="Tareas" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Tareas__id_prior__412EB0B6" Association="Self.FK__Tareas__id_prior__412EB0B6">
-            <End Role="Prioridades" EntitySet="Prioridades" />
-            <End Role="Tareas" EntitySet="Tareas" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Tareas__id_usuar__403A8C7D" Association="Self.FK__Tareas__id_usuar__403A8C7D">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Tareas" EntitySet="Tareas" />
+          <AssociationSet Name="FK__Tasks__id_state__4D94879B" Association="Self.FK__Tasks__id_state__4D94879B">
+            <End Role="States" EntitySet="States" />
+            <End Role="Tasks" EntitySet="Tasks" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -157,159 +113,111 @@
     <edmx:ConceptualModels>
       <Schema Namespace="SistemaQueueTareasModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="SistemaQueueTareasContext" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Estados" EntityType="SistemaQueueTareasModel.Estado" />
-          <EntitySet Name="Historial_Ejecucion" EntityType="SistemaQueueTareasModel.Historial_Ejecucion" />
-          <EntitySet Name="Notificaciones" EntityType="SistemaQueueTareasModel.Notificacione" />
-          <EntitySet Name="Prioridades" EntityType="SistemaQueueTareasModel.Prioridade" />
-          <EntitySet Name="Tareas" EntityType="SistemaQueueTareasModel.Tarea" />
-          <EntitySet Name="Users" EntityType="SistemaQueueTareasModel.User" />
-          <AssociationSet Name="FK__Tareas__id_estad__4222D4EF" Association="SistemaQueueTareasModel.FK__Tareas__id_estad__4222D4EF">
-            <End Role="Estado" EntitySet="Estados" />
-            <End Role="Tarea" EntitySet="Tareas" />
+          <EntitySet Name="Executions" EntityType="SistemaQueueTareasModel.Execution" />
+          <EntitySet Name="Notifications" EntityType="SistemaQueueTareasModel.Notification" />
+          <EntitySet Name="Priorities" EntityType="SistemaQueueTareasModel.Priority" />
+          <EntitySet Name="States" EntityType="SistemaQueueTareasModel.State" />
+          <EntitySet Name="Tasks" EntityType="SistemaQueueTareasModel.Task" />
+          <AssociationSet Name="FK__Execution__id_ta__5535A963" Association="SistemaQueueTareasModel.FK__Execution__id_ta__5535A963">
+            <End Role="Task" EntitySet="Tasks" />
+            <End Role="Execution" EntitySet="Executions" />
           </AssociationSet>
-          <AssociationSet Name="FK__Historial__id_ta__49C3F6B7" Association="SistemaQueueTareasModel.FK__Historial__id_ta__49C3F6B7">
-            <End Role="Tarea" EntitySet="Tareas" />
-            <End Role="Historial_Ejecucion" EntitySet="Historial_Ejecucion" />
+          <AssociationSet Name="FK__Tasks__id_priori__4CA06362" Association="SistemaQueueTareasModel.FK__Tasks__id_priori__4CA06362">
+            <End Role="Priority" EntitySet="Priorities" />
+            <End Role="Task" EntitySet="Tasks" />
           </AssociationSet>
-          <AssociationSet Name="FK__Notificac__id_us__46E78A0C" Association="SistemaQueueTareasModel.FK__Notificac__id_us__46E78A0C">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Notificacione" EntitySet="Notificaciones" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Tareas__id_prior__412EB0B6" Association="SistemaQueueTareasModel.FK__Tareas__id_prior__412EB0B6">
-            <End Role="Prioridade" EntitySet="Prioridades" />
-            <End Role="Tarea" EntitySet="Tareas" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Tareas__id_usuar__403A8C7D" Association="SistemaQueueTareasModel.FK__Tareas__id_usuar__403A8C7D">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Tarea" EntitySet="Tareas" />
+          <AssociationSet Name="FK__Tasks__id_state__4D94879B" Association="SistemaQueueTareasModel.FK__Tasks__id_state__4D94879B">
+            <End Role="State" EntitySet="States" />
+            <End Role="Task" EntitySet="Tasks" />
           </AssociationSet>
         </EntityContainer>
-        <EntityType Name="Estado">
+        <EntityType Name="Execution">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="descripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Tareas" Relationship="SistemaQueueTareasModel.FK__Tareas__id_estad__4222D4EF" FromRole="Estado" ToRole="Tarea" />
-        </EntityType>
-        <EntityType Name="Historial_Ejecucion">
-          <Key>
-            <PropertyRef Name="id_historial" />
-          </Key>
-          <Property Name="id_historial" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="id_tarea" Type="Int32" Nullable="false" />
+          <Property Name="id_task" Type="Int32" Nullable="false" />
           <Property Name="fecha_inicio" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="fecha_fin" Type="DateTime" Precision="3" />
-          <Property Name="id_resultado" Type="Int32" Nullable="false" />
           <Property Name="detalle_log" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Tarea" Relationship="SistemaQueueTareasModel.FK__Historial__id_ta__49C3F6B7" FromRole="Historial_Ejecucion" ToRole="Tarea" />
+          <NavigationProperty Name="Task" Relationship="SistemaQueueTareasModel.FK__Execution__id_ta__5535A963" FromRole="Execution" ToRole="Task" />
         </EntityType>
-        <EntityType Name="Notificacione">
+        <EntityType Name="Notification">
           <Key>
-            <PropertyRef Name="id_notificacion" />
+            <PropertyRef Name="id" />
           </Key>
-          <Property Name="id_notificacion" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="id_usuario" Type="Int32" Nullable="false" />
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_user" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="mensaje" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="fecha_envio" Type="DateTime" Precision="3" />
           <Property Name="leido" Type="Boolean" />
-          <NavigationProperty Name="User" Relationship="SistemaQueueTareasModel.FK__Notificac__id_us__46E78A0C" FromRole="Notificacione" ToRole="User" />
         </EntityType>
-        <EntityType Name="Prioridade">
+        <EntityType Name="Priority">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="descripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Tareas" Relationship="SistemaQueueTareasModel.FK__Tareas__id_prior__412EB0B6" FromRole="Prioridade" ToRole="Tarea" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Tasks" Relationship="SistemaQueueTareasModel.FK__Tasks__id_priori__4CA06362" FromRole="Priority" ToRole="Task" />
         </EntityType>
-        <EntityType Name="Tarea">
+        <EntityType Name="State">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="id_usuario" Type="Int32" Nullable="false" />
-          <Property Name="nombre" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="descripcion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="id_prioridad" Type="Int32" Nullable="false" />
-          <Property Name="id_estado" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Tasks" Relationship="SistemaQueueTareasModel.FK__Tasks__id_state__4D94879B" FromRole="State" ToRole="Task" />
+        </EntityType>
+        <EntityType Name="Task">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_user" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="id_priority" Type="Int32" Nullable="false" />
+          <Property Name="id_state" Type="Int32" Nullable="false" />
           <Property Name="fecha_creacion" Type="DateTime" Precision="3" />
           <Property Name="fecha_ejecucion" Type="DateTime" Precision="3" />
           <Property Name="fecha_finalizacion" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Estado" Relationship="SistemaQueueTareasModel.FK__Tareas__id_estad__4222D4EF" FromRole="Tarea" ToRole="Estado" />
-          <NavigationProperty Name="Historial_Ejecucion" Relationship="SistemaQueueTareasModel.FK__Historial__id_ta__49C3F6B7" FromRole="Tarea" ToRole="Historial_Ejecucion" />
-          <NavigationProperty Name="Prioridade" Relationship="SistemaQueueTareasModel.FK__Tareas__id_prior__412EB0B6" FromRole="Tarea" ToRole="Prioridade" />
-          <NavigationProperty Name="User" Relationship="SistemaQueueTareasModel.FK__Tareas__id_usuar__403A8C7D" FromRole="Tarea" ToRole="User" />
+          <NavigationProperty Name="Executions" Relationship="SistemaQueueTareasModel.FK__Execution__id_ta__5535A963" FromRole="Task" ToRole="Execution" />
+          <NavigationProperty Name="Priority" Relationship="SistemaQueueTareasModel.FK__Tasks__id_priori__4CA06362" FromRole="Task" ToRole="Priority" />
+          <NavigationProperty Name="State" Relationship="SistemaQueueTareasModel.FK__Tasks__id_state__4D94879B" FromRole="Task" ToRole="State" />
         </EntityType>
-        <EntityType Name="User">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
-          <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Apellido" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Telefono" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Notificaciones" Relationship="SistemaQueueTareasModel.FK__Notificac__id_us__46E78A0C" FromRole="User" ToRole="Notificacione" />
-          <NavigationProperty Name="Tareas" Relationship="SistemaQueueTareasModel.FK__Tareas__id_usuar__403A8C7D" FromRole="User" ToRole="Tarea" />
-        </EntityType>
-        <Association Name="FK__Tareas__id_estad__4222D4EF">
-          <End Type="SistemaQueueTareasModel.Estado" Role="Estado" Multiplicity="1" />
-          <End Type="SistemaQueueTareasModel.Tarea" Role="Tarea" Multiplicity="*" />
+        <Association Name="FK__Execution__id_ta__5535A963">
+          <End Type="SistemaQueueTareasModel.Task" Role="Task" Multiplicity="1" />
+          <End Type="SistemaQueueTareasModel.Execution" Role="Execution" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Estado">
+            <Principal Role="Task">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="Tarea">
-              <PropertyRef Name="id_estado" />
+            <Dependent Role="Execution">
+              <PropertyRef Name="id_task" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Historial__id_ta__49C3F6B7">
-          <End Type="SistemaQueueTareasModel.Tarea" Role="Tarea" Multiplicity="1" />
-          <End Type="SistemaQueueTareasModel.Historial_Ejecucion" Role="Historial_Ejecucion" Multiplicity="*" />
+        <Association Name="FK__Tasks__id_priori__4CA06362">
+          <End Type="SistemaQueueTareasModel.Priority" Role="Priority" Multiplicity="1" />
+          <End Type="SistemaQueueTareasModel.Task" Role="Task" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Tarea">
+            <Principal Role="Priority">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="Historial_Ejecucion">
-              <PropertyRef Name="id_tarea" />
+            <Dependent Role="Task">
+              <PropertyRef Name="id_priority" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Notificac__id_us__46E78A0C">
-          <End Type="SistemaQueueTareasModel.User" Role="User" Multiplicity="1" />
-          <End Type="SistemaQueueTareasModel.Notificacione" Role="Notificacione" Multiplicity="*" />
+        <Association Name="FK__Tasks__id_state__4D94879B">
+          <End Type="SistemaQueueTareasModel.State" Role="State" Multiplicity="1" />
+          <End Type="SistemaQueueTareasModel.Task" Role="Task" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="User">
+            <Principal Role="State">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="Notificacione">
-              <PropertyRef Name="id_usuario" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Tareas__id_prior__412EB0B6">
-          <End Type="SistemaQueueTareasModel.Prioridade" Role="Prioridade" Multiplicity="1" />
-          <End Type="SistemaQueueTareasModel.Tarea" Role="Tarea" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Prioridade">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Tarea">
-              <PropertyRef Name="id_prioridad" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Tareas__id_usuar__403A8C7D">
-          <End Type="SistemaQueueTareasModel.User" Role="User" Multiplicity="1" />
-          <End Type="SistemaQueueTareasModel.Tarea" Role="Tarea" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Tarea">
-              <PropertyRef Name="id_usuario" />
+            <Dependent Role="Task">
+              <PropertyRef Name="id_state" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -319,67 +227,55 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="SistemaQueueTareasModelStoreContainer" CdmEntityContainer="SistemaQueueTareasContext">
-          <EntitySetMapping Name="Estados">
-            <EntityTypeMapping TypeName="SistemaQueueTareasModel.Estado">
-              <MappingFragment StoreEntitySet="Estados">
-                <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+          <EntitySetMapping Name="Executions">
+            <EntityTypeMapping TypeName="SistemaQueueTareasModel.Execution">
+              <MappingFragment StoreEntitySet="Executions">
+                <ScalarProperty Name="detalle_log" ColumnName="detalle_log" />
+                <ScalarProperty Name="fecha_fin" ColumnName="fecha_fin" />
+                <ScalarProperty Name="fecha_inicio" ColumnName="fecha_inicio" />
+                <ScalarProperty Name="id_task" ColumnName="id_task" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Historial_Ejecucion">
-            <EntityTypeMapping TypeName="SistemaQueueTareasModel.Historial_Ejecucion">
-              <MappingFragment StoreEntitySet="Historial_Ejecucion">
-                <ScalarProperty Name="detalle_log" ColumnName="detalle_log" />
-                <ScalarProperty Name="id_resultado" ColumnName="id_resultado" />
-                <ScalarProperty Name="fecha_fin" ColumnName="fecha_fin" />
-                <ScalarProperty Name="fecha_inicio" ColumnName="fecha_inicio" />
-                <ScalarProperty Name="id_tarea" ColumnName="id_tarea" />
-                <ScalarProperty Name="id_historial" ColumnName="id_historial" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Notificaciones">
-            <EntityTypeMapping TypeName="SistemaQueueTareasModel.Notificacione">
-              <MappingFragment StoreEntitySet="Notificaciones">
+          <EntitySetMapping Name="Notifications">
+            <EntityTypeMapping TypeName="SistemaQueueTareasModel.Notification">
+              <MappingFragment StoreEntitySet="Notifications">
                 <ScalarProperty Name="leido" ColumnName="leido" />
                 <ScalarProperty Name="fecha_envio" ColumnName="fecha_envio" />
                 <ScalarProperty Name="mensaje" ColumnName="mensaje" />
-                <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
-                <ScalarProperty Name="id_notificacion" ColumnName="id_notificacion" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Prioridades">
-            <EntityTypeMapping TypeName="SistemaQueueTareasModel.Prioridade">
-              <MappingFragment StoreEntitySet="Prioridades">
-                <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+                <ScalarProperty Name="id_user" ColumnName="id_user" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Tareas">
-            <EntityTypeMapping TypeName="SistemaQueueTareasModel.Tarea">
-              <MappingFragment StoreEntitySet="Tareas">
+          <EntitySetMapping Name="Priorities">
+            <EntityTypeMapping TypeName="SistemaQueueTareasModel.Priority">
+              <MappingFragment StoreEntitySet="Priorities">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="States">
+            <EntityTypeMapping TypeName="SistemaQueueTareasModel.State">
+              <MappingFragment StoreEntitySet="States">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tasks">
+            <EntityTypeMapping TypeName="SistemaQueueTareasModel.Task">
+              <MappingFragment StoreEntitySet="Tasks">
                 <ScalarProperty Name="fecha_finalizacion" ColumnName="fecha_finalizacion" />
                 <ScalarProperty Name="fecha_ejecucion" ColumnName="fecha_ejecucion" />
                 <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
-                <ScalarProperty Name="id_estado" ColumnName="id_estado" />
-                <ScalarProperty Name="id_prioridad" ColumnName="id_prioridad" />
-                <ScalarProperty Name="descripcion" ColumnName="descripcion" />
-                <ScalarProperty Name="nombre" ColumnName="nombre" />
-                <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="SistemaQueueTareasModel.User">
-              <MappingFragment StoreEntitySet="Users">
-                <ScalarProperty Name="Telefono" ColumnName="Telefono" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="Apellido" ColumnName="Apellido" />
-                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="id_state" ColumnName="id_state" />
+                <ScalarProperty Name="id_priority" ColumnName="id_priority" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id_user" ColumnName="id_user" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>

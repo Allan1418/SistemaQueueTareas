@@ -53,23 +53,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\Estado.cs" />
-    <Compile Include="Entities\HistorialEjecucion.cs" />
-    <Compile Include="Entities\IEntity.cs" />
-    <Compile Include="Entities\Notificacion.cs" />
-    <Compile Include="Entities\Prioridad.cs" />
-    <Compile Include="Entities\Tarea.cs" />
-    <Compile Include="Entities\User.cs" />
-    <Compile Include="Estado.cs">
+    <Compile Include="Execution.cs">
       <DependentUpon>SistemaQueueTareasContext.tt</DependentUpon>
     </Compile>
-    <Compile Include="Historial_Ejecucion.cs">
+    <Compile Include="Notification.cs">
       <DependentUpon>SistemaQueueTareasContext.tt</DependentUpon>
     </Compile>
-    <Compile Include="Notificacione.cs">
-      <DependentUpon>SistemaQueueTareasContext.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Prioridade.cs">
+    <Compile Include="Priority.cs">
       <DependentUpon>SistemaQueueTareasContext.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -88,10 +78,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SistemaQueueTareasContext.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Tarea.cs">
+    <Compile Include="State.cs">
       <DependentUpon>SistemaQueueTareasContext.tt</DependentUpon>
     </Compile>
-    <Compile Include="User.cs">
+    <Compile Include="Task.cs">
       <DependentUpon>SistemaQueueTareasContext.tt</DependentUpon>
     </Compile>
   </ItemGroup>
