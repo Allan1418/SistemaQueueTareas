@@ -12,14 +12,18 @@ namespace SistemaQueueTareas.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class Notificacione
+    public partial class Priority
     {
-        public int id_notificacion { get; set; }
-        public int id_usuario { get; set; }
-        public string mensaje { get; set; }
-        public Nullable<System.DateTime> fecha_envio { get; set; }
-        public Nullable<bool> leido { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Priority()
+        {
+            this.Tasks = new HashSet<Task>();
+        }
     
-        public virtual User User { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Task> Tasks { get; set; }
     }
 }
