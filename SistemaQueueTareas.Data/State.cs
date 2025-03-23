@@ -12,24 +12,18 @@ namespace SistemaQueueTareas.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class User
+    public partial class State
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public User()
+        public State()
         {
-            this.Notificaciones = new HashSet<Notificacione>();
-            this.Tareas = new HashSet<Tarea>();
+            this.Tasks = new HashSet<Task>();
         }
     
         public int id { get; set; }
-        public string Nombre { get; set; }
-        public string Apellido { get; set; }
-        public string Email { get; set; }
-        public string Telefono { get; set; }
+        public string name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Notificacione> Notificaciones { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Tarea> Tareas { get; set; }
+        public virtual ICollection<Task> Tasks { get; set; }
     }
 }

@@ -12,15 +12,12 @@ namespace SistemaQueueTareas.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class Historial_Ejecucion
+    public partial class Notification
     {
-        public int id_historial { get; set; }
-        public int id_tarea { get; set; }
-        public System.DateTime fecha_inicio { get; set; }
-        public Nullable<System.DateTime> fecha_fin { get; set; }
-        public int id_resultado { get; set; }
-        public string detalle_log { get; set; }
-    
-        public virtual Tarea Tarea { get; set; }
+        public int id { get; set; }
+        public string id_user { get; set; }
+        public string mensaje { get; set; }
+        public Nullable<System.DateTime> fecha_envio { get; set; }
+        public Nullable<bool> leido { get; set; }
     }
 }

@@ -25,11 +25,10 @@ namespace SistemaQueueTareas.Data
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Estado> Estados { get; set; }
-        public virtual DbSet<Historial_Ejecucion> Historial_Ejecucion { get; set; }
-        public virtual DbSet<Notificacione> Notificaciones { get; set; }
-        public virtual DbSet<Prioridade> Prioridades { get; set; }
-        public virtual DbSet<Tarea> Tareas { get; set; }
-        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Execution> Executions { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
+        public virtual DbSet<Priority> Priorities { get; set; }
+        public virtual DbSet<State> States { get; set; }
+        public virtual DbSet<Task> Tasks { get; set; }
     }
 }

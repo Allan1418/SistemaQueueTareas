@@ -12,18 +12,14 @@ namespace SistemaQueueTareas.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class Prioridade
+    public partial class Execution
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Prioridade()
-        {
-            this.Tareas = new HashSet<Tarea>();
-        }
-    
         public int id { get; set; }
-        public string descripcion { get; set; }
+        public int id_task { get; set; }
+        public System.DateTime fecha_inicio { get; set; }
+        public Nullable<System.DateTime> fecha_fin { get; set; }
+        public string detalle_log { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Tarea> Tareas { get; set; }
+        public virtual Task Task { get; set; }
     }
 }
