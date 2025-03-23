@@ -53,6 +53,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Estado.cs" />
+    <Compile Include="Entities\HistorialEjecucion.cs" />
+    <Compile Include="Entities\IEntity.cs" />
+    <Compile Include="Entities\Notificacion.cs" />
+    <Compile Include="Entities\Prioridad.cs" />
+    <Compile Include="Entities\Tarea.cs" />
+    <Compile Include="Entities\User.cs" />
     <Compile Include="Estado.cs">
       <DependentUpon>SistemaQueueTareasContext.tt</DependentUpon>
     </Compile>
