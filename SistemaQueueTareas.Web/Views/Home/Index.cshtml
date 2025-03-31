@@ -30,4 +30,68 @@
             <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
         </section>
     </div>
+
+    @model List<SistemaQueueTareas.Data.Task>
+
+
+    <h2>Lista de Tareas</h2>
+
+    <form method="get" action="@Url.Action("Index")">
+        <button type="submit" class="btn btn-primary">Ver todas las tareas</button>
+    </form>
+    <br />
+
+    <h3>Buscar Tareas por Usuario</h3>
+
+    <form method="get" action="@Url.Action("FindUserTask", "Home")">
+        <div class="form-group">
+            <label for="idUser">ID de Usuario:</label>
+            <input type="text" name="idUser" class="form-control" placeholder="Ingrese el ID de usuario" required />
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+
+    <form method="get" action="@Url.Action("FindTaskByState", "Home")">
+        <div class="form-group">
+            <label for="taskState">Estado de la tarea:</label>
+            <input type="text" name="taskState" class="form-control" placeholder="Ingrese el estado" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar Tareas</button>
+    </form>
+
+
+    @if (!string.IsNullOrEmpty(ViewBag.Message))
+    {
+        <p class="alert alert-info">@ViewBag.Message</p>
+    }
+    @if (Model != null && Model.Any())
+    {
+        <h3>Resultados:</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Prioridad</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var task in Model)
+                {
+                    <tr>
+                        <td>@task.id</td>
+                        <td>@task.name</td>
+                        <td>@task.description</td>
+                        <td>@(task.Priority != null ? task.Priority.name : "Sin Prioridad")</td>
+                        <td>@(task.State != null ? task.State.name : "Sin Estado")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+
 </main>

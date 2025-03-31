@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SistemaQueueTareas.Data
 {
-    public partial class Notificacion : Entity
+    public partial class Notification : Entity
     {
     }
 }

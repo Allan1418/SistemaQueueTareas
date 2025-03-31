@@ -7,12 +7,12 @@ using SistemaQueueTareas.Data;
 
 namespace SistemaQueueTareas.Repository
 {
-    public interface IRepositoryNotificacion : IRepositoryBase<Notificacione>
+    public interface IRepositoryState : IRepositoryBase<State>
     {
     }
-    public class RepositoryNotificacion : RepositoryBase<Notificacione>, IRepositoryNotificacion
+    public class RepositoryState : RepositoryBase<State>, IRepositoryState
     {
-        public RepositoryNotificacion() : base()
+        public RepositoryState() : base()
         {
         }
     }

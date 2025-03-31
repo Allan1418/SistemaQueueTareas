@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SistemaQueueTareas.Data
 {
-    public partial class Prioridad : Entity
+     public partial class Execution : Entity
     {
     }
 }
