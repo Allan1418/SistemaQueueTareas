@@ -137,10 +137,26 @@ CREATE TABLE States (
     [name] VARCHAR(50) UNIQUE NOT NULL
 );
 
+-- Insertar estados predefinidos
+INSERT INTO States ([name]) VALUES
+	('Pendiente'),
+	('En Proceso'),
+	('Finalizada'),
+	('Fallida')
+;
+
 CREATE TABLE Priorities (
     id INT IDENTITY(1,1) PRIMARY KEY,
+	[order] INT NOT NULL UNIQUE,
     [name] VARCHAR(50) UNIQUE NOT NULL
 );
+
+-- Insertar prioridades predefinidas
+INSERT INTO Priorities ([order], [name]) VALUES
+	(3, 'Alta'),
+	(2, 'Media'),
+	(1, 'Baja')
+;
 
 CREATE TABLE Tasks (
     id INT IDENTITY(1,1) PRIMARY KEY,
