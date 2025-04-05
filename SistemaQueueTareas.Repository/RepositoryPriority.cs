@@ -10,9 +10,10 @@ namespace SistemaQueueTareas.Repository
     public interface IRepositoryPriority: IRepositoryBase<Priority>
     {
     }
+    public class RepositoryPriority: RepositoryBase<Priority>, IRepositoryPriority
     public class RepositoryPrioridad: RepositoryBase<Priority>, IRepositoryPriority
     {
-        public RepositoryPrioridad() : base()
+        public RepositoryPriority() : base()
         {
         }
     }

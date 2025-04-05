@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "connections", "connections"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaQueueTareas.IdentityData", "SistemaQueueTareas.IdentityData\SistemaQueueTareas.IdentityData.csproj", "{F544E2C7-0572-45A7-9527-ACE33EA7EB96}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaQueueTareas.Business", "SistemaQueueTareas.Business\SistemaQueueTareas.Business.csproj", "{34CF1CBC-8F05-4A76-B9ED-9EE317E120C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{F544E2C7-0572-45A7-9527-ACE33EA7EB96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F544E2C7-0572-45A7-9527-ACE33EA7EB96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F544E2C7-0572-45A7-9527-ACE33EA7EB96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34CF1CBC-8F05-4A76-B9ED-9EE317E120C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34CF1CBC-8F05-4A76-B9ED-9EE317E120C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34CF1CBC-8F05-4A76-B9ED-9EE317E120C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34CF1CBC-8F05-4A76-B9ED-9EE317E120C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
