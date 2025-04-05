@@ -57,7 +57,7 @@
     <Compile Include="RepositoryExecution.cs" />
     <Compile Include="RepositoryNotification.cs" />
     <Compile Include="RepositoryTask.cs" />
-    <Compile Include="RepsitoryPriority.cs" />
+    <Compile Include="RepositoryPriority.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

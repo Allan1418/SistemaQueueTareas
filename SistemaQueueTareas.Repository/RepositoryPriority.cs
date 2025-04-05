@@ -7,10 +7,10 @@ using SistemaQueueTareas.Data;
 
 namespace SistemaQueueTareas.Repository
 {
-    public interface IRepositoryPrioridad: IRepositoryBase<Priority>
+    public interface IRepositoryPriority: IRepositoryBase<Priority>
     {
     }
-    public class RepositoryPrioridad: RepositoryBase<Priority>, IRepositoryPrioridad
+    public class RepositoryPrioridad: RepositoryBase<Priority>, IRepositoryPriority
     {
         public RepositoryPrioridad() : base()
         {
