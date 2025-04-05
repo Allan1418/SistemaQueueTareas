@@ -16,4 +16,62 @@
         <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
         <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
     </address>
+
+
+    @model List<SistemaQueueTareas.Data.Notification>
+
+
+    <h2>Lista de Notificaciones</h2>
+
+   
+    <form method="get" action="@Url.Action("FindUserNotifications", "Home")">
+        <div class="form-group">
+            <label for="idUser">ID de Usuario:</label>
+            <input type="text" name="idUser" class="form-control" placeholder="Ingrese el ID de usuario" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar Notificaciones</button>
+    </form>
+
+    <form method="get" action="@Url.Action("FindAllNotification", "Home")">
+        <button type="submit" class="btn btn-secondary">Ver Todas las Notificaciones</button>
+    </form>
+
+    <br />
+
+    @if (!string.IsNullOrEmpty(ViewBag.Message))
+    {
+        <p class="alert alert-info">@ViewBag.Message</p>
+    }
+
+    @if (Model != null && Model.Any())
+    {
+        <h3>Resultados:</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ID Usuario</th>
+                    <th>Mensaje</th>
+                    <th>Fecha de Envío</th>
+                    <th>Leído</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var notification in Model)
+                {
+                    <tr>
+                        <td>@notification.id</td>
+                        <td>@notification.id_user</td>
+                        <td>@notification.mensaje</td>
+                        <td>@(notification.fecha_envio.HasValue ? notification.fecha_envio.Value.ToString("yyyy-MM-dd HH:mm") : "No disponible")</td>
+                        <td>@(notification.leido.HasValue && notification.leido.Value ? "Sí" : "No")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+
+
 </main>
+

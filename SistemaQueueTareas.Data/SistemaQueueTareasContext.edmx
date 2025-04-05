@@ -30,6 +30,7 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="order" Type="int" Nullable="false" />
           <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="States">
@@ -53,7 +54,7 @@
           <Property Name="fecha_ejecucion" Type="datetime" />
           <Property Name="fecha_finalizacion" Type="datetime" />
         </EntityType>
-        <Association Name="FK__Execution__id_ta__5535A963">
+        <Association Name="FK__Execution__id_ta__5629CD9C">
           <End Role="Tasks" Type="Self.Tasks" Multiplicity="1" />
           <End Role="Executions" Type="Self.Executions" Multiplicity="*" />
           <ReferentialConstraint>
@@ -65,7 +66,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Tasks__id_priori__4CA06362">
+        <Association Name="FK__Tasks__id_priori__4D94879B">
           <End Role="Priorities" Type="Self.Priorities" Multiplicity="1" />
           <End Role="Tasks" Type="Self.Tasks" Multiplicity="*" />
           <ReferentialConstraint>
@@ -77,7 +78,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Tasks__id_state__4D94879B">
+        <Association Name="FK__Tasks__id_state__4E88ABD4">
           <End Role="States" Type="Self.States" Multiplicity="1" />
           <End Role="Tasks" Type="Self.Tasks" Multiplicity="*" />
           <ReferentialConstraint>
@@ -95,15 +96,15 @@
           <EntitySet Name="Priorities" EntityType="Self.Priorities" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="States" EntityType="Self.States" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tasks" EntityType="Self.Tasks" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Execution__id_ta__5535A963" Association="Self.FK__Execution__id_ta__5535A963">
+          <AssociationSet Name="FK__Execution__id_ta__5629CD9C" Association="Self.FK__Execution__id_ta__5629CD9C">
             <End Role="Tasks" EntitySet="Tasks" />
             <End Role="Executions" EntitySet="Executions" />
           </AssociationSet>
-          <AssociationSet Name="FK__Tasks__id_priori__4CA06362" Association="Self.FK__Tasks__id_priori__4CA06362">
+          <AssociationSet Name="FK__Tasks__id_priori__4D94879B" Association="Self.FK__Tasks__id_priori__4D94879B">
             <End Role="Priorities" EntitySet="Priorities" />
             <End Role="Tasks" EntitySet="Tasks" />
           </AssociationSet>
-          <AssociationSet Name="FK__Tasks__id_state__4D94879B" Association="Self.FK__Tasks__id_state__4D94879B">
+          <AssociationSet Name="FK__Tasks__id_state__4E88ABD4" Association="Self.FK__Tasks__id_state__4E88ABD4">
             <End Role="States" EntitySet="States" />
             <End Role="Tasks" EntitySet="Tasks" />
           </AssociationSet>
@@ -118,15 +119,15 @@
           <EntitySet Name="Priorities" EntityType="SistemaQueueTareasModel.Priority" />
           <EntitySet Name="States" EntityType="SistemaQueueTareasModel.State" />
           <EntitySet Name="Tasks" EntityType="SistemaQueueTareasModel.Task" />
-          <AssociationSet Name="FK__Execution__id_ta__5535A963" Association="SistemaQueueTareasModel.FK__Execution__id_ta__5535A963">
+          <AssociationSet Name="FK__Execution__id_ta__5629CD9C" Association="SistemaQueueTareasModel.FK__Execution__id_ta__5629CD9C">
             <End Role="Task" EntitySet="Tasks" />
             <End Role="Execution" EntitySet="Executions" />
           </AssociationSet>
-          <AssociationSet Name="FK__Tasks__id_priori__4CA06362" Association="SistemaQueueTareasModel.FK__Tasks__id_priori__4CA06362">
+          <AssociationSet Name="FK__Tasks__id_priori__4D94879B" Association="SistemaQueueTareasModel.FK__Tasks__id_priori__4D94879B">
             <End Role="Priority" EntitySet="Priorities" />
             <End Role="Task" EntitySet="Tasks" />
           </AssociationSet>
-          <AssociationSet Name="FK__Tasks__id_state__4D94879B" Association="SistemaQueueTareasModel.FK__Tasks__id_state__4D94879B">
+          <AssociationSet Name="FK__Tasks__id_state__4E88ABD4" Association="SistemaQueueTareasModel.FK__Tasks__id_state__4E88ABD4">
             <End Role="State" EntitySet="States" />
             <End Role="Task" EntitySet="Tasks" />
           </AssociationSet>
@@ -140,7 +141,7 @@
           <Property Name="fecha_inicio" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="fecha_fin" Type="DateTime" Precision="3" />
           <Property Name="detalle_log" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Task" Relationship="SistemaQueueTareasModel.FK__Execution__id_ta__5535A963" FromRole="Execution" ToRole="Task" />
+          <NavigationProperty Name="Task" Relationship="SistemaQueueTareasModel.FK__Execution__id_ta__5629CD9C" FromRole="Execution" ToRole="Task" />
         </EntityType>
         <EntityType Name="Notification">
           <Key>
@@ -157,8 +158,9 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="order" Type="Int32" Nullable="false" />
           <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Tasks" Relationship="SistemaQueueTareasModel.FK__Tasks__id_priori__4CA06362" FromRole="Priority" ToRole="Task" />
+          <NavigationProperty Name="Tasks" Relationship="SistemaQueueTareasModel.FK__Tasks__id_priori__4D94879B" FromRole="Priority" ToRole="Task" />
         </EntityType>
         <EntityType Name="State">
           <Key>
@@ -166,7 +168,7 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Tasks" Relationship="SistemaQueueTareasModel.FK__Tasks__id_state__4D94879B" FromRole="State" ToRole="Task" />
+          <NavigationProperty Name="Tasks" Relationship="SistemaQueueTareasModel.FK__Tasks__id_state__4E88ABD4" FromRole="State" ToRole="Task" />
         </EntityType>
         <EntityType Name="Task">
           <Key>
@@ -181,11 +183,11 @@
           <Property Name="fecha_creacion" Type="DateTime" Precision="3" />
           <Property Name="fecha_ejecucion" Type="DateTime" Precision="3" />
           <Property Name="fecha_finalizacion" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Executions" Relationship="SistemaQueueTareasModel.FK__Execution__id_ta__5535A963" FromRole="Task" ToRole="Execution" />
-          <NavigationProperty Name="Priority" Relationship="SistemaQueueTareasModel.FK__Tasks__id_priori__4CA06362" FromRole="Task" ToRole="Priority" />
-          <NavigationProperty Name="State" Relationship="SistemaQueueTareasModel.FK__Tasks__id_state__4D94879B" FromRole="Task" ToRole="State" />
+          <NavigationProperty Name="Executions" Relationship="SistemaQueueTareasModel.FK__Execution__id_ta__5629CD9C" FromRole="Task" ToRole="Execution" />
+          <NavigationProperty Name="Priority" Relationship="SistemaQueueTareasModel.FK__Tasks__id_priori__4D94879B" FromRole="Task" ToRole="Priority" />
+          <NavigationProperty Name="State" Relationship="SistemaQueueTareasModel.FK__Tasks__id_state__4E88ABD4" FromRole="Task" ToRole="State" />
         </EntityType>
-        <Association Name="FK__Execution__id_ta__5535A963">
+        <Association Name="FK__Execution__id_ta__5629CD9C">
           <End Type="SistemaQueueTareasModel.Task" Role="Task" Multiplicity="1" />
           <End Type="SistemaQueueTareasModel.Execution" Role="Execution" Multiplicity="*" />
           <ReferentialConstraint>
@@ -197,7 +199,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Tasks__id_priori__4CA06362">
+        <Association Name="FK__Tasks__id_priori__4D94879B">
           <End Type="SistemaQueueTareasModel.Priority" Role="Priority" Multiplicity="1" />
           <End Type="SistemaQueueTareasModel.Task" Role="Task" Multiplicity="*" />
           <ReferentialConstraint>
@@ -209,7 +211,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Tasks__id_state__4D94879B">
+        <Association Name="FK__Tasks__id_state__4E88ABD4">
           <End Type="SistemaQueueTareasModel.State" Role="State" Multiplicity="1" />
           <End Type="SistemaQueueTareasModel.Task" Role="Task" Multiplicity="*" />
           <ReferentialConstraint>
@@ -253,6 +255,7 @@
             <EntityTypeMapping TypeName="SistemaQueueTareasModel.Priority">
               <MappingFragment StoreEntitySet="Priorities">
                 <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="order" ColumnName="order" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
