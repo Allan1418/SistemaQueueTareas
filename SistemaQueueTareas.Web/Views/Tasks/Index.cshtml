@@ -1,0 +1,75 @@
+﻿@model IEnumerable<SistemaQueueTareas.Data.Task>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.id_user)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_creacion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_ejecucion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fecha_finalizacion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Priority.name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.State.name)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.id_user)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fecha_creacion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fecha_ejecucion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fecha_finalizacion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Priority.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.State.name)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.id })
+        </td>
+    </tr>
+}
+
+</table>

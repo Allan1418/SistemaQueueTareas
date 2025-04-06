@@ -11,7 +11,6 @@ namespace SistemaQueueTareas.Repository
     {
     }
     public class RepositoryPriority: RepositoryBase<Priority>, IRepositoryPriority
-    public class RepositoryPrioridad: RepositoryBase<Priority>, IRepositoryPriority
     {
         public RepositoryPriority() : base()
         {
