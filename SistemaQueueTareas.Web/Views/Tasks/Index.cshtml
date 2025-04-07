@@ -86,14 +86,14 @@
                                         <button class="btn btn-sm btn-warning edit-task-btn"
                                                 data-task-id="@task.id"
                                                 title="Editar">
-                                            <i class="bi bi-pencil"></i>
+                                            <i class="bi bi-pencil"></i>Editar
                                         </button>
 
                                         @using (Html.BeginForm("Execute", "Tasks", new { id = task.id }, FormMethod.Post))
                                         {
                                             @Html.AntiForgeryToken()
                                             <button type="submit" class="btn btn-sm btn-success" title="Ejecutar">
-                                                <i class="bi bi-play"></i>
+                                                <i class="bi bi-play"></i>Ejecutar
                                             </button>
                                         }
 
@@ -104,7 +104,7 @@
                                                     class="btn btn-sm btn-danger"
                                                     title="Eliminar"
                                                     onclick="return confirm('¿Seguro que deseas eliminar esta tarea?')">
-                                                <i class="bi bi-trash"></i>
+                                                <i class="bi bi-trash"></i>Eleminar
                                             </button>
                                         }
                                     </div>
