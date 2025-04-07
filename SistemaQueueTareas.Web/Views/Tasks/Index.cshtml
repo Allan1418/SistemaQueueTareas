@@ -1,75 +1,296 @@
 ﻿@model IEnumerable<SistemaQueueTareas.Data.Task>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Gestión de Tareas";
 }
 
-<h2>Index</h2>
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col d-flex justify-content-between align-items-center">
+            <h2 class="display-5 mb-4 fw-bold text-primary">
+                <i class="bi bi-list-check me-2"></i>Mis Tareas
+            </h2>
+            @Html.ActionLink("Crear Nueva Tarea", "Create", null, new { @class = "btn btn-primary" })
+        </div>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.id_user)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.fecha_creacion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.fecha_ejecucion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.fecha_finalizacion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Priority.name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.State.name)
-        </th>
-        <th></th>
-    </tr>
+        <div class="card shadow border-0 rounded-3 mb-4">
+            <div class="card-body p-4">
+                @using (Html.BeginForm("Index", "Tasks", FormMethod.Get, new { @class = "row g-3 align-items-end" }))
+                {
+                    <div class="col-md-5">
+                        <label class="form-label fw-bold text-secondary">
+                            <i class="bi bi-funnel-fill me-2"></i>Estado:
+                        </label>
+                        @Html.DropDownList("id_state", (SelectList)ViewBag.States, "Todos", new { @class = "form-select" })
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label fw-bold text-secondary">
+                            <i class="bi bi-sort-numeric-down me-2"></i>Prioridad:
+                        </label>
+                        @Html.DropDownList("id_priority", (SelectList)ViewBag.PrioritiesFilter, "Todas", new { @class = "form-select" })
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-funnel me-2"></i>Filtrar
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.id_user)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.fecha_creacion)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.fecha_ejecucion)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.fecha_finalizacion)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Priority.name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.State.name)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.id })
-        </td>
-    </tr>
+        @if (Model.Any())
+        {
+            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+                @foreach (var task in Model)
+                {
+                    <div class="col">
+                        <div class="card h-100 shadow border-0 rounded-3">
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                                <h5 class="fw-bold text-truncate mb-0" title="@task.name">
+                                    <i class="bi bi-clipboard-check me-2"></i>@task.name
+                                </h5>
+                                <span class="badge bg-dark rounded-pill">#@task.id</span>
+                            </div>
+
+                            <div class="card-body">
+                                <p class="card-text text-muted mb-4">@task.description</p>
+
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge @GetPriorityClass(task.Priority?.name) rounded-pill p-2">
+                                            <i class="bi @GetPriorityIcon(task.Priority?.name) me-2"></i>
+                                            @(task.Priority?.name ?? "Sin prioridad")
+                                        </span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge @GetStateClass(task.State?.name) rounded-pill p-2">
+                                            <i class="bi @GetStateIcon(task.State?.name) me-2"></i>
+                                            @(task.State?.name ?? "Sin estado")
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="text-end small text-muted">
+                                    <div>Creada: @(task.fecha_creacion?.ToString("g") ?? "Fecha desconocida")</div>
+                                    @if (task.fecha_ejecucion.HasValue)
+                                    {
+                                        <div>Iniciada: @task.fecha_ejecucion.Value.ToString("g")</div>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="card-footer bg-transparent border-top-0">
+                                @if (task.State?.name != "En Proceso")
+                                {
+                                    <div class="d-flex gap-2 justify-content-end">
+                                        <button class="btn btn-sm btn-warning edit-task-btn"
+                                                data-task-id="@task.id"
+                                                title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+
+                                        @using (Html.BeginForm("Execute", "Tasks", new { id = task.id }, FormMethod.Post))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-success" title="Ejecutar">
+                                                <i class="bi bi-play"></i>
+                                            </button>
+                                        }
+
+                                        @using (Html.BeginForm("Delete", "Tasks", new { id = task.id }, FormMethod.Post))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger"
+                                                    title="Eliminar"
+                                                    onclick="return confirm('¿Seguro que deseas eliminar esta tarea?')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="text-center text-muted fst-italic">
+                                        <i class="bi bi-lock me-2"></i>Tarea en ejecución
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info mt-4">
+                <i class="bi bi-info-circle me-2"></i>No se encontraron tareas
+            </div>
+        }
+    </div>
+
+    <div class="modal fade" id="editTaskModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Tarea</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editTaskForm">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" id="editTaskId" name="id" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="editTaskName" name="name" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea class="form-control" id="editTaskDescription" name="description" rows="3"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Prioridad</label>
+                            <select class="form-select" id="editTaskPriority" name="id_priority"></select>
+                        </div>
+
+                        @* ELIMINADO EL ESTADO *@
+                        @* <div class="mb-3">
+                                <label class="form-label">Estado</label>
+                                <select class="form-select" id="editTaskState" name="id_state"></select>
+                            </div> *@
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveTaskChanges">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetPriorityClass(string priority)
+    {
+        return priority?.ToLower() switch
+        {
+            "alta" => "bg-danger",
+            "media" => "bg-warning text-dark",
+            "baja" => "bg-success",
+            _ => "bg-secondary"
+        };
+    }
+
+    private string GetPriorityIcon(string priority)
+    {
+        return priority?.ToLower() switch
+        {
+            "alta" => "bi-exclamation-triangle",
+            "media" => "bi-arrow-down-circle",
+            "baja" => "bi-arrow-down-circle",
+            _ => "bi-question-circle"
+        };
+    }
+
+    private string GetStateClass(string state)
+    {
+        return state?.ToLower() switch
+        {
+            "pendiente" => "bg-warning text-dark",
+            "en proceso" => "bg-primary",
+            "finalizada" => "bg-success",
+            "fallida" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+
+    private string GetStateIcon(string state)
+    {
+        return state?.ToLower() switch
+        {
+            "pendiente" => "bi-hourglass",
+            "en proceso" => "bi-arrow-repeat",
+            "finalizada" => "bi-check-circle",
+            "fallida" => "bi-x-circle",
+            _ => "bi-question-circle"
+        };
+    }
 }
 
-</table>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.edit-task-btn').click(function () {
+                const taskId = $(this).data('task-id');
+
+                $.get(`/Tasks/GetTask?id=${taskId}`)
+                    .done(function (response) {
+                        if (response.success) {
+                            console.log("Respuesta GetTask:", response); // Log para depuración
+
+                            $('#editTaskId').val(response.task.id);
+                            $('#editTaskName').val(response.task.name);
+                            $('#editTaskDescription').val(response.task.description);
+
+                            // Llenado de Prioridades con logs de depuración
+                            console.log("Prioridades:", response.task.priorities);
+                            $('#editTaskPriority').empty();
+                            $.each(response.task.priorities, function (index, priority) {
+                                console.log("Prioridad:", priority);
+                                $('#editTaskPriority').append($('<option>', {
+                                    value: priority.id,
+                                    text: priority.name
+                                }));
+                            });
+                            $('#editTaskPriority').val(response.task.id_priority);
+
+                            // Llenado de Estados con logs de depuración
+                            //console.log("Estados:", response.task.states);
+                            //$('#editTaskState').empty();
+                            //$.each(response.task.states, function (index, state) {
+                            //    console.log("Estado:", state);
+                            //    $('#editTaskState').append($('<option>', {
+                            //        value: state.id,
+                            //        text: state.name
+                            //    }));
+                            //});
+                            //$('#editTaskState').val(response.task.id_state);
+
+                            $('#editTaskModal').modal('show');
+                        } else {
+                            alert(response.message);
+                        }
+                    })
+                    .fail(function (xhr) {
+                        console.error('Error:', xhr.responseText);
+                        alert('Error al cargar la tarea');
+                    });
+            });
+
+            $('#saveTaskChanges').click(function () {
+                const formData = $('#editTaskForm').serialize();
+
+                $.ajax({
+                    url: '/Tasks/EditTaskModal',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            $('#editTaskModal').modal('hide');
+                            window.location.reload();
+                        } else {
+                            alert('Error: ' + (response.errors?.join(', ') || response.message));
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error('Error:', xhr.responseText);
+                        alert('Error en el servidor');
+                    }
+                });
+            });
+        });
+    </script>
+}

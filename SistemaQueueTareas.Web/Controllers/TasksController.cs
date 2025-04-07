@@ -1,61 +1,157 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 using SistemaQueueTareas.Data;
 
 namespace SistemaQueueTareas.Web.Controllers
 {
-
     public class TasksController : Controller
     {
         private SistemaQueueTareasContext db = new SistemaQueueTareasContext();
 
-        // GET: Tasks
-        public ActionResult Index()
+        [Authorize]
+        public ActionResult Index(int? id_state, int? id_priority)
         {
-            var tasks = db.Tasks.Include(t => t.Priority).Include(t => t.State);
+            var userId = User.Identity.GetUserId();
+            IQueryable<Task> tasks = db.Tasks
+                .Include(t => t.Priority)
+                .Include(t => t.State)
+                .Where(t => t.id_user == userId);
+
+            if (id_state.HasValue)
+                tasks = tasks.Where(t => t.id_state == id_state.Value);
+
+            if (id_priority.HasValue)
+                tasks = tasks.Where(t => t.id_priority == id_priority.Value);
+
+            ViewBag.States = new SelectList(db.States, "id", "name", id_state);
+            ViewBag.PrioritiesFilter = new SelectList(db.Priorities.OrderBy(p => p.order), "id", "name", id_priority);
+
             return View(tasks.ToList());
         }
 
-        // GET: Tasks/Details/5
+        [Authorize]
+        public ActionResult GetTask(int id)
+        {
+            var userId = User.Identity.GetUserId();
+            var task = db.Tasks
+                .Include(t => t.Priority)
+                .Include(t => t.State)
+                .FirstOrDefault(t => t.id == id && t.id_user == userId);
+
+            if (task == null)
+                return Json(new { success = false, message = "Tarea no encontrada." }, JsonRequestBehavior.AllowGet);
+
+            return Json(new
+            {
+                success = true,
+                task = new
+                {
+                    task.id,
+                    task.name,
+                    task.description,
+                    task.id_priority,
+                    task.id_state,
+                    priorityName = task.Priority?.name,
+                    stateName = task.State?.name,
+                    priorities = db.Priorities.OrderBy(p => p.order).Select(p => new { id = p.id, name = p.name }).ToList(),
+                    states = db.States.Select(s => new { id = s.id, name = s.name }).ToList()
+                }
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditTaskModal(Task task)
+        {
+            try
+            {
+                var userId = User.Identity.GetUserId();
+                var existingTask = db.Tasks.FirstOrDefault(t => t.id == task.id && t.id_user == userId);
+
+                if (existingTask == null)
+                    return Json(new { success = false, errors = "Acceso denegado o tarea no existe" });
+
+                existingTask.name = task.name;
+                existingTask.description = task.description;
+                existingTask.id_priority = task.id_priority;
+
+                if (!db.Priorities.Any(p => p.id == task.id_priority))
+                    return Json(new { success = false, errors = "Prioridad no válida" });
+
+                if (ModelState.IsValid)
+                {
+                    db.Entry(existingTask).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return Json(new { success = true });
+                }
+
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, errors });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return Json(new { success = false, errors = "Error interno del servidor." });
+            }
+        }
+
+
+        [Authorize]
         public ActionResult Details(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Task task = db.Tasks.Find(id);
-            if (task == null)
-            {
-                return HttpNotFound();
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var userId = User.Identity.GetUserId();
+            Task task = db.Tasks.FirstOrDefault(t => t.id == id && t.id_user == userId);
+
+            if (task == null) return HttpNotFound();
             return View(task);
         }
 
-        // GET: Tasks/Create
         public ActionResult Create()
         {
             ViewBag.id_priority = new SelectList(db.Priorities, "id", "name");
-            ViewBag.id_state = new SelectList(db.States, "id", "name");
             return View();
         }
 
-        // POST: Tasks/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,id_user,name,description,id_priority,id_state,fecha_creacion,fecha_ejecucion,fecha_finalizacion")] Task task)
+        [Authorize]
+        public ActionResult Create([Bind(Include = "name,description,id_priority")] Task task)
         {
             if (ModelState.IsValid)
             {
+                task.id_user = User.Identity.GetUserId();
+                task.id_state = db.States.FirstOrDefault(s => s.name == "Pendiente").id;
+                task.fecha_creacion = DateTime.Now;
+
                 db.Tasks.Add(task);
                 db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.id_priority = new SelectList(db.Priorities, "id", "name", task.id_priority);
+            return View(task);
+        }
+
+        [Authorize]
+        public ActionResult Edit(int? id)
+        {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var userId = User.Identity.GetUserId();
+            Task task = db.Tasks.FirstOrDefault(t => t.id == id && t.id_user == userId);
+
+            if (task == null) return HttpNotFound();
+
+            if (task.State.name == "En Proceso")
+            {
+                TempData["ErrorMessage"] = "No se puede editar tareas en proceso";
                 return RedirectToAction("Index");
             }
 
@@ -64,26 +160,6 @@ namespace SistemaQueueTareas.Web.Controllers
             return View(task);
         }
 
-        // GET: Tasks/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Task task = db.Tasks.Find(id);
-            if (task == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.id_priority = new SelectList(db.Priorities, "id", "name", task.id_priority);
-            ViewBag.id_state = new SelectList(db.States, "id", "name", task.id_state);
-            return View(task);
-        }
-
-        // POST: Tasks/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "id,id_user,name,description,id_priority,id_state,fecha_creacion,fecha_ejecucion,fecha_finalizacion")] Task task)
@@ -99,22 +175,25 @@ namespace SistemaQueueTareas.Web.Controllers
             return View(task);
         }
 
-        // GET: Tasks/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
-            if (id == null)
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var userId = User.Identity.GetUserId();
+            Task task = db.Tasks.FirstOrDefault(t => t.id == id && t.id_user == userId);
+
+            if (task == null) return HttpNotFound();
+
+            if (task.State.name == "En Proceso")
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                TempData["ErrorMessage"] = "No se puede eliminar tareas en proceso";
+                return RedirectToAction("Index");
             }
-            Task task = db.Tasks.Find(id);
-            if (task == null)
-            {
-                return HttpNotFound();
-            }
+
             return View(task);
         }
 
-        // POST: Tasks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
@@ -122,6 +201,33 @@ namespace SistemaQueueTareas.Web.Controllers
             Task task = db.Tasks.Find(id);
             db.Tasks.Remove(task);
             db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult Execute(int id)
+        {
+            var task = db.Tasks.Find(id);
+            if (task == null) return HttpNotFound();
+
+            if (task.id_user != User.Identity.GetUserId())
+                return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+
+            var estadoEnProceso = db.States.FirstOrDefault(s => s.name == "En Proceso");
+            if (estadoEnProceso == null)
+            {
+                TempData["ErrorMessage"] = "Estado no configurado";
+                return RedirectToAction("Index");
+            }
+            if (estadoEnProceso != null)
+            {
+                task.id_state = estadoEnProceso.id;
+                task.fecha_ejecucion = DateTime.Now;
+                db.SaveChanges();
+            }
+
             return RedirectToAction("Index");
         }
 
