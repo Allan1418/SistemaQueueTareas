@@ -99,6 +99,7 @@
       <DependentUpon>SistemaQueueTareasContext.edmx</DependentUpon>
       <LastGenOutput>SistemaQueueTareasContext.cs</LastGenOutput>
     </Content>
+    <Content Include="SQL\Inserciones.sql" />
     <Content Include="SQL\Tablas.sql" />
   </ItemGroup>
   <ItemGroup>
