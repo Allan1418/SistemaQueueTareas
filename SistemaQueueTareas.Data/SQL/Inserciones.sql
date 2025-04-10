@@ -1,4 +1,8 @@
-﻿INSERT INTO [AspNetUsers] 
+﻿
+USE [SistemaQueueTareas]
+GO
+
+INSERT INTO [AspNetUsers] 
 ([Id], [Email], [EmailConfirmed], [PasswordHash], [SecurityStamp], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEndDateUtc], [LockoutEnabled], [AccessFailedCount], [UserName])
 VALUES
 -- Usuario 1
@@ -7,6 +11,7 @@ VALUES
 ('516eb6b8-18cd-4e4d-ba3c-ab553adf0862', 'monkeydluffy@gmail.com', 0, 'AHUYeF2V3utE+z3cl2Zhqgilth7Fe5LCzI0KzO17qTVfkKUx6hUUwApkYVdzniVoiQ==', '28ffe3e0-008b-4de6-8895-a6127835e3a5', '89012345', 0, 0, NULL, 0, 0, 'monkey.luffy'),
 -- Usuario 3
 ('7523a730-ee3a-495e-9eb0-fbef864512cf', 'tonysoprano@gmail.com', 0, 'ABNr6rGlmaXGglGDNucKcmfn7qTUSmz07lZnNL0g+/dRgj4OAtb65qi1XF6r/+Q9ZQ==', '5f06fe07-0312-4e26-8ebc-d25ae1278dc4', '87960542', 0, 0, NULL, 0, 0, 'tony.soprano');
+GO
 
 INSERT INTO [Tasks] 
 ([id_user], [name], [description], [id_priority], [id_state])
@@ -41,5 +46,6 @@ VALUES
 ('7523a730-ee3a-495e-9eb0-fbef864512cf', 'Análisis de datos', 'Analizar los datos de las encuestas y preparar un informe.', 3, 1),
 -- Tarea 15
 ('7523a730-ee3a-495e-9eb0-fbef864512cf', 'Planificación de campaña', 'Planificar la próxima campaña publicitaria para el próximo trimestre.', 1, 1);
+GO
 
 
