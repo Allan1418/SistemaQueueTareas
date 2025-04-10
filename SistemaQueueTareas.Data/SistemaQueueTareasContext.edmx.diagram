@@ -5,12 +5,10 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="8700f52b5eb14ad8822c385f0d85ae82" Name="Diagram1" ZoomLevel="100">
-        <EntityTypeShape EntityType="SistemaQueueTareasModel.Execution" Width="1.5" PointX="5.25" PointY="1.625" />
-        <EntityTypeShape EntityType="SistemaQueueTareasModel.Notification" Width="1.5" PointX="2.75" PointY="5.75" />
+        <EntityTypeShape EntityType="SistemaQueueTareasModel.Notification" Width="1.5" PointX="5.75" PointY="0.75" />
         <EntityTypeShape EntityType="SistemaQueueTareasModel.Priority" Width="1.5" PointX="0.75" PointY="5.75" />
         <EntityTypeShape EntityType="SistemaQueueTareasModel.State" Width="1.5" PointX="0.75" PointY="1.875" />
         <EntityTypeShape EntityType="SistemaQueueTareasModel.Task" Width="1.5" PointX="3" PointY="1" />
-        <AssociationConnector Association="SistemaQueueTareasModel.FK__Execution__id_ta__5629CD9C" />
         <AssociationConnector Association="SistemaQueueTareasModel.FK__Tasks__id_priori__4D94879B" />
         <AssociationConnector Association="SistemaQueueTareasModel.FK__Tasks__id_state__4E88ABD4" />
       </Diagram>

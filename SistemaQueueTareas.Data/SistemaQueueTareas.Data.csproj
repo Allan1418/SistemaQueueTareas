@@ -59,9 +59,6 @@
     <Compile Include="Entities\Notification.cs" />
     <Compile Include="Entities\Priority.cs" />
     <Compile Include="Entities\Task.cs" />
-    <Compile Include="Execution.cs">
-      <DependentUpon>SistemaQueueTareasContext.tt</DependentUpon>
-    </Compile>
     <Compile Include="Notification.cs">
       <DependentUpon>SistemaQueueTareasContext.tt</DependentUpon>
     </Compile>
@@ -102,6 +99,7 @@
       <DependentUpon>SistemaQueueTareasContext.edmx</DependentUpon>
       <LastGenOutput>SistemaQueueTareasContext.cs</LastGenOutput>
     </Content>
+    <Content Include="SQL\Inserciones.sql" />
     <Content Include="SQL\Tablas.sql" />
   </ItemGroup>
   <ItemGroup>

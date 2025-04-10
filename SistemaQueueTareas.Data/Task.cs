@@ -14,24 +14,17 @@ namespace SistemaQueueTareas.Data
     
     public partial class Task
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Task()
-        {
-            this.Executions = new HashSet<Execution>();
-        }
-    
         public int id { get; set; }
         public string id_user { get; set; }
         public string name { get; set; }
         public string description { get; set; }
         public int id_priority { get; set; }
         public int id_state { get; set; }
+        public string log { get; set; }
         public Nullable<System.DateTime> fecha_creacion { get; set; }
         public Nullable<System.DateTime> fecha_ejecucion { get; set; }
         public Nullable<System.DateTime> fecha_finalizacion { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Execution> Executions { get; set; }
         public virtual Priority Priority { get; set; }
         public virtual State State { get; set; }
     }
