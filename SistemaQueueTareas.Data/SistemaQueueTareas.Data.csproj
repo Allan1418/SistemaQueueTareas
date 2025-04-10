@@ -59,9 +59,6 @@
     <Compile Include="Entities\Notification.cs" />
     <Compile Include="Entities\Priority.cs" />
     <Compile Include="Entities\Task.cs" />
-    <Compile Include="Execution.cs">
-      <DependentUpon>SistemaQueueTareasContext.tt</DependentUpon>
-    </Compile>
     <Compile Include="Notification.cs">
       <DependentUpon>SistemaQueueTareasContext.tt</DependentUpon>
     </Compile>

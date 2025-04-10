@@ -136,20 +136,24 @@ CREATE TABLE States (
     id INT IDENTITY(1,1) PRIMARY KEY,
     [name] VARCHAR(50) UNIQUE NOT NULL
 );
+GO
 
 -- Insertar estados predefinidos
 INSERT INTO States ([name]) VALUES
 	('Pendiente'),
+	('En Cola'),
 	('En Proceso'),
 	('Finalizada'),
 	('Fallida')
 ;
+GO
 
 CREATE TABLE Priorities (
     id INT IDENTITY(1,1) PRIMARY KEY,
 	[order] INT NOT NULL UNIQUE,
     [name] VARCHAR(50) UNIQUE NOT NULL
 );
+GO
 
 -- Insertar prioridades predefinidas
 INSERT INTO Priorities ([order], [name]) VALUES
@@ -157,6 +161,7 @@ INSERT INTO Priorities ([order], [name]) VALUES
 	(2, 'Media'),
 	(1, 'Baja')
 ;
+GO
 
 CREATE TABLE Tasks (
     id INT IDENTITY(1,1) PRIMARY KEY,
@@ -165,6 +170,7 @@ CREATE TABLE Tasks (
     [description] TEXT,
     id_priority INT NOT NULL,
     id_state INT NOT NULL,
+	[log] TEXT,
     fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
     fecha_ejecucion DATETIME NULL,
     fecha_finalizacion DATETIME NULL,
@@ -172,6 +178,33 @@ CREATE TABLE Tasks (
     FOREIGN KEY (id_priority) REFERENCES Priorities(id),
     FOREIGN KEY (id_state) REFERENCES States(id)
 );
+GO
+
+CREATE TRIGGER TR_Tasks_InsertLog
+ON Tasks
+AFTER INSERT
+AS
+BEGIN
+    -- Actualizar la columna 'log' en nuevas filas
+    UPDATE t
+    SET t.[log] = CONCAT(
+        '[',
+        FORMAT(GETDATE(), 'yyyy-MM-dd HH:mm:ss'),
+        '] se creo la tarea (',
+        i.[name],
+        '). Prioridad: ',
+        p.[name],
+        '. id: ',
+        i.id,
+        '.',
+        CHAR(13),
+        CHAR(10)
+    )
+    FROM Tasks t
+    INNER JOIN inserted i ON t.id = i.id
+    INNER JOIN Priorities p ON i.id_priority = p.id;
+END;
+GO
 
 CREATE TABLE Notifications (
     id INT IDENTITY(1,1) PRIMARY KEY,
@@ -181,15 +214,6 @@ CREATE TABLE Notifications (
     leido BIT DEFAULT 0,
     FOREIGN KEY (id_user) REFERENCES AspNetUsers(Id)
 );
-
-CREATE TABLE Executions (
-    id INT IDENTITY(1,1) PRIMARY KEY,
-    id_task INT NOT NULL,
-    fecha_inicio DATETIME NOT NULL,
-    fecha_fin DATETIME NULL,
-    detalle_log TEXT,
-    FOREIGN KEY (id_task) REFERENCES Tasks(id)
-);
-
+GO
 
 
