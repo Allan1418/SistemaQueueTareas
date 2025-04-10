@@ -14,9 +14,12 @@ namespace SistemaQueueTareas.Web.Controllers
         RepositoryNotification _repositoryNotification = new RepositoryNotification();
 
 
+        
         //metodos para la tabla de task
         public ActionResult Index()
         { 
+            System.Diagnostics.Debug.WriteLine(_repositoryTask.findAllTask()); // Agregar un mensaje de depuración
+            Console.WriteLine(_repositoryTask.findAllTask());
             var tasks = _repositoryTask.findAllTask(); // Obtener tareas desde la base de datos
             return View(tasks);
             

@@ -21,6 +21,7 @@ namespace SistemaQueueTareas.Repository
             return _dbSet.Include(t => t.Priority)
                          .Include(t => t.State)
                          .ToList();
+
         }
 
         public List<Task> findTaskByUser(string id_user)
