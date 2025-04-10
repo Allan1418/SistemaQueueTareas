@@ -8,5 +8,10 @@ namespace SistemaQueueTareas.Data
 {
     public partial class Notification : Entity
     {
+        public Notification()
+        {
+            fecha_envio = DateTime.Now;
+            leido = false;
+        }
     }
 }

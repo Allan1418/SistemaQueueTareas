@@ -5,16 +5,6 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="SistemaQueueTareasModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="Executions">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="id_task" Type="int" Nullable="false" />
-          <Property Name="fecha_inicio" Type="datetime" Nullable="false" />
-          <Property Name="fecha_fin" Type="datetime" />
-          <Property Name="detalle_log" Type="text" />
-        </EntityType>
         <EntityType Name="Notifications">
           <Key>
             <PropertyRef Name="id" />
@@ -50,22 +40,11 @@
           <Property Name="description" Type="text" />
           <Property Name="id_priority" Type="int" Nullable="false" />
           <Property Name="id_state" Type="int" Nullable="false" />
+          <Property Name="log" Type="text" />
           <Property Name="fecha_creacion" Type="datetime" />
           <Property Name="fecha_ejecucion" Type="datetime" />
           <Property Name="fecha_finalizacion" Type="datetime" />
         </EntityType>
-        <Association Name="FK__Execution__id_ta__5629CD9C">
-          <End Role="Tasks" Type="Self.Tasks" Multiplicity="1" />
-          <End Role="Executions" Type="Self.Executions" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Tasks">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Executions">
-              <PropertyRef Name="id_task" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__Tasks__id_priori__4D94879B">
           <End Role="Priorities" Type="Self.Priorities" Multiplicity="1" />
           <End Role="Tasks" Type="Self.Tasks" Multiplicity="*" />
@@ -91,15 +70,10 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="SistemaQueueTareasModelStoreContainer">
-          <EntitySet Name="Executions" EntityType="Self.Executions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Priorities" EntityType="Self.Priorities" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="States" EntityType="Self.States" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tasks" EntityType="Self.Tasks" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Execution__id_ta__5629CD9C" Association="Self.FK__Execution__id_ta__5629CD9C">
-            <End Role="Tasks" EntitySet="Tasks" />
-            <End Role="Executions" EntitySet="Executions" />
-          </AssociationSet>
           <AssociationSet Name="FK__Tasks__id_priori__4D94879B" Association="Self.FK__Tasks__id_priori__4D94879B">
             <End Role="Priorities" EntitySet="Priorities" />
             <End Role="Tasks" EntitySet="Tasks" />
@@ -114,15 +88,10 @@
     <edmx:ConceptualModels>
       <Schema Namespace="SistemaQueueTareasModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="SistemaQueueTareasContext" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Executions" EntityType="SistemaQueueTareasModel.Execution" />
           <EntitySet Name="Notifications" EntityType="SistemaQueueTareasModel.Notification" />
           <EntitySet Name="Priorities" EntityType="SistemaQueueTareasModel.Priority" />
           <EntitySet Name="States" EntityType="SistemaQueueTareasModel.State" />
           <EntitySet Name="Tasks" EntityType="SistemaQueueTareasModel.Task" />
-          <AssociationSet Name="FK__Execution__id_ta__5629CD9C" Association="SistemaQueueTareasModel.FK__Execution__id_ta__5629CD9C">
-            <End Role="Task" EntitySet="Tasks" />
-            <End Role="Execution" EntitySet="Executions" />
-          </AssociationSet>
           <AssociationSet Name="FK__Tasks__id_priori__4D94879B" Association="SistemaQueueTareasModel.FK__Tasks__id_priori__4D94879B">
             <End Role="Priority" EntitySet="Priorities" />
             <End Role="Task" EntitySet="Tasks" />
@@ -132,17 +101,6 @@
             <End Role="Task" EntitySet="Tasks" />
           </AssociationSet>
         </EntityContainer>
-        <EntityType Name="Execution">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="id_task" Type="Int32" Nullable="false" />
-          <Property Name="fecha_inicio" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="fecha_fin" Type="DateTime" Precision="3" />
-          <Property Name="detalle_log" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Task" Relationship="SistemaQueueTareasModel.FK__Execution__id_ta__5629CD9C" FromRole="Execution" ToRole="Task" />
-        </EntityType>
         <EntityType Name="Notification">
           <Key>
             <PropertyRef Name="id" />
@@ -180,25 +138,13 @@
           <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="id_priority" Type="Int32" Nullable="false" />
           <Property Name="id_state" Type="Int32" Nullable="false" />
+          <Property Name="log" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="fecha_creacion" Type="DateTime" Precision="3" />
           <Property Name="fecha_ejecucion" Type="DateTime" Precision="3" />
           <Property Name="fecha_finalizacion" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="Executions" Relationship="SistemaQueueTareasModel.FK__Execution__id_ta__5629CD9C" FromRole="Task" ToRole="Execution" />
           <NavigationProperty Name="Priority" Relationship="SistemaQueueTareasModel.FK__Tasks__id_priori__4D94879B" FromRole="Task" ToRole="Priority" />
           <NavigationProperty Name="State" Relationship="SistemaQueueTareasModel.FK__Tasks__id_state__4E88ABD4" FromRole="Task" ToRole="State" />
         </EntityType>
-        <Association Name="FK__Execution__id_ta__5629CD9C">
-          <End Type="SistemaQueueTareasModel.Task" Role="Task" Multiplicity="1" />
-          <End Type="SistemaQueueTareasModel.Execution" Role="Execution" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Task">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Execution">
-              <PropertyRef Name="id_task" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__Tasks__id_priori__4D94879B">
           <End Type="SistemaQueueTareasModel.Priority" Role="Priority" Multiplicity="1" />
           <End Type="SistemaQueueTareasModel.Task" Role="Task" Multiplicity="*" />
@@ -229,17 +175,6 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="SistemaQueueTareasModelStoreContainer" CdmEntityContainer="SistemaQueueTareasContext">
-          <EntitySetMapping Name="Executions">
-            <EntityTypeMapping TypeName="SistemaQueueTareasModel.Execution">
-              <MappingFragment StoreEntitySet="Executions">
-                <ScalarProperty Name="detalle_log" ColumnName="detalle_log" />
-                <ScalarProperty Name="fecha_fin" ColumnName="fecha_fin" />
-                <ScalarProperty Name="fecha_inicio" ColumnName="fecha_inicio" />
-                <ScalarProperty Name="id_task" ColumnName="id_task" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Notifications">
             <EntityTypeMapping TypeName="SistemaQueueTareasModel.Notification">
               <MappingFragment StoreEntitySet="Notifications">
@@ -274,6 +209,7 @@
                 <ScalarProperty Name="fecha_finalizacion" ColumnName="fecha_finalizacion" />
                 <ScalarProperty Name="fecha_ejecucion" ColumnName="fecha_ejecucion" />
                 <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+                <ScalarProperty Name="log" ColumnName="log" />
                 <ScalarProperty Name="id_state" ColumnName="id_state" />
                 <ScalarProperty Name="id_priority" ColumnName="id_priority" />
                 <ScalarProperty Name="description" ColumnName="description" />

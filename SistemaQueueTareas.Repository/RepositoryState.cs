@@ -9,11 +9,16 @@ namespace SistemaQueueTareas.Repository
 {
     public interface IRepositoryState : IRepositoryBase<State>
     {
+        State GetStateByName(string name);
     }
     public class RepositoryState : RepositoryBase<State>, IRepositoryState
     {
         public RepositoryState() : base()
         {
+        }
+        public State GetStateByName(string name)
+        {
+            return _dbSet.FirstOrDefault(s => s.name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
