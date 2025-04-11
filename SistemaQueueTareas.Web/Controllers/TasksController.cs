@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
@@ -117,7 +118,11 @@ namespace SistemaQueueTareas.Web.Controllers
             return View(task);
         }
 
-
+        public ActionResult Create()
+        {
+            ViewBag.id_priority = new SelectList(_priorityManager.GetAllOrderPriorities(), "id", "name");
+            return View();
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
