@@ -15,5 +15,12 @@ namespace SistemaQueueTareas.Repository
         public RepositoryState() : base()
         {
         }
+
+        public State ChangeStateInProcess(string nameState)
+        {
+            return _context.States.FirstOrDefault(s => s.name == nameState);
+        }
+
+        
     }
 }

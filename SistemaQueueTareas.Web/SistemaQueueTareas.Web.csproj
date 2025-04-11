@@ -257,6 +257,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SistemaQueueTareas.Business\SistemaQueueTareas.Business.csproj">
+      <Project>{34cf1cbc-8f05-4a76-b9ed-9ee317e120c7}</Project>
+      <Name>SistemaQueueTareas.Business</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SistemaQueueTareas.Data\SistemaQueueTareas.Data.csproj">
       <Project>{943f0518-c769-49eb-bd40-5563f042863d}</Project>
       <Name>SistemaQueueTareas.Data</Name>

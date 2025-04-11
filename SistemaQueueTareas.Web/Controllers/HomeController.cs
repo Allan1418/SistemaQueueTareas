@@ -5,12 +5,13 @@ using System.Web;
 using System.Web.Mvc;
 using SistemaQueueTareas.Data;
 using SistemaQueueTareas.Repository;
+using SistemaQueueTareas.Business;
 
 namespace SistemaQueueTareas.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private RepositoryTask _repositoryTask = new RepositoryTask();
+        private TaskManager _taskManager = new TaskManager();
         RepositoryNotification _repositoryNotification = new RepositoryNotification();
 
 
@@ -18,14 +19,14 @@ namespace SistemaQueueTareas.Web.Controllers
         //metodos para la tabla de task
         public ActionResult Index()
         { 
-            System.Diagnostics.Debug.WriteLine(_repositoryTask.findAllTask()); // Agregar un mensaje de depuración
-            Console.WriteLine(_repositoryTask.findAllTask());
-            var tasks = _repositoryTask.findAllTask(); // Obtener tareas desde la base de datos
+            System.Diagnostics.Debug.WriteLine(_taskManager.GetAllTasks()); // Agregar un mensaje de depuración
+            Console.WriteLine(_taskManager.GetAllTasks());
+            var tasks= _taskManager.GetAllTasks(); // Obtener tareas desde la base de datos
             return View(tasks);
             
         }
 
-        public ActionResult FindUserTask(string idUser)
+        /*public ActionResult FindUserTask(int idUser)
         {
             if (string.IsNullOrEmpty(idUser))
             {
@@ -33,17 +34,17 @@ namespace SistemaQueueTareas.Web.Controllers
                 return View("Index", new List<Task>()); // Devuelve una lista vacía
             }
 
-            var taskUser = _repositoryTask.findTaskByUser(idUser);
+            var taskUser = _taskManager.GetTaskById(idUser);
 
             if (taskUser == null || !taskUser.Any())
             {
                 ViewBag.Message = "No se encontraron tareas para este usuario.";
                 return View("Index", new List<Task>());
-            }
+            }   
 
             return View("Index", taskUser);
             
-        }
+        }*/
 
         public ActionResult FindTaskByState(string taskState)
         {
@@ -55,16 +56,12 @@ namespace SistemaQueueTareas.Web.Controllers
                 return View("Index", new List<Task>());
             }
 
-            var tasks = _repositoryTask.findTaskByState(taskState);
+            _taskManager.FindByState(taskState);
 
             //En el input se ingreso un dato incorrecto para la busqueda
-            if (tasks == null || !tasks.Any())
-            {
-                ViewBag.Message = "No se encontraron tareas con este estado.";
-                return View("Index", new List<Task>());
-            }
+           
 
-            return View("Index", tasks);
+            return View("Index");
         }
 
 
