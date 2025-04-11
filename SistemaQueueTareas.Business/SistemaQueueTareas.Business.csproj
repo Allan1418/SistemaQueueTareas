@@ -159,8 +159,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PriorityTaskQueue.cs" />
+    <Compile Include="PriorityManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TaskProcessorService.cs" />
+    <Compile Include="StateManager.cs" />
+    <Compile Include="TaskManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SistemaQueueTareas.Data\SistemaQueueTareas.Data.csproj">

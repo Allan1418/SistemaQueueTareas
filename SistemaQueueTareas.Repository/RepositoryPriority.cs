@@ -15,5 +15,17 @@ namespace SistemaQueueTareas.Repository
         public RepositoryPriority() : base()
         {
         }
+
+
+        public bool PriorityExists(int priorityId)
+        {
+            return _context.Priorities.Any(p => p.id == priorityId);
+        }
+
+        //Show priority in a logic order "High>Medium>Low" 
+        public List<Priority> GetAllOrderPriorities()
+        {
+            return _context.Priorities.OrderBy(p => p.order).ToList();
+        }
     }
 }

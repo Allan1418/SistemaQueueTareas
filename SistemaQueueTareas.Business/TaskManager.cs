@@ -46,6 +46,49 @@ namespace SistemaQueueTareas.Business
             _repositoryTask.Save();
         }
 
+        public void FindByState(string taskState)
+        {
 
+            _repositoryTask.findTaskByState(taskState);
+
+        }
+
+        public List<Task> OrderByProritiesTask(string userId, int? id_state, int? id_priority)
+        {
+            return _repositoryTask.OrderByPriorities(userId, id_state, id_priority);
+        }
+
+
+        //este metodo agrega el metodo definido a la hora de crear un task
+        public void InitialStateTask(Task task)
+        {
+            task.id_state = _repositoryTask.GetStateIdByName("Pendiente");
+            
+        }
+
+        public List<State> GetAllStates()
+        {
+            return _repositoryTask.GetAllStates();
+        }
+
+        public Task GetDetailTask(int id, string userId)
+        {
+            return _repositoryTask.GetDetailTask(id, userId);
+        }
+
+        public Task GetUserTaskById(int taskId, string userId)
+        {
+            return _repositoryTask.GetUserTaskById(taskId, userId);
+        }
+
+        public bool TaskExists(int taskId)
+        {
+            return _repositoryTask.TaskExists(taskId);
+        }
+
+        public void TaskModified(Task task)
+        {
+            _repositoryTask.ObjectModified(task);
+        }
     }
 }
