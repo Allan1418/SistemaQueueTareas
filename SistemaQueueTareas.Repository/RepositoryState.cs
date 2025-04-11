@@ -20,5 +20,12 @@ namespace SistemaQueueTareas.Repository
         {
             return _dbSet.FirstOrDefault(s => s.name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
+
+        public State ChangeStateInProcess(string nameState)
+        {
+            return _context.States.FirstOrDefault(s => s.name == nameState);
+        }
+
+        
     }
 }
