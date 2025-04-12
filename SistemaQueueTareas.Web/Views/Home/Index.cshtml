@@ -2,96 +2,67 @@
     ViewBag.Title = "Home Page";
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
-
+<div class="container py-5">
     <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-tasks fa-4x text-primary mb-3"></i>
+                        <h1 class="display-4 fw-bold">Bienvenido a la aplicación de gestión de tareas</h1>
+                        <p class="lead text-muted">Desde aquí puedes gestionar todas tus tareas de forma eficiente y organizada.</p>
+                    </div>
+
+                    <div class="row mt-5">
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-list-ul fa-3x text-primary mb-3"></i>
+                                    <h3>Organiza</h3>
+                                    <p>Mantén tus tareas organizadas y clasificadas.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                                    <h3>Completa</h3>
+                                    <p>Marca tus tareas como completadas y sigue tu progreso.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-chart-line fa-3x text-info mb-3"></i>
+                                    <h3>Analiza</h3>
+                                    <p>Visualiza tu productividad y mejora tu rendimiento.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a href="@Url.Action("Index", "Tasks")" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow">
+                            <i class="fas fa-arrow-right me-2"></i>Ir a mis tareas
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4 border-0 bg-light">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-lightbulb text-warning fa-2x me-3"></i>
+                        <p class="mb-0">¿Sabías que? Organizar tus tareas puede aumentar tu productividad hasta en un 25%.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    @model List<SistemaQueueTareas.Data.Task>
-
-
-    <h2>Lista de Tareas</h2>
-
-    <form method="get" action="@Url.Action("Index")">
-        <button type="submit" class="btn btn-primary">Ver todas las tareas</button>
-    </form>
-    <br />
-
-    <h3>Buscar Tareas por Usuario</h3>
-
-    <form method="get" action="@Url.Action("FindUserTask", "Home")">
-        <div class="form-group">
-            <label for="idUser">ID de Usuario:</label>
-            <input type="text" name="idUser" class="form-control" placeholder="Ingrese el ID de usuario" required />
-        </div>
-        <br />
-        <button type="submit" class="btn btn-primary">Buscar</button>
-    </form>
-
-    <form method="get" action="@Url.Action("FindTaskByState", "Home")">
-        <div class="form-group">
-            <label for="taskState">Estado de la tarea:</label>
-            <input type="text" name="taskState" class="form-control" placeholder="Ingrese el estado" required />
-        </div>
-        <button type="submit" class="btn btn-primary">Buscar Tareas</button>
-    </form>
-
-
-    @if (!string.IsNullOrEmpty(ViewBag.Message))
-    {
-        <p class="alert alert-info">@ViewBag.Message</p>
-    }
-    @if (Model != null && Model.Any())
-    {
-        <h3>Resultados:</h3>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Prioridad</th>
-                    <th>Estado</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var task in Model)
-                {
-                    <tr>
-                        <td>@task.id</td>
-                        <td>@task.name</td>
-                        <td>@task.description</td>
-                        <td>@(task.Priority != null ? task.Priority.name : "Sin Prioridad")</td>
-                        <td>@(task.State != null ? task.State.name : "Sin Estado")</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-
-
-</main>
+<!-- Note: You'll need to include Font Awesome in your layout for the icons -->
+<!-- Add this to your _Layout.cshtml if not already present: -->
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> -->

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using SistemaQueueTareas.Data;
 using SistemaQueueTareas.Repository;
@@ -14,9 +13,6 @@ namespace SistemaQueueTareas.Web.Controllers
         private TaskManager _taskManager = new TaskManager();
         RepositoryNotification _repositoryNotification = new RepositoryNotification();
 
-
-        
-        //metodos para la tabla de task
         public ActionResult Index()
         { 
             System.Diagnostics.Debug.WriteLine(_taskManager.GetAllTasks()); // Agregar un mensaje de depuración
@@ -94,14 +90,12 @@ namespace SistemaQueueTareas.Web.Controllers
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
-
             return View();
         }
     }

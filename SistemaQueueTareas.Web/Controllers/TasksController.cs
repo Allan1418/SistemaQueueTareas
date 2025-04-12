@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 
@@ -13,7 +12,6 @@ using SistemaQueueTareas.Data;
 
 namespace SistemaQueueTareas.Web.Controllers
 {
-
     public class TasksController : Controller
     {
         //private SistemaQueueTareasContext db = new SistemaQueueTareasContext();
@@ -213,7 +211,6 @@ namespace SistemaQueueTareas.Web.Controllers
             return View(task);
         }
 
-        // POST: Tasks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)

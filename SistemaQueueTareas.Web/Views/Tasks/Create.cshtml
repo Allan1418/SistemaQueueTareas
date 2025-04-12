@@ -1,10 +1,13 @@
 ﻿@model SistemaQueueTareas.Data.Task
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Crear Nueva Tarea";
 }
 
-<h2>Create</h2>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2>Crear Nueva Tarea</h2>
 
 
 @using (Html.BeginForm()) 
@@ -63,10 +66,6 @@
             </div>
         </div>
     </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
 </div>
 
 @section Scripts {
