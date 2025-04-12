@@ -141,6 +141,7 @@ GO
 -- Insertar estados predefinidos
 INSERT INTO States ([name]) VALUES
 	('Pendiente'),
+	('En Pausa'),
 	('En Cola'),
 	('En Proceso'),
 	('Finalizada'),

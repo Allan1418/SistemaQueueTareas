@@ -25,17 +25,16 @@ namespace SistemaQueueTareas.Web.Controllers
         {
             var userId = User.Identity.GetUserId();
             var tasks = _taskManager.OrderByProritiesTask(userId, id_state, id_priority);
-            /*IQueryable<Task> tasks = db.Tasks
-                .Include(t => t.Priority)
-                .Include(t => t.State)
-                .Where(t => t.id_user == userId);*/
+            var taskEnProceso = _taskManager.getEnProcesoTask();
 
-            ViewBag.States = new SelectList(_taskManager.GetAllStates(), "id", "name", id_state);
             ViewBag.PrioritiesFilter = new SelectList(_priorityManager.GetAllOrderPriorities(), "id", "name", id_priority);
+            ViewBag.TaskEnProceso = taskEnProceso;
 
             return View(tasks.ToList());
         }
 
+
+        //???
         [Authorize]
         public ActionResult GetTask(int id)
         {
@@ -58,11 +57,12 @@ namespace SistemaQueueTareas.Web.Controllers
                     priorityName = task.Priority?.name,
                     stateName = task.State?.name,
                     priorities = _priorityManager.GetAllOrderPriorities().Select(p => new { id = p.id, name = p.name }).ToList(),
-                    states = _taskManager.GetAllStates().Select(s => new { id = s.id, name = s.name }).ToList()
+                    //states = _taskManager.GetAllStates().Select(s => new { id = s.id, name = s.name }).ToList()
                 }
             }, JsonRequestBehavior.AllowGet);
         }
 
+        //???
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditTaskModal(Task task)
@@ -85,8 +85,8 @@ namespace SistemaQueueTareas.Web.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    // no hay que usar el update del manager de task?
                     _taskManager.TaskModified(task);
-                    _taskManager.SaveTask();
                     return Json(new { success = true });
                 }
 
@@ -142,11 +142,9 @@ namespace SistemaQueueTareas.Web.Controllers
             if (ModelState.IsValid)
             {
                 task.id_user = User.Identity.GetUserId();
-                _taskManager.InitialStateTask(task);
                 task.fecha_creacion = DateTime.Now;
 
                 _taskManager.AddTask(task);
-                _taskManager.SaveTask();
                 return RedirectToAction("Index");
             }
             ViewBag.id_priority = new SelectList(_priorityManager.GetAllOrderPriorities(), "id", "name", task.id_priority);
@@ -172,11 +170,12 @@ namespace SistemaQueueTareas.Web.Controllers
             }
 
             ViewBag.id_priority = new SelectList(_priorityManager.GetAllOrderPriorities(), "id", "name", task.id_priority);
-            ViewBag.States = new SelectList(_taskManager.GetAllStates(), "id", "name", task.id_state);
 
             return View(task);
         }
 
+        //???
+        // 2 post para editar?
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "id,id_user,name,description,id_priority,id_state,fecha_creacion,fecha_ejecucion,fecha_finalizacion")] Task task)
@@ -184,11 +183,11 @@ namespace SistemaQueueTareas.Web.Controllers
             if (ModelState.IsValid)
             {
                 _taskManager.TaskModified(task);
-                _taskManager.SaveTask();
+                //_taskManager.SaveTask();
                 return RedirectToAction("Index");
             }
             ViewBag.id_priority = new SelectList(_priorityManager.GetAllOrderPriorities(), "id", "name", task.id_priority);
-            ViewBag.id_state = new SelectList(_taskManager.GetAllStates(), "id", "name", task.id_state);
+            //ViewBag.id_state = new SelectList(_taskManager.GetAllStates(), "id", "name", task.id_state);
             return View(task);
         }
 
@@ -216,35 +215,13 @@ namespace SistemaQueueTareas.Web.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Task task = _taskManager.GetTaskById(id);
-            
-            _taskManager.DeleteTask(id);
-            _taskManager.SaveTask();
-            return RedirectToAction("Index");
-        }
 
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public ActionResult Execute(int id)
-        {
-            var task = _taskManager.GetTaskById(id);
-            if (task == null) return HttpNotFound();
-
-            if (task.id_user != User.Identity.GetUserId())
-                return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
-
-            var estadoEnProceso = _stateManager.StateInProcess("En Proceso");
-            if (estadoEnProceso == null)
+            if (task == null)
             {
-                TempData["ErrorMessage"] = "Estado no configurado";
-                return RedirectToAction("Index");
+                return HttpNotFound();
             }
-            if (estadoEnProceso != null)
-            {
-                task.id_state = estadoEnProceso.id;
-                task.fecha_ejecucion = DateTime.Now;
-                _taskManager.SaveTask();
-            }
+
+            _taskManager.DeleteTask(task);
 
             return RedirectToAction("Index");
         }
