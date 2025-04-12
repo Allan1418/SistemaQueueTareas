@@ -18,6 +18,14 @@ namespace SistemaQueueTareas.Repository
         {
         }
 
+        public IEnumerable<Task> GetPendingTasks()
+        {
+            return _context.Tasks
+                .Include(t => t.Priority)
+                .Where(t => t.State.name == "Pendiente")
+                .ToList();
+        }
+
         public List<Task> findAllTask()
         {
             return _dbSet.Include(t => t.Priority)
