@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
+
 using SistemaQueueTareas.Data;
 
 namespace SistemaQueueTareas.Repository
@@ -11,7 +12,7 @@ namespace SistemaQueueTareas.Repository
     {
         List<Task> GetTasksByUserAndFilters(string userId, int? stateId, int? priorityId);
     }
-    public class RepositoryTask: RepositoryBase<Task>, IRepositoryTask
+    public class RepositoryTask : RepositoryBase<Task>, IRepositoryTask
     {
         public RepositoryTask() : base()
         {
@@ -64,5 +65,64 @@ namespace SistemaQueueTareas.Repository
 
             return query.ToList();
         }
+
+        public List<Task> OrderByPriorities(string userId, int? id_state, int? id_priority)
+        {
+            var query = _dbSet.Include(t => t.Priority)
+                      .Include(t => t.State)
+                      .Where(t => t.id_user == userId);
+
+            if (id_state.HasValue)
+                query = query.Where(t => t.id_state == id_state.Value);
+
+            if (id_priority.HasValue)
+                query = query.Where(t => t.id_priority == id_priority.Value);
+
+            return query.ToList();
+
+        }
+
+        //Estado inicial de un task cuando se crea
+        public int GetStateIdByName(string stateName)
+        {
+            return _context.States.FirstOrDefault(s => s.name == stateName)?.id ?? 0;
+        }
+
+        //This method is used to get the state of a task
+        public List<State> GetAllStates()
+        {
+            return _context.States.ToList();
+        }
+
+
+
+        //show a detail of a task
+        public Task GetDetailTask(int id, string userId)
+        {
+            return _dbSet.Include(t => t.Priority)// the include is useful because it allows to get the name of the priority
+                         .Include(t => t.State)     // those kind of includes are named "eager loading"
+                         .FirstOrDefault(t => t.id == id && t.id_user == userId);
+        }
+
+
+        //Search a unique task by id and userId
+        public Task GetUserTaskById(int taskId, string userId)
+        {
+            return _context.Tasks.FirstOrDefault(t => t.id == taskId && t.id_user == userId);
+        }
+
+        //create to validate a task
+        public bool TaskExists(int taskId)
+        {
+            return _context.Tasks.Any(t => t.id == taskId);
+        }
+
+
+        public void ObjectModified(Task task)
+        {
+            _context.Entry(task).State = EntityState.Modified;
+            Save();
+        }
+
     }
 }
