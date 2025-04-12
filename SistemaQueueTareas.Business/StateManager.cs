@@ -18,11 +18,11 @@ namespace SistemaQueueTareas.Business
             _repositoryState = new RepositoryState();
         }
 
-        public State StateInProcess( string process)
-        { 
-            return _repositoryState.ChangeStateInProcess(process);
+        public List<State> GetAllStates()
+        {
+            return _repositoryState.GetAll().ToList();
         }
 
-        
+
     }
 }

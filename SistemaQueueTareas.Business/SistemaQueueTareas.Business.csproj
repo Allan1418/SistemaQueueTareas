@@ -158,6 +158,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NotificationManager.cs" />
     <Compile Include="PriorityTaskQueue.cs" />
     <Compile Include="PriorityManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
