@@ -1,68 +1,113 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model IEnumerable<SistemaQueueTareas.Data.Task>
+
+@{
+    ViewBag.Title = "Inicio";
 }
 
-<div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <div class="card shadow-lg border-0 rounded-lg">
-                <div class="card-body p-5">
-                    <div class="text-center mb-4">
-                        <i class="fas fa-tasks fa-4x text-primary mb-3"></i>
-                        <h1 class="display-4 fw-bold">Bienvenido a la aplicación de gestión de tareas</h1>
-                        <p class="lead text-muted">Desde aquí puedes gestionar todas tus tareas de forma eficiente y organizada.</p>
-                    </div>
+<div class="container mt-4">
+    <!-- Botón para abrir modal de notificaciones -->
+    <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#notificationsModal">
+        <i class="fas fa-bell"></i> Ver Notificaciones
+    </button>
 
-                    <div class="row mt-5">
-                        <div class="col-md-4 mb-4">
-                            <div class="card h-100 border-0 shadow-sm">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-list-ul fa-3x text-primary mb-3"></i>
-                                    <h3>Organiza</h3>
-                                    <p>Mantén tus tareas organizadas y clasificadas.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <div class="card h-100 border-0 shadow-sm">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
-                                    <h3>Completa</h3>
-                                    <p>Marca tus tareas como completadas y sigue tu progreso.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <div class="card h-100 border-0 shadow-sm">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-chart-line fa-3x text-info mb-3"></i>
-                                    <h3>Analiza</h3>
-                                    <p>Visualiza tu productividad y mejora tu rendimiento.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <h2>Listado de Tareas</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Prioridad</th>
+                <th>Estado</th>
+                <th>Fecha Creación</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in Model)
+            {
+                <tr>
+                    <td>@task.name</td>
+                    <td>@task.description</td>
+                    <td>@task.Priority.name</td>
+                    <td>@task.State.name</td>
+                    <td>@task.fecha_creacion</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
-                    <div class="text-center mt-4">
-                        <a href="@Url.Action("Index", "Tasks")" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow">
-                            <i class="fas fa-arrow-right me-2"></i>Ir a mis tareas
-                        </a>
-                    </div>
-                </div>
+<!-- Modal de Notificaciones -->
+<div class="modal fade" id="notificationsModal" tabindex="-1" role="dialog" aria-labelledby="notificationsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="notificationsModalLabel">Notificaciones</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-
-            <div class="card mt-4 border-0 bg-light">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-lightbulb text-warning fa-2x me-3"></i>
-                        <p class="mb-0">¿Sabías que? Organizar tus tareas puede aumentar tu productividad hasta en un 25%.</p>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <input type="text" id="userIdFilter" class="form-control" placeholder="Filtrar por ID de usuario">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-primary" type="button" id="btnFilterNotifications">
+                            <i class="fas fa-filter"></i> Filtrar
+                        </button>
                     </div>
                 </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Note: You'll need to include Font Awesome in your layout for the icons -->
-<!-- Add this to your _Layout.cshtml if not already present: -->
-<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> -->
+@section Styles {
+    <style>
+        #notificationsModal .modal-body {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            border-left: 4px solid #007bff;
+            margin-bottom: 10px;
+            padding: 10px;
+            transition: all 0.3s ease;
+        }
+
+            .notification-item:hover {
+                background-color: #f8f9fa;
+                transform: translateX(5px);
+            }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#notificationsModal').on('show.bs.modal', function() {
+                loadNotifications();
+            });
+
+            $('#btnFilterNotifications').click(function() {
+                const userId = $('#userIdFilter').val();
+                loadNotifications(userId);
+            });
+
+            function loadNotifications(userId = null) {
+                const url = '@Url.Action("FindUserNotifications", "Home")' + (userId ? '?idUser=' + userId : '');
+
+                $.get(url, function(data) {
+                    $('#notificationsContainer').html(data);
+                }).fail(function() {
+                    $('#notificationsContainer').html(
+                        '<div class="alert alert-danger">Error al cargar notificaciones</div>'
+                    );
+                });
+            }
+        });
+    </script>
+}

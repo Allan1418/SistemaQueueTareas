@@ -1,0 +1,19 @@
+﻿@model IEnumerable<SistemaQueueTareas.Data.Notification>
+
+@if (Model.Any())
+{
+    foreach (var notification in Model)
+    {
+        <div class="notification-item">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <small class="text-muted">@notification.fecha_envio</small>
+                <span class="badge badge-primary">@notification.id_user</span>
+            </div>
+            <p class="mb-0">@notification.mensaje</p>
+        </div>
+    }
+}
+else
+{
+    <div class="alert alert-info mb-0">No hay notificaciones disponibles</div>
+}

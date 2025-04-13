@@ -6,61 +6,128 @@
     <title>@ViewBag.Title - Sistema Queue Tareas</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+
+    <!-- Estilos para notificaciones -->
+    <style>
+        .notification-badge {
+            position: relative;
+            top: -8px;
+            right: 8px;
+            font-size: 0.75rem;
+        }
+
+        #notificationsButton {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .modal-notifications .modal-dialog {
+            max-width: 500px;
+        }
+
+        .modal-notifications .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .modal-notifications .close {
+            font-size: 1.5rem;
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <!-- Barra de navegación -->
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
         <div class="container">
             @Html.ActionLink("Sistema Queue", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", null, new { @class = "nav-link" })</li>
-                    <li class="nav-item">@Html.ActionLink("Contacto", "Contact", "Home", null, new { @class = "nav-link" })</li>
-                    <li class="nav-item">@Html.ActionLink("Tasks", "Index", "Tasks", null, new { @class = "nav-link" })</li>
-                </ul>
-                <ul class="navbar-nav">
-                    @if (Request.IsAuthenticated)
-                    {
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                @User.Identity.Name
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li>@Html.ActionLink("Editar Perfil", "EditProfile", "Account", null, new { @class = "dropdown-item" })</li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    @using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { @class = "dropdown-item" }))
-                                    {
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-link p-0">Cerrar Sesión</button>
-                                    }
-                                </li>
-                            </ul>
-                        </li>
-                    }
-                    else
-                    {
-                        <li class="nav-item">@Html.ActionLink("Registrarse", "Register", "Account", null, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("Iniciar Sesión", "Login", "Account", null, new { @class = "nav-link" })</li>
-                    }
-                </ul>
-            </div>
+
+            <!-- Botón de notificaciones -->
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a href="#" class="nav-link" id="notificationsButton" data-toggle="modal" data-target="#notificationsModal">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge badge-danger notification-badge" id="notificationCount">0</span>
+                    </a>
+                </li>
+            </ul>
         </div>
     </nav>
 
+    <!-- Contenedor principal -->
     <div class="container body-content">
-        @RenderBody()
+        @RenderBody() <!-- ESTA LÍNEA FALTABA -->
         <hr />
         <footer>
             <p>&copy; @DateTime.Now.Year - Sistema Queue Tareas</p>
         </footer>
     </div>
 
+    <!-- Modal de Notificaciones -->
+    <div class="modal fade modal-notifications" id="notificationsModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-bell mr-2"></i>Notificaciones
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-0" id="notificationsContainer">
+                    <!-- Contenido dinámico desde partial view -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="markAllAsRead()">Marcar todas como leídas</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+
+    <!-- Scripts de notificaciones -->
+    <script>
+        $(document).ready(function() {
+            // Cargar notificaciones al abrir el modal
+            $('#notificationsModal').on('show.bs.modal', function () {
+                loadNotifications();
+            });
+
+            // Actualizar contador cada 30 segundos
+            setInterval(updateNotificationCount, 30000);
+        });
+
+        function loadNotifications() {
+            $.get('@Url.Action("FindUserNotifications", "Home")', function(data) {
+                $('#notificationsContainer').html(data);
+                updateNotificationCount();
+            });
+        }
+
+        function updateNotificationCount() {
+            $.get('@Url.Action("GetUnreadNotificationsCount", "Home")', function(count) {
+                $('#notificationCount').text(count);
+                if (count > 0) {
+                    $('#notificationCount').addClass('badge-danger').removeClass('badge-secondary');
+                } else {
+                    $('#notificationCount').addClass('badge-secondary').removeClass('badge-danger');
+                }
+            });
+        }
+
+        function markAllAsRead() {
+            $.post('@Url.Action("MarkAllAsRead", "Home")', function() {
+                loadNotifications();
+                updateNotificationCount();
+            });
+        }
+    </script>
+
     @RenderSection("scripts", required: false)
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

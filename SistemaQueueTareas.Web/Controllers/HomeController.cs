@@ -14,38 +14,13 @@ namespace SistemaQueueTareas.Web.Controllers
         RepositoryNotification _repositoryNotification = new RepositoryNotification();
 
         public ActionResult Index()
-        { 
-            System.Diagnostics.Debug.WriteLine(_taskManager.GetAllTasks()); // Agregar un mensaje de depuración
-            Console.WriteLine(_taskManager.GetAllTasks());
-            var tasks= _taskManager.GetAllTasks(); // Obtener tareas desde la base de datos
-            return View(tasks);
-            
-        }
-
-        /*public ActionResult FindUserTask(int idUser)
         {
-            if (string.IsNullOrEmpty(idUser))
-            {
-                ViewBag.Message = "Por favor, ingrese un ID de usuario.";
-                return View("Index", new List<Task>()); // Devuelve una lista vacía
-            }
-
-            var taskUser = _taskManager.GetTaskById(idUser);
-
-            if (taskUser == null || !taskUser.Any())
-            {
-                ViewBag.Message = "No se encontraron tareas para este usuario.";
-                return View("Index", new List<Task>());
-            }   
-
-            return View("Index", taskUser);
-            
-        }*/
+            var tasks = _taskManager.GetAllTasks();
+            return View(tasks);
+        }
 
         public ActionResult FindTaskByState(string taskState)
         {
-
-            //genera una alerta en caso de que no se ingrese ningun dato en el input
             if (string.IsNullOrEmpty(taskState))
             {
                 ViewBag.Message = "Por favor, ingrese un estado.";
@@ -53,38 +28,23 @@ namespace SistemaQueueTareas.Web.Controllers
             }
 
             _taskManager.FindByState(taskState);
-
-            //En el input se ingreso un dato incorrecto para la busqueda
-           
-
             return View("Index");
         }
 
-
-        //metodos para la tabla de notifications
+        // Métodos para notificaciones (modal)
         public ActionResult FindAllNotification()
         {
             var notifications = _repositoryNotification.findAllNotification();
-            return View("Contact", notifications);
+            return PartialView("_NotificationsPartial", notifications);
         }
 
         public ActionResult FindUserNotifications(string idUser)
         {
-            if (string.IsNullOrEmpty(idUser))
-            {
-                ViewBag.Message = "Por favor, ingrese un ID de usuario.";
-                return View("Notifications", new List<Notification>());
-            }
+            var notifications = string.IsNullOrEmpty(idUser)
+                ? _repositoryNotification.findAllNotification()
+                : _repositoryNotification.findNotificationByUser(idUser);
 
-            var notifications = _repositoryNotification.findNotificationByUser(idUser);
-
-            if (notifications == null || !notifications.Any())
-            {
-                ViewBag.Message = "No se encontraron notificaciones para este usuario.";
-                return View("Notifications", new List<Notification>());
-            }
-
-            return View("Contact", notifications);
+            return PartialView("_NotificationsPartial", notifications);
         }
 
         public ActionResult About()
