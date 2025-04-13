@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) [year] [fullname]
+Copyright (c) 2025 Grupo 1 (Barrantes Prendas Elder Josue, Nunez Brenes Allan, Nunez Hernandez Johnny Andres, Picado Martinez Ana Gabriela, Vargas Merlo Anyelo Dario)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

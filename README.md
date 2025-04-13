@@ -39,23 +39,46 @@ El proyecto sigue una arquitectura basada en el patrón **MVC (Modelo-Vista-Cont
 
 ### Libraries o Paquetes de NuGet
 
-* **Entity Framework**: Para la gestión de la base de datos.
-  Paquete: `Microsoft.EntityFramework`
-* **ASP.NET MVC**: Para la construcción de la aplicación web y el patrón MVC.
-  Paquete: `Microsoft.AspNet.Mvc`
+**Entity Framework**: 
+- `EntityFramework` - ORM para la gestión de base de datos.
+- `Microsoft.AspNet.Identity.EntityFramework` - Para la gestión de identidades de usuarios.
 
-### Principios SOLID
+**ASP.NET**:
+- `Microsoft.AspNet.Identity.Core` - Librería base para la gestión de identidad en ASP.NET.
+- `Microsoft.AspNet.Identity.Owin` - Para integrar OWIN con el sistema de identidad de ASP.NET.
+- `Microsoft.AspNet.Mvc` - Framework MVC para el desarrollo web.
+- `Microsoft.AspNet.Web.Optimization` - Optimización de archivos CSS y JavaScript en la web.
+- `Microsoft.AspNet.WebPages` - Para generar contenido dinámico en las vistas.
+- `Microsoft.Extensions.Configuration` - Librerías para la configuración de la aplicación.
+- `Microsoft.Extensions.DependencyInjection` - Para la inyección de dependencias.
+- `Microsoft.Extensions.Logging` - Para agregar capacidades de logging a la aplicación.
 
-* **S - Principio de Responsabilidad Única (Single Responsibility Principle)**: Cada clase tiene una única responsabilidad.
-* **O - Principio de Abierto/Cerrado (Open/Closed Principle)**: El sistema está diseñado para permitir la extensión sin modificar el código existente.
-* **L - Principio de Sustitución de Liskov (Liskov Substitution Principle)**: Se asegura que las clases derivadas puedan sustituir a sus clases base sin alterar el comportamiento correcto del sistema.
-* **I - Principio de Segregación de Interfaces (Interface Segregation Principle)**: Las interfaces son pequeñas y específicas para que las clases no se vean forzadas a implementar métodos que no necesitan.
-* **D - Principio de Inversión de Dependencias (Dependency Inversion Principle)**: El sistema utiliza inyección de dependencias (DI) para desacoplar las clases entre sí y facilitar el testing y mantenimiento.
+**JavaScript y UI**:
+- `bootstrap` - Framework de diseño web para crear interfaces atractivas y responsivas.
+- `jquery` - Librería JavaScript para simplificar las interacciones con el DOM.
+- `jquery.validation` - Plugin para validación de formularios con jQuery.
+- `microsoft.jquery.unobtrusive.validation` - Validación de formularios sin interferir con el comportamiento de la página.
+- `modernizr` - Herramienta para detectar características HTML5 y CSS3 en los navegadores.
+  
+**Otras librerías importantes**:
+- `Newtonsoft.Json` - Para la manipulación y serialización de JSON.
+- `owin` - Interfaces para trabajar con la especificación OWIN en ASP.NET.
+- `System.Memory` - Librería para trabajar con memoria en .NET.
+- `Unity` - Contenedor de inversión de control (DI) para resolver dependencias.
 
 ### Patrones de Diseño
 
 * **Patrón de Diseño MVC (Modelo-Vista-Controlador)**: Organiza el código en tres componentes separados que permiten una clara separación de responsabilidades.
 * **Patrón de Diseño Repositorio**: Se utiliza para abstraer la capa de acceso a datos y separar la lógica de negocio de la base de datos.
+
+## Archivo copyConfigFile.bat
+
+El archivo **`copyConfigFile.bat`** es un archivo de script **Batch** utilizado para facilitar la configuración del proyecto. 
+Este archivo se encarga de copiar el archivo de configuración de conexión a la base de datos (`connectionString.config`) desde su ubicación de origen hasta la carpeta correcta dentro del proyecto.
+
+### ¿Cómo usarlo?
+1. Ejecuta el archivo `copyConfigFile.bat` haciendo doble clic sobre él.
+2. El script copiará automáticamente el archivo de configuración a la ubicación correcta, permitiendo que el sistema se conecte a la base de datos sin problemas.
 
 ## Repositorio GitHub
 
