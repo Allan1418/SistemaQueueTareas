@@ -13,6 +13,7 @@
         @Html.HiddenFor(model => model.id)
         @Html.HiddenFor(model => model.id_user)
         @Html.HiddenFor(model => model.fecha_creacion)
+        @Html.HiddenFor(model => model.id_state)
 
         <div class="card shadow">
             <div class="card-body">
@@ -28,7 +29,7 @@
                     <div class="col-md-6">
                         <div class="form-group mb-3">
                             @Html.LabelFor(model => model.id_priority)
-                            @Html.DropDownList("id_priority", ViewBag.id_priority as SelectList, "Seleccione prioridad", new { @class = "form-control" })
+                            @Html.DropDownListFor(model => model.id_priority, ViewBag.id_priority as SelectList, "Seleccione prioridad", new { @class = "form-control" })
                             @Html.ValidationMessageFor(model => model.id_priority)
                         </div>
                     </div>

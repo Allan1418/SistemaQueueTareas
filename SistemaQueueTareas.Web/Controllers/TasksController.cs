@@ -56,8 +56,9 @@ namespace SistemaQueueTareas.Web.Controllers
         public ActionResult EditTaskModal(int id)
         {
             var task = _taskManager.GetTaskById(id);
-            ViewBag.id_priority = _priorityManager.GetAllOrderPriorities();
-            return PartialView("EditTaskModal", task);
+            
+            ViewBag.id_priority = new SelectList(_priorityManager.GetAllOrderPriorities(), "id", "name", task.id_priority);
+            return View("Edit",task);
         }
 
         //Metodo de edicion de tareas
@@ -74,7 +75,7 @@ namespace SistemaQueueTareas.Web.Controllers
             }
 
             ViewBag.id_priority = _priorityManager.GetAllOrderPriorities();
-            return PartialView("EditTaskModal", task);
+            return View("Edit",task);
 
         }
 
