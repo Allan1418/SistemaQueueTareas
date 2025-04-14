@@ -58,17 +58,24 @@ namespace SistemaQueueTareas.Business
 
         public void UpdateTask(Task task)
         {
-            if (task.State.name == "Pendiente" || 
-                task.State.name == "En Cola" || 
-                task.State.name == "En Proceso"
-                )
+            // Verificar si task.State no es null antes de acceder a task.State.name
+            // Tambien verifica que no sea ninguno de esos otros estados
+            if (task.State != null &&
+                (task.State.name == "Pendiente" ||
+                 task.State.name == "En Cola" ||
+                 task.State.name == "En Proceso"))
             {
                 return;
             }
-            string log = "[" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "] La tarea se edito.\n";
+
+            // Si llegamos aquí, significa que task.State es no-null y el nombre no coincide
+            string log = "[" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "] La tarea se editó.\n";
             task.log += log;
+
+            // Llamar al repositorio para actualizar la tarea
             _repositoryTask.Update(task);
         }
+
 
         public void DeleteTask(Task task)
         {

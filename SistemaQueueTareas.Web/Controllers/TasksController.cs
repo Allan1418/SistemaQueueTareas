@@ -39,11 +39,7 @@ namespace SistemaQueueTareas.Web.Controllers
         [Authorize]
         public ActionResult GetTask(int id)
         {
-            var userId = User.Identity.GetUserId();//obtener el id del usuario logueado
-
-            //validacion de usuario
-            if (userId == null)
-                return HttpNotFound("El usuario no ha sido encontrado");
+            var userId = User.Identity.GetUserId();//obtener el id del usuario logueados
 
             var task = _taskManager.GetUserTaskById(id, userId);//obtener la tarea por id y el id del usuario logueado
 
@@ -55,12 +51,14 @@ namespace SistemaQueueTareas.Web.Controllers
 
         }
 
+        //renderiza el formulario de edicion de tareas en blanco
         [HttpGet]
         public ActionResult EditTaskModal(int id)
         {
             var task = _taskManager.GetTaskById(id);
-            ViewBag.id_priority = _priorityManager.GetAllOrderPriorities();
-            return PartialView("EditTaskModal", task);
+            
+            ViewBag.id_priority = new SelectList(_priorityManager.GetAllOrderPriorities(), "id", "name", task.id_priority);
+            return View("Edit",task);
         }
 
         //Metodo de edicion de tareas
@@ -77,13 +75,13 @@ namespace SistemaQueueTareas.Web.Controllers
             }
 
             ViewBag.id_priority = _priorityManager.GetAllOrderPriorities();
-            return PartialView("EditTaskModal", task);
+            return View("Edit",task);
 
         }
 
 
 
-        //Este metodo muestra el formulario para crear una nueva tarea
+        //Este metodo muestra una renderizacion del formulario en blanco para crear una nueva tarea
         //ademas de llenar el dropdown con las prioridades
         [HttpGet]
         public ActionResult Create()
@@ -117,11 +115,6 @@ namespace SistemaQueueTareas.Web.Controllers
         public ActionResult Delete(int? id)
         {
             var userId = User.Identity.GetUserId();
-            //validacion de usuario
-            if (userId == null)
-            {
-                return HttpNotFound("El usuario no ha sido encontrado");
-            }
 
             Task task = _taskManager.GetUserTaskById(id.Value, userId);
 

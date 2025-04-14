@@ -16,13 +16,11 @@ namespace SistemaQueueTareas.Business
             _repositoryNotification = new RepositoryNotification();
         }
 
-        //hacerle GET con [authorize]
         public List<Notification> getNotificationsByUser(string idUser)
         {
             return _repositoryNotification.findNotificationByUser(idUser);
         }
 
-        //hacerle POST con [authorize]
         public void readNotification(int idNotification)
         {
             Notification notification = _repositoryNotification.GetById(idNotification);
