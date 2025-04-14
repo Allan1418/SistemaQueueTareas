@@ -1,66 +1,228 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewBag.Title - Sistema Queue Tareas</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="~/Content/notificacion.css" />
+    @RenderSection("styles", required: false)
 </head>
 <body>
-    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-        <div class="container">
-            @Html.ActionLink("Sistema Queue", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", null, new { @class = "nav-link" })</li>
-                    <li class="nav-item">@Html.ActionLink("Contacto", "Contact", "Home", null, new { @class = "nav-link" })</li>
-                    <li class="nav-item">@Html.ActionLink("Tasks", "Index", "Tasks", null, new { @class = "nav-link" })</li>
-                </ul>
-                <ul class="navbar-nav">
-                    @if (Request.IsAuthenticated)
-                    {
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                @User.Identity.Name
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li>@Html.ActionLink("Editar Perfil", "EditProfile", "Account", null, new { @class = "dropdown-item" })</li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    @using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { @class = "dropdown-item" }))
-                                    {
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-link p-0">Cerrar Sesión</button>
-                                    }
-                                </li>
-                            </ul>
-                        </li>
-                    }
-                    else
-                    {
-                        <li class="nav-item">@Html.ActionLink("Registrarse", "Register", "Account", null, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("Iniciar Sesión", "Login", "Account", null, new { @class = "nav-link" })</li>
-                    }
-                </ul>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-tasks"></i>
+                    <span>TaskQueue</span>
+                </div>
             </div>
-        </div>
-    </nav>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active" : "")">
+                        <a href="@Url.Action("Index", "Home")">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="dropdown notification-dropdown" style="position: relative;">
+                        <a href="#" id="notificationToggle">
+                            <i class="fas fa-bell"></i>
+                            <span>Notificaciones</span>
+                        </a>
 
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - Sistema Queue Tareas</p>
-        </footer>
+                        <!-- Contenedor del panel de notificaciones -->
+                        <div id="notificationPanel" class="notification-panel shadow" style="display: none;">
+                            <div class="p-3">
+                                <input type="text" id="userIdFilter" class="form-control mb-2" placeholder="Filtrar por ID de usuario">
+                                <button class="btn btn-outline-primary btn-sm mb-2 w-100" id="btnFilterNotifications">
+                                    <i class="fas fa-filter"></i> Filtrar
+                                </button>
+                                <div id="notificationsContainer">
+                                    <div class="text-center text-muted">Cargando notificaciones...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "About" ? "active" : "")">
+                        <a href="@Url.Action("About", "Home")">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Acerca de</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="topbar-actions">
+                    <div class="notification-dropdown">
+                        <button class="notification-btn" id="notificationBtn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge" id="notificationCount">0</span>
+                        </button>
+                        <div class="notification-menu" id="notificationMenu">
+                            <div class="notification-header">
+                                <h3>Notificaciones</h3>
+                                <button id="markAllRead" class="mark-all-read">Marcar todas como leídas</button>
+                            </div>
+                            <div class="notification-list" id="notificationList">
+                                <div class="empty-notifications">No hay notificaciones nuevas</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="user-dropdown">
+                        <button class="user-btn">
+                            <div class="user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <span class="user-name">@User.Identity.Name</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="user-menu">
+                            <a href="#" class="user-menu-item">
+                                <i class="fas fa-user-circle"></i>
+                                <span>Mi Perfil</span>
+                            </a>
+                            <a href="#" class="user-menu-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Configuración</span>
+                            </a>
+                            <div class="divider"></div>
+                            <a href="#" class="user-menu-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Cerrar Sesión</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <div class="page-header">
+                    @if (ViewBag.Message != null)
+                    {
+                        <div class="alert alert-info">@ViewBag.Message</div>
+                    }
+                </div>
+                <div class="content-container">
+                    @RenderBody()
+                </div>
+            </div>
+        </main>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/site.js"></script>
     @RenderSection("scripts", required: false)
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Toggle sidebar
+            $("#toggle-sidebar").click(function () {
+                $(".app-container").toggleClass("sidebar-collapsed");
+            });
+
+            // Notifications dropdown
+            $("#notificationBtn").click(function (e) {
+                e.stopPropagation();
+                $("#notificationMenu").toggleClass("show");
+                loadNotifications();
+            });
+
+            // User dropdown
+            $(".user-btn").click(function (e) {
+                e.stopPropagation();
+                $(".user-menu").toggleClass("show");
+            });
+
+            // Close dropdowns when clicking outside
+            $(document).click(function () {
+                $(".notification-menu, .user-menu").removeClass("show");
+            });
+
+            // Prevent closing when clicking inside dropdown
+            $(".notification-menu, .user-menu").click(function (e) {
+                e.stopPropagation();
+            });
+
+            // Mark all notifications as read
+            $("#markAllRead").click(function () {
+                $.ajax({
+                    url: '@Url.Action("MarcarComoLeidas", "Home")',
+                    type: 'POST',
+                    success: function (result) {
+                        if (result.success) {
+                            $("#notificationCount").text("0");
+                            loadNotifications();
+                        }
+                    }
+                });
+            });
+
+            // Load notification count
+            function loadNotificationCount() {
+                $.ajax({
+                    url: '@Url.Action("ObtenerContadorNoLeidas", "Home")',
+                    type: 'GET',
+                    success: function (count) {
+                        $("#notificationCount").text(count);
+                        if (count > 0) {
+                            $("#notificationCount").show();
+                        } else {
+                            $("#notificationCount").hide();
+                        }
+                    }
+                });
+            }
+
+            // Load notifications
+            function loadNotifications() {
+                $.ajax({
+                    url: '@Url.Action("ObtenerNotificacionesUsuario", "Home")',
+                    type: 'GET',
+                    success: function (notifications) {
+                        var notificationList = $("#notificationList");
+                        notificationList.empty();
+
+                        if (notifications.length === 0) {
+                            notificationList.html('<div class="empty-notifications">No hay notificaciones</div>');
+                            return;
+                        }
+
+                        $.each(notifications, function (i, notification) {
+                            var notificationItem = $('<div class="notification-item"></div>');
+                            if (!notification.leido) {
+                                notificationItem.addClass('unread');
+                            }
+
+                            var date = new Date(notification.fecha_envio);
+                            var formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+
+                            notificationItem.html(`
+                                <div class="notification-content">
+                                    <p class="notification-text">${notification.mensaje}</p>
+                                    <span class="notification-time">${formattedDate}</span>
+                                </div>
+                            `);
+
+                            notificationList.append(notificationItem);
+                        });
+                    }
+                });
+            }
+
+            loadNotificationCount();
+
+            setInterval(loadNotificationCount, 30000);
+        });
+    </script>
 </body>
 </html>
