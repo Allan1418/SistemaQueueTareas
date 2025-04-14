@@ -41,7 +41,7 @@ namespace SistemaQueueTareas.Web.Controllers
                 return View("Notifications", new List<Notification>());
             }
 
-            return View("Contact", notifications);
+            return PartialView("_NotificationsPartial", notifications);
         }
 
     }
