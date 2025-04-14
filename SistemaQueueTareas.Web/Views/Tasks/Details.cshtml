@@ -1,82 +1,95 @@
 ﻿@model SistemaQueueTareas.Data.Task
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Task Details";
 }
 
-<h2>Details</h2>
+@section Styles {
+    <link rel="stylesheet" href="~/Content/css/task-details.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+}
 
-<div>
-    <h4>Task</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.id_user)
-        </dt>
+<div class="task-details-container">
+    <div class="task-details-header">
+        <h2>
+            <i class="fas fa-tasks"></i> Detalles de tareas
+        </h2>
+    </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.id_user)
-        </dd>
+    <div class="task-details-card">
+        <div class="task-details-title">
+            <h3>@Html.DisplayFor(model => model.name)</h3>
+            <span class="task-status @Model.State.name.ToLower()">
+                @Html.DisplayFor(model => model.State.name)
+            </span>
+        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.name)
-        </dt>
+        <div class="task-details-section">
+            <div class="task-details-description">
+                <h4><i class="fas fa-align-left"></i> Descripcion</h4>
+                <p>@Html.DisplayFor(model => model.description)</p>
+            </div>
+        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.name)
-        </dd>
+        <div class="task-details-grid">
 
-        <dt>
-            @Html.DisplayNameFor(model => model.description)
-        </dt>
+            <div class="task-details-item">
+                <div class="detail-label">
+                    <i class="fas fa-flag"></i> Prioridad
+                </div>
+                <div class="detail-value priority-badge @Model.Priority.name.ToLower()">
+                    @Html.DisplayFor(model => model.Priority.name)
+                </div>
+            </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.description)
-        </dd>
+            <div class="task-details-item">
+                <div class="detail-label">
+                    <i class="fas fa-calendar-plus"></i> Fecha de creacion
+                </div>
+                <div class="detail-value">
+                    @Html.DisplayFor(model => model.fecha_creacion)
+                </div>
+            </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_creacion)
-        </dt>
+            <div class="task-details-item">
+                <div class="detail-label">
+                    <i class="fas fa-calendar-day"></i> Fecha de ejecucion
+                </div>
+                <div class="detail-value">
+                    @Html.DisplayFor(model => model.fecha_ejecucion)
+                </div>
+            </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.fecha_creacion)
-        </dd>
+            <div class="task-details-item">
+                <div class="detail-label">
+                    <i class="fas fa-calendar-check"></i> Fecha de finalizacion
+                </div>
+                <div class="detail-value">
+                    @if (Model.fecha_finalizacion.HasValue)
+                    {
+                        @Html.DisplayFor(model => model.fecha_finalizacion)
+                    }
+                    else
+                    {
+                        <span class="text-muted">Not completed yet</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_ejecucion)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.fecha_ejecucion)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_finalizacion)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.fecha_finalizacion)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Priority.name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Priority.name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.State.name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.State.name)
-        </dd>
-
-    </dl>
+    <div class="task-details-footer">
+        <div class="btn-group">
+            @Html.ActionLink("Editar la tarea", "Edit", new { id = Model.id }, new { @class = "btn btn-primary" })
+            @Html.ActionLink("Devolverse a la lista", "Index", null, new { @class = "btn btn-outline-secondary" })
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+        });
+    </script>
+}

@@ -1,0 +1,70 @@
+﻿@model SistemaQueueTareas.Data.Task
+
+@if (Model != null)
+{
+    <div class="active-task-section">
+        <div class="section-header">
+            <div class="header-left">
+                <div class="pulse-indicator"></div>
+                <h3 class="section-title">Tarea en Ejecución</h3>
+            </div>
+            <div class="header-right">
+                <span class="task-time">
+                    <i class="fas fa-clock"></i>
+                    Iniciada: @Model.fecha_ejecucion
+                </span>
+            </div>
+        </div>
+        <div class="active-task-card">
+            <div class="task-header">
+                <h4 class="task-name">@Model.name</h4>
+                <div class="task-badges">
+                    <span class="badge priority-@Model.Priority.name.ToLower()">
+                        <i class="fas fa-flag"></i>
+                        @Model.Priority.name
+                    </span>
+                    <span class="badge status-proceso">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        En Proceso
+                    </span>
+                </div>
+            </div>
+            <div class="task-body">
+                <p class="task-description">@Model.description</p>
+                <div class="task-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Inicio: @Model.fecha_ejecucion</span>
+                    </div>
+                    @if (Model.fecha_creacion != null)
+                    {
+                        <div class="meta-item">
+                            <i class="fas fa-calendar-plus"></i>
+                            <span>Creación: @Model.fecha_creacion</span>
+                        </div>
+                    }
+                </div>
+                <div class="task-timer">
+                    <div class="timer-header">
+                        <i class="fas fa-hourglass-half"></i>
+                        <span>Tiempo Transcurrido</span>
+                    </div>
+                    <div class="timer-display" id="countdown" data-start="@Model.fecha_ejecucion">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Calculando...</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i>
+        <span>No hay tarea en ejecución en este momento.</span>
+    </div>
+}

@@ -1,0 +1,279 @@
+﻿/* Base styles with your color palette */
+:root {
+    /* Primary Colors */
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --primary-dark: #4f46e5;
+    --secondary: #64748b;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+    --paused: #8b5cf6;
+    --pending: #a855f7;
+    --in-queue: #06b6d4;
+    /* Dark Theme Colors */
+    --dark-bg: #0f172a;
+    --dark-surface: #1e293b;
+    --dark-surface-2: #334155;
+    --dark-border: #334155;
+    --dark-text: #f8fafc;
+    --dark-text-secondary: #cbd5e1;
+    --dark-text-muted: #94a3b8;
+    --dark-card: #1e293b;
+    --dark-card-hover: #263449;
+    --dark-input: #1e293b;
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+    --shadow-glow: 0 0 15px rgba(99, 102, 241, 0.5);
+    /* Borders */
+    --border-radius-sm: 0.25rem;
+    --border-radius: 0.5rem;
+    --border-radius-md: 0.75rem;
+    --border-radius-lg: 1rem;
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    /* Transitions */
+    --transition: all 0.3s ease;
+    --transition-slow: all 0.5s ease;
+    /* Fonts */
+    --font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size: 1rem;
+    --font-size-md: 1.125rem;
+    --font-size-lg: 1.25rem;
+    --font-size-xl: 1.5rem;
+    --font-size-2xl: 1.875rem;
+    --font-size-3xl: 2.25rem;
+    /* Layout */
+    --sidebar-width: 280px;
+    --sidebar-collapsed-width: 70px;
+    --topbar-height: 70px;
+    /* Glass Effect */
+    --glass-bg: rgba(15, 23, 42, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --glass-blur: 10px;
+}
+
+body {
+    font-family: var(--font-family);
+    color: var(--dark-text);
+    background-color: var(--dark-bg);
+    line-height: 1.5;
+}
+
+/* Container */
+.task-container {
+    max-width: 800px;
+    margin: var(--spacing-xl) auto;
+    padding: 0 var(--spacing);
+}
+
+/* Card */
+.task-card {
+    background-color: var(--dark-card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1px solid var(--dark-border);
+}
+
+.task-card-header {
+    padding: var(--spacing-md);
+    background: linear-gradient(to right, var(--primary-dark), var(--primary));
+    border-bottom: 1px solid var(--dark-border);
+}
+
+.task-title {
+    margin: 0;
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--dark-text);
+}
+
+.task-card-content {
+    padding: var(--spacing-md);
+}
+
+.task-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    background-color: var(--dark-surface);
+    border-top: 1px solid var(--dark-border);
+}
+
+/* Form */
+.task-form {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 500;
+    font-size: var(--font-size-sm);
+    color: var(--dark-text-secondary);
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing);
+    font-size: var(--font-size-sm);
+    line-height: 1.5;
+    color: var(--dark-text);
+    background-color: var(--dark-input);
+    background-clip: padding-box;
+    border: 1px solid var(--dark-border);
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+.form-control::placeholder {
+    color: var(--dark-text-muted);
+    opacity: 1;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Select */
+.select-wrapper {
+    position: relative;
+}
+
+.select-icon {
+    position: absolute;
+    right: var(--spacing);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--dark-text-muted);
+    pointer-events: none;
+}
+
+select.form-control {
+    appearance: none;
+    padding-right: 2rem;
+}
+
+/* Buttons */
+.btn-create {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--dark-text);
+    background-color: var(--primary);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-create:hover {
+    background-color: var(--primary-dark);
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-1px);
+}
+
+.btn-create:active {
+    transform: translateY(0);
+}
+
+.btn-create i {
+    margin-right: var(--spacing-sm);
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--dark-text-muted);
+    font-size: var(--font-size-sm);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.back-link:hover {
+    color: var(--primary-light);
+}
+
+.back-link i {
+    margin-right: var(--spacing-sm);
+}
+
+/* Validation */
+.validation-message {
+    display: block;
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+    color: var(--danger);
+}
+
+.text-danger {
+    color: var(--danger);
+    margin-bottom: var(--spacing);
+    font-size: var(--font-size-sm);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .task-card-footer {
+        flex-direction: column;
+        gap: var(--spacing);
+    }
+    
+    .back-link {
+        order: 2;
+    }
+    
+    .btn-create {
+        order: 1;
+        width: 100%;
+    }
+}
+
+/* Glass effect for card */
+.task-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+}
+
+/* Hover effects */
+.task-card:hover {
+    box-shadow: var(--shadow-glow);
+}
+
+.form-control:hover {
+    border-color: var(--primary-light);
+}
