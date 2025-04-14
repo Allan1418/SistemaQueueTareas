@@ -94,31 +94,15 @@ namespace SistemaQueueTareas.Business
             return _repositoryTask.OrderByPriorities(userId, id_state, id_priority);
         }
 
-        //???
-        public Task GetDetailTask(int id, string userId)
-        {
-            return _repositoryTask.GetDetailTask(id, userId);
-        }
 
-        //???
+        //Necesario para obtener las tareas de un usuario utilizando el id del usuario
         public Task GetUserTaskById(int taskId, string userId)
         {
             return _repositoryTask.GetUserTaskById(taskId, userId);
         }
 
-        //???
-        public bool TaskExists(int taskId)
-        {
-            return _repositoryTask.TaskExists(taskId);
-        }
 
-        //???
-        public void TaskModified(Task task)
-        {
-            _repositoryTask.ObjectModified(task);
-        }
-
-        //hacerle POST con [authorize]
+        
         public void agregarACola(Task task)
         {
             if (task.State.name != "En Pausa")
@@ -129,7 +113,7 @@ namespace SistemaQueueTareas.Business
             _repositoryTask.Update(task);
         }
 
-        //hacerle POST con [authorize]
+
         public void agreagarAColaBatch(List<Task> tasks)
         {
             foreach (var task in tasks)
@@ -138,7 +122,7 @@ namespace SistemaQueueTareas.Business
             }
         }
 
-        //hacerle POST con [authorize]
+
         public void Reintentar(Task task)
         {
             if (task.State.name != "Fallida")
