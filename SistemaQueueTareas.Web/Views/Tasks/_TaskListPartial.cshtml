@@ -90,7 +90,7 @@
 
                     @if (task.State.name != "En Proceso")
                     {
-                        <a href="@Url.Action("Edit", new { id = task.id })" class="btn btn-icon" title="Editar tarea">
+                        <a href="@Url.Action("EditTaskModal", new { id = task.id })" class="btn btn-icon" title="Editar tarea" data-toggle="modal" data-target="#editTaskModal">
                             <i class="fas fa-edit"></i>
                         </a>
                         <a href="@Url.Action("Delete", new { id = task.id })" class="btn btn-icon danger" title="Eliminar tarea">
@@ -100,7 +100,7 @@
 
                     @if (task.State.name == "Fallida")
                     {
-                        using (Html.BeginForm("Reintentar", "Tasks", new { id = task.id }, FormMethod.Post, new { @class = "d-inline" }))
+                        using (Html.BeginForm("Retry", "Tasks", new { id = task.id }, FormMethod.Post, new { @class = "d-inline" }))
                         {
                             @Html.AntiForgeryToken()
                             <button type="submit" class="btn btn-icon warning" title="Reintentar tarea">
@@ -111,7 +111,7 @@
 
                     @if (task.State.name == "En Pausa")
                     {
-                        using (Html.BeginForm("AgregarACola", "Tasks", new { id = task.id }, FormMethod.Post, new { @class = "d-inline" }))
+                        using (Html.BeginForm("ExecuteTask", "Tasks", new { id = task.id }, FormMethod.Post, new { @class = "d-inline" }))
                         {
                             @Html.AntiForgeryToken()
                             <button type="submit" class="btn btn-icon success" title="Meter en cola">

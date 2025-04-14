@@ -182,6 +182,18 @@ namespace SistemaQueueTareas.Web.Controllers
 
         }
 
+        [Authorize]
+        public ActionResult Details(int? id)
+        {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var userId = User.Identity.GetUserId();
+            Task task = _taskManager.GetUserTaskById(id.Value, userId);
+
+            if (task == null) return HttpNotFound();
+            return View(task);
+        }
+
         [HttpPost]
         [Authorize]
         public ActionResult Retry(int id)

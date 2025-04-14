@@ -299,6 +299,7 @@
     <Content Include="Content\css\task-app.css" />
     <Content Include="Content\css\task-details.css" />
     <Content Include="Content\css\task-manager.css" />
+    <Content Include="Content\css\taskForm.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
