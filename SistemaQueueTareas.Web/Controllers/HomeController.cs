@@ -27,12 +27,7 @@ namespace SistemaQueueTareas.Web.Controllers
         public ActionResult FindUserNotifications()
         {
             string idUser = User.Identity.GetUserId();
-            if (idUser == null)
-            {
-                return HttpNotFound("El usuario no ha sido encontrado");
-            }
-           
-
+            
             var notifications = _notificationManager.getNotificationsByUser(idUser);
 
             if (notifications == null || !notifications.Any())
@@ -42,6 +37,14 @@ namespace SistemaQueueTareas.Web.Controllers
             }
 
             return PartialView("_NotificationsPartial", notifications);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult ReadNotification(int idNotification)
+        { 
+            _notificationManager.readNotification(idNotification);
+            return RedirectToAction("FindUserNotifications");
         }
 
     }
