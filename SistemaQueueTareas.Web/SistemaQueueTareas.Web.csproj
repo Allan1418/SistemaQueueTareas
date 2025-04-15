@@ -296,11 +296,12 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\css\delete-task.css" />
     <Content Include="Content\css\task-app.css" />
     <Content Include="Content\css\task-details.css" />
     <Content Include="Content\css\task-manager.css" />
     <Content Include="Content\css\taskForm.css" />
-    <Content Include="Content\notificacion.css" />
+    <Content Include="Content\css\notificacion.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -376,9 +377,9 @@
     <Content Include="Views\Tasks\Delete.cshtml" />
     <Content Include="Views\Tasks\Details.cshtml" />
     <Content Include="Views\Tasks\Index.cshtml" />
-    <Content Include="Views\Tasks\Edit.cshtml" />
     <Content Include="Views\Tasks\_TaskListPartial.cshtml" />
     <Content Include="Views\Tasks\_ActiveTaskPartial.cshtml" />
+    <Content Include="Views\Tasks\EditTaskModal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
