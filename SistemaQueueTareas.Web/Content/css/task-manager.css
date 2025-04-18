@@ -835,14 +835,14 @@ button, input, select {
 .progress-bar {
     height: 100%;
     background-color: var(--primary);
-    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-    background-size: 1rem 1rem;
     border-radius: var(--border-radius-lg);
-    transition: width 1s ease;
-    animation: progress-animation 1s linear infinite;
+    width: 100%; /* Start with full width */
+    background-image: linear-gradient( 45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent );
+    background-size: 1rem 1rem;
+    animation: progress-animation-full 2s linear infinite; /* Animate the background position */
 }
 
-@keyframes progress-animation {
+@keyframes progress-animation-full {
     0% {
         background-position: 1rem 0;
     }
@@ -1177,9 +1177,6 @@ button, input, select {
             margin-right: 0;
         }
 
-    .main-content {
-        margin-left: var(--sidebar-collapsed-width);
-    }
 
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);

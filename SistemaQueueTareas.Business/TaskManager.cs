@@ -38,7 +38,7 @@ namespace SistemaQueueTareas.Business
                 return retorno.First();
             }
         }
-
+        
         public IEnumerable<Task> GetAllTasks()
         {
             var tasks = _repositoryTask.GetAll().ToList();
@@ -76,7 +76,18 @@ namespace SistemaQueueTareas.Business
             _repositoryTask.Update(task);
         }
 
-
+        public Task GetEnProcesoTask(string userId)
+        {
+            var retorno = _repositoryTask.findTaskByStateAndUser("En Proceso", userId);
+            if (retorno.Count == 0)
+            {
+                return null;
+            }
+            else
+            {
+                return retorno.First();
+            }
+        }
         public void DeleteTask(Task task)
         {
             if (task.State.name == "Pendiente" ||

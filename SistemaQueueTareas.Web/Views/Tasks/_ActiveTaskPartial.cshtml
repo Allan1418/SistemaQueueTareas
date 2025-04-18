@@ -1,6 +1,6 @@
 ﻿@model SistemaQueueTareas.Data.Task
 
-@if (Model != null)
+@if (Model != null && Model.State.name == "En Proceso")
 {
     <div class="active-task-section">
         <div class="section-header">
@@ -47,14 +47,10 @@
                 <div class="task-timer">
                     <div class="timer-header">
                         <i class="fas fa-hourglass-half"></i>
-                        <span>Tiempo Transcurrido</span>
-                    </div>
-                    <div class="timer-display" id="countdown" data-start="@Model.fecha_ejecucion">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <span>Calculando...</span>
+                        <span>Progreso</span>
                     </div>
                     <div class="progress-container">
-                        <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+                        <div class="progress-bar" id="progress-bar"></div>
                     </div>
                 </div>
             </div>

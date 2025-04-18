@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<SistemaQueueTareas.Data.Task>
 
-<div class="tasks-list">
+<div class="tasks-list @(ViewBag.ViewMode == "grid" ? "grid-view" : "list-view")">
     @if (Model != null && Model.Any())
     {
         foreach (var task in Model)
@@ -8,91 +8,65 @@
             <div class="task-item @(ViewBag.TaskEnProceso?.id == task.id ? "active" : "")">
                 <div class="task-content">
                     <div class="task-icon">
-                        @if (task.State.name == "Finalizada")
+                        @switch (task.State.name)
                         {
-                            <i class="fas fa-check-circle"></i>
-                        }
-                        else if (task.State.name == "Fallida")
-                        {
-                            <i class="fas fa-times-circle"></i>
-                        }
-                        else if (task.State.name == "En Proceso")
-                        {
-                            <i class="fas fa-spinner fa-spin"></i>
-                        }
-                        else if (task.State.name == "En Pausa")
-                        {
-                            <i class="fas fa-pause-circle"></i>
-                        }
-                        else if (task.State.name == "Pendiente")
-                        {
-                            <i class="fas fa-clock"></i>
-                        }
-                        else if (task.State.name == "En Cola")
-                        {
-                            <i class="fas fa-hourglass-start"></i>
-                        }
-                        else
-                        {
-                            <i class="fas fa-tasks"></i>
+                            case "Finalizada":
+                                <i class="fas fa-check-circle text-success"></i>
+                                break;
+                            case "Fallida":
+                                <i class="fas fa-times-circle text-danger"></i>
+                                break;
+                            case "En Proceso":
+                                <i class="fas fa-spinner fa-spin text-warning"></i>
+                                break;
+                            case "En Pausa":
+                                <i class="fas fa-pause-circle text-info"></i>
+                                break;
+                            default:
+                                <i class="fas fa-tasks text-primary"></i>
+                                break;
                         }
                     </div>
                     <div class="task-details">
                         <h4 class="task-title">@task.name</h4>
-                        <p class="task-desc">@(task.description.Length > 100 ? task.description.Substring(0, 100) + "..." : task.description)</p>
+                        <p class="task-desc">@task.description</p>
                         <div class="task-meta">
-                            <span class="meta-date">
-                                <i class="far fa-calendar-alt"></i>
+                            <span class="badge bg-secondary">
+                                <i class="fas fa-calendar-alt me-2"></i>
                                 @task.fecha_creacion
                             </span>
-                            <span class="badge priority-@task.Priority.name.ToLower()">
-                                <i class="fas fa-flag"></i>
+                            <span class="badge bg-primary">
+                                <i class="fas fa-flag me-2"></i>
                                 @task.Priority.name
                             </span>
-                            <span class="badge status-@(task.State.name.ToLower().Replace(" ", "-"))">
-                                @if (task.State.name == "En Proceso")
-                                {
-                                    <i class="fas fa-spinner fa-spin"></i>
-                                }
-                                else if (task.State.name == "Finalizada")
-                                {
-                                    <i class="fas fa-check-circle"></i>
-                                }
-                                else if (task.State.name == "Fallida")
-                                {
-                                    <i class="fas fa-times-circle"></i>
-                                }
-                                else if (task.State.name == "En Pausa")
-                                {
-                                    <i class="fas fa-pause-circle"></i>
-                                }
-                                else if (task.State.name == "Pendiente")
-                                {
-                                    <i class="fas fa-clock"></i>
-                                }
-                                else if (task.State.name == "En Cola")
-                                {
-                                    <i class="fas fa-hourglass-start"></i>
-                                }
-                                else
-                                {
-                                    <i class="fas fa-info-circle"></i>
-                                }
+                            <!-- Badge de estado con colores personalizados -->
+                            <span class="badge @(task.State.name switch {
+                                "Finalizada" => "status-finalizada",
+                                "Fallida" => "status-fallida",
+                                "En Proceso" => "status-proceso",
+                                "En Pausa" => "status-en-pausa",
+                                _ => "status-pendiente"
+                            })">
+                                <i class="fas fa-tag me-2"></i>
                                 @task.State.name
                             </span>
                         </div>
                     </div>
                 </div>
-                <div class="task-actions">
+                <div class="task-actions mt-3">
                     <a href="@Url.Action("Details", new { id = task.id })" class="btn btn-icon" title="Ver detalles">
                         <i class="fas fa-eye"></i>
                     </a>
 
-                    @if (task.State.name != "En Proceso")
+                    @if (task.State.name == "En Pausa")
                     {
-                        <a href="@Url.Action("EditTaskModal", new { id = task.id })" class="btn btn-icon" title="Editar tarea" data-toggle="modal" data-target="#editTaskModal">
+                        <a href="@Url.Action("EditTaskModal", new { id = task.id })" class="btn btn-icon" title="Editar tarea">
                             <i class="fas fa-edit"></i>
                         </a>
+                    }
+
+                    @if (task.State.name != "En Proceso")
+                    {
                         <a href="@Url.Action("Delete", new { id = task.id })" class="btn btn-icon danger" title="Eliminar tarea">
                             <i class="fas fa-trash-alt"></i>
                         </a>

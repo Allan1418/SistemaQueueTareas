@@ -1,0 +1,103 @@
+﻿@model SistemaQueueTareas.Data.Task
+
+@{
+    ViewBag.Title = "Editar Tarea";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Content/css/task-edit.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+}
+
+<div class="edit-task-container">
+    <div class="edit-task-header">
+        <h2><i class="fas fa-edit"></i> @ViewBag.Title</h2>
+    </div>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.id)
+        @Html.HiddenFor(model => model.id_user)
+        @Html.HiddenFor(model => model.fecha_creacion)
+        @Html.HiddenFor(model => model.id_state)
+
+        <div class="edit-task-card">
+            <div class="edit-task-card-header">
+                <h3><i class="fas fa-tasks"></i> Información de la Tarea</h3>
+            </div>
+            <div class="edit-task-card-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="name">
+                                <i class="fas fa-tag"></i> Nombre de la Tarea
+                            </label>
+                            @Html.TextBoxFor(model => model.name, new { @class = "form-control", placeholder = "Nombre de la tarea" })
+                            @Html.ValidationMessageFor(model => model.name, "", new { @class = "validation-message" })
+                        </div>
+                    </div>
+
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="id_priority">
+                                <i class="fas fa-flag"></i> Prioridad
+                            </label>
+                            <div class="select-wrapper">
+                                @Html.DropDownListFor(model => model.id_priority, ViewBag.id_priority as SelectList, "Seleccione prioridad", new { @class = "form-control" })
+                                
+                            </div>
+                            @Html.ValidationMessageFor(model => model.id_priority, "", new { @class = "validation-message" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">
+                        <i class="fas fa-align-left"></i> Descripción
+                    </label>
+                    @Html.TextAreaFor(model => model.description, new { @class = "form-control", rows = 4, placeholder = "Descripción detallada de la tarea" })
+                    @Html.ValidationMessageFor(model => model.description, "", new { @class = "validation-message" })
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-save">
+                        <i class="fas fa-save"></i> Guardar Cambios
+                    </button>
+                    <a href="@Url.Action("Index", "Tasks")" class="btn-cancel">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(function () {
+            // Add subtle animation when form fields are focused
+            $('.form-control').focus(function() {
+                $(this).closest('.form-group').addClass('focused');
+            }).blur(function() {
+                $(this).closest('.form-group').removeClass('focused');
+            });
+
+            // Confirm before canceling edits
+            $('.btn-cancel').click(function(e) {
+                if ($('form').serialize() !== $('form').data('initialState')) {
+                    if (!confirm('¿Está seguro que desea cancelar? Los cambios no guardados se perderán.')) {
+                        e.preventDefault();
+                    }
+                }
+            });
+
+            // Store initial form state for comparison
+            $('form').data('initialState', $('form').serialize());
+        });
+    </script>
+}

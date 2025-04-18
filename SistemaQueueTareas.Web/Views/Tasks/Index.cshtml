@@ -8,55 +8,28 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/Content/css/task-manager.css">
+    <link rel="stylesheet" href="~/Content/css/animations.css">
+    <link rel="stylesheet" href="~/Content/css/task-list.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 }
 
-<div class="app-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <div class="logo">
-                <i class="fas fa-tasks"></i>
-                <span>TaskManager</span>
-            </div>
-        </div>
-        <nav class="sidebar-nav">
-            <ul>
-                <li class="active">
-                    <a href="@Url.Action("Index", "Tasks")">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="@Url.Action("Create", "Tasks")">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Nueva Tarea</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        <div class="sidebar-footer">
-            <a href="#" class="help-link">
-                <i class="fas fa-question-circle"></i>
-                <span>Ayuda & Soporte</span>
-            </a>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
+<div>
+    <main>
         <div class="content-area">
-            <!-- Dashboard Header -->
             <div class="dashboard-header">
                 <div class="welcome-message">
                     <h2 class="welcome-title">Sistema de Gestión de Tareas</h2>
                     <p class="welcome-subtitle">Administre sus tareas de forma eficiente y organizada</p>
                 </div>
+                <div class="action-buttons">
+                    <a href="@Url.Action("Create", "Tasks")" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Nueva Tarea
+                    </a>
+                </div>
             </div>
 
-            <!-- Stats Grid -->
             <div class="stats-grid">
                 <div class="stat-card total">
                     <div class="stat-icon">
@@ -123,17 +96,12 @@
                 </div>
             </div>
 
-            <!-- Filters Section -->
             <div class="filters-section">
                 <div class="filters-header">
                     <h3 class="filters-title">
                         <i class="fas fa-filter"></i>
                         Filtros
                     </h3>
-                    <button type="button" class="btn btn-text" id="reset-filters">
-                        <i class="fas fa-times"></i>
-                        Limpiar Filtros
-                    </button>
                 </div>
                 <div class="filters-body">
                     @using (Html.BeginForm("Index", "Tasks", FormMethod.Get, new { @class = "filters-form", id = "filters-form" }))
@@ -143,17 +111,14 @@
                                 <i class="fas fa-flag"></i>
                                 Prioridad
                             </label>
-                            @Html.DropDownList("id_priority", ViewBag.PrioritiesFilter as SelectList, "Todas las prioridades", new
-                            {
-                                @class = "filter-select"
-                            })
+                            @Html.DropDownList("id_priority", ViewBag.PrioritiesFilter as SelectList, "Todas las prioridades", new { @class = "filter-select" })
                         </div>
                         <div class="filter-group">
                             <label class="filter-label">
-                                <i class="fas fa-info-circle"></i>
+                                <i class="fas fa-filter"></i>
                                 Estado
                             </label>
-                            @* Traer el ViewBag de los estados *@
+                            @Html.DropDownList("id_state", ViewBag.StatesFilter as SelectList, "Todos los estados", new { @class = "filter-select" })
                         </div>
                         <div class="filter-group">
                             <button type="submit" class="btn btn-primary btn-filter">
@@ -165,22 +130,10 @@
                 </div>
             </div>
 
-            <!-- Active Task Container -->
             <div id="active-task-container">
-                @if (taskEnProceso != null)
-                {
-                    @Html.Partial("_ActiveTaskPartial", taskEnProceso)
-                }
-                else
-                {
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle"></i>
-                        No hay tarea en ejecución en este momento.
-                    </div>
-                }
+                @Html.Action("ActiveTaskPartial", "Tasks")
             </div>
 
-            <!-- Tasks List Container -->
             <div class="tasks-section" id="tasks-list-container">
                 <div class="section-header">
                     <h3 class="section-title">
@@ -194,19 +147,11 @@
                         <button id="refresh-tasks" class="btn btn-icon" title="Refrescar lista de tareas">
                             <i class="fas fa-sync-alt"></i>
                         </button>
-                        <div class="view-toggle">
-                            <button class="toggle-btn active" data-view="list" title="Vista de lista">
-                                <i class="fas fa-list"></i>
-                            </button>
-                            <button class="toggle-btn" data-view="grid" title="Vista de cuadrícula">
-                                <i class="fas fa-th-large"></i>
-                            </button>
-                        </div>
                     </div>
                 </div>
 
                 <div id="tasks-list">
-                    @Html.Partial("_TaskListPartial", Model)
+                    @Html.Action("TaskListPartial", "Tasks")
                 </div>
             </div>
         </div>
@@ -214,191 +159,107 @@
 </div>
 
 @section Scripts{
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // View Toggle
-        document.querySelectorAll('.toggle-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
+        $(document).ready(function() {
+            $('#refresh-tasks').click(function() {
+                const priorityFilter = $('#id_priority').val();
+                const stateFilter = $('#id_state').val();
+                const currentViewMode = localStorage.getItem('tasksViewMode') || 'list';
 
-                const view = this.dataset.view;
-                const taskList = document.getElementById('tasks-list');
-
-                if (view === 'grid') {
-                    taskList.classList.add('grid-view');
-                } else {
-                    taskList.classList.remove('grid-view');
-                }
-            });
-        });
-
-        // Refresh Tasks List
-        document.getElementById('refresh-tasks').addEventListener('click', function() {
-            const spinner = this.querySelector('i');
-            spinner.classList.add('fa-spin');
-
-            fetch('@Url.Action("GetTaskListPartial")')
-                .then(response => {
-                    if (!response.ok) throw new Error('Error en la respuesta');
-                    return response.text();
-                })
-                .then(html => {
-                    document.getElementById('tasks-list').innerHTML = html;
-                    showNotification('Lista de tareas actualizada', 'success');
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showNotification('Error al actualizar las tareas', 'error');
-                })
-                .finally(() => {
-                    spinner.classList.remove('fa-spin');
-                });
-        });
-
-        // Refresh Active Task
-        document.getElementById('refresh-active-task').addEventListener('click', function() {
-            const spinner = this.querySelector('i');
-            spinner.classList.add('fa-spin');
-
-            fetch('@Url.Action("GetActiveTaskPartial")')
-                .then(response => {
-                    if (!response.ok) throw new Error('Error en la respuesta');
-                    return response.text();
-                })
-                .then(html => {
-                    document.getElementById('active-task-container').innerHTML = html;
-                    initializeCountdown();
-                    showNotification('Tarea activa actualizada', 'success');
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showNotification('Error al actualizar la tarea activa', 'error');
-                })
-                .finally(() => {
-                    spinner.classList.remove('fa-spin');
-                });
-        });
-
-        // Reset Filters - Fixed function
-        document.getElementById('reset-filters').addEventListener('click', function() {
-            const prioritySelect = document.getElementById('id_priority');
-            const stateSelect = document.getElementById('id_state');
-
-            if (prioritySelect) prioritySelect.value = '';
-            if (stateSelect) stateSelect.value = '';
-
-            document.getElementById('filters-form').submit();
-        });
-
-        // Initialize Countdown
-        function initializeCountdown() {
-            const countdownElement = document.getElementById('countdown');
-            if (!countdownElement) return;
-
-            const startTimeStr = countdownElement.getAttribute('data-start');
-            if (!startTimeStr) return;
-
-            const startTime = new Date(startTimeStr).getTime();
-            const progressBar = document.getElementById('progress-bar');
-
-            // Estimated task duration (30 minutes by default)
-            const estimatedDuration = 30 * 60 * 1000;
-
-            function updateCountdown() {
-                const now = new Date().getTime();
-                const elapsed = now - startTime;
-                const remaining = estimatedDuration - elapsed;
-
-                if (remaining <= 0) {
-                    countdownElement.innerHTML = '<i class="fas fa-check-circle"></i> Completado';
-                    if (progressBar) progressBar.style.width = '100%';
-                    return;
-                }
-
-                // Format remaining time
-                const minutes = Math.floor(remaining / (1000 * 60));
-                const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
-
-                countdownElement.innerHTML = `<i class="fas fa-hourglass-half"></i> ${minutes}m ${seconds}s`;
-
-                // Update progress bar
-                if (progressBar) {
-                    const progressPercent = Math.min(100, (elapsed / estimatedDuration) * 100);
-                    progressBar.style.width = `${progressPercent}%`;
-
-                    if (progressPercent > 75) {
-                        progressBar.classList.add('danger');
-                    } else if (progressPercent > 50) {
-                        progressBar.classList.add('warning');
+                $.ajax({
+                    url: '@Url.Action("TaskListPartial", "Tasks")',
+                    type: 'GET',
+                    data: {
+                        id_priority: priorityFilter,
+                        id_state: stateFilter,
+                        viewMode: currentViewMode
+                    },
+                    success: function(result) {
+                        $('#tasks-list').html(result);
+                        // Re-apply the current view mode after refresh
+                        if (currentViewMode === 'grid') {
+                            $('#tasks-list').addClass('grid-view');
+                        } else {
+                            $('#tasks-list').removeClass('grid-view');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error al actualizar tareas:', error);
                     }
+                });
+            });
+
+            $('#refresh-active-task').click(function() {
+                $.ajax({
+                    url: '@Url.Action("ActiveTaskPartial", "Tasks")',
+                    type: 'GET',
+                    success: function(result) {
+                        $('#active-task-container').html(result);
+                        if ($('#countdown').length) {
+                            initializeTimer();
+                        }
+                        if ($('#dynamic-progress-container').length && $('#active-task-container').find('#dynamic-progress-bar').length) {
+                            simulateRandomLoading();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error al actualizar tarea activa:', error);
+                    }
+                });
+            });
+
+            function initializeTimer() {
+                const startTime = new Date($('#countdown').data('start'));
+                const updateTimer = () => {
+                    const now = new Date();
+                    const diff = now - startTime;
+
+                    const hours = Math.floor(diff / 3600000);
+                    const minutes = Math.floor((diff % 3600000) / 60000);
+                    const seconds = Math.floor((diff % 60000) / 1000);
+
+                    $('#countdown').html(`
+                        ${hours.toString().padStart(2, '0')}:
+                        ${minutes.toString().padStart(2, '0')}:
+                        ${seconds.toString().padStart(2, '0')}
+                    `);
+                };
+                setInterval(updateTimer, 1000);
+                updateTimer();
+            }
+
+            if ($('#countdown').length) {
+                initializeTimer();
+            }
+
+            function updateProgressBar(percentage) {
+                const progressBar = $('#dynamic-progress-bar');
+                if (progressBar.length) {
+                    progressBar.css('width', percentage + '%');
                 }
             }
 
-            // Initial update
-            updateCountdown();
+            function simulateRandomLoading() {
+                const progressBarContainer = $('#dynamic-progress-container');
+                const activeTaskContainer = $('#active-task-container');
 
-            // Update every second
-            setInterval(updateCountdown, 1000);
-        }
+                if (progressBarContainer.length && activeTaskContainer.find('#dynamic-progress-bar').length) {
+                    const randomTime = Math.random() * 5000 + 1000;
+                    let progress = 0;
+                    const intervalTime = 200;
 
-        // Show notification
-        function showNotification(message, type = 'info') {
-            // Remove existing notifications
-            const existingNotifications = document.querySelectorAll('.notification');
-            existingNotifications.forEach(notification => {
-                notification.classList.remove('show');
-                setTimeout(() => notification.remove(), 300);
-            });
-
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.innerHTML = `
-                <div class="notification-content">
-                    <i class="fas ${type === 'error' ? 'fa-exclamation-circle' : type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i>
-                    <span>${message}</span>
-                </div>
-                <button class="notification-close">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-
-            document.body.appendChild(notification);
-
-            // Show notification
-            setTimeout(() => {
-                notification.classList.add('show');
-            }, 10);
-
-            // Auto hide after 5 seconds
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    notification.remove();
-                }, 300);
-            }, 5000);
-
-            // Close button
-            notification.querySelector('.notification-close').addEventListener('click', () => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    notification.remove();
-                }, 300);
-            });
-        }
-
-        // Initialize countdown on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeCountdown();
-
-            // Add glass effect on scroll
-            window.addEventListener('scroll', function() {
-                const sidebar = document.querySelector('.sidebar');
-                if (window.scrollY > 10) {
-                    sidebar.classList.add('glass-effect');
-                } else {
-                    sidebar.classList.remove('glass-effect');
+                    const interval = setInterval(() => {
+                        progress += (intervalTime / randomTime) * 100;
+                        if (progress >= 100) {
+                            progress = 100;
+                            clearInterval(interval);
+                            console.log('Random loading complete!');
+                        }
+                        updateProgressBar(progress);
+                    }, intervalTime);
                 }
-            });
+            }
         });
     </script>
 }

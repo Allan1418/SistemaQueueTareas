@@ -1,4 +1,6 @@
-﻿:root {
+﻿/*Css de notificacion*/
+
+:root {
     /* Primary Colors */
     --primary: #6366f1;
     --primary-light: #818cf8;
@@ -425,6 +427,7 @@ input, select, textarea {
 }
 
 .user-name {
+    color: white;
     font-weight: 500;
 }
 

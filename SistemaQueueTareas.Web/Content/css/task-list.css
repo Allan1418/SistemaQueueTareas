@@ -1,0 +1,118 @@
+﻿/* ========== VIEW TOGGLE STYLES ========== */
+.view-toggle {
+    display: inline-flex;
+    border: 1px solid var(--dark-border);
+    background-color: var(--dark-surface);
+    border-radius: 0;
+    overflow: hidden;
+    margin-left: auto;
+}
+
+.toggle-btn {
+    background: var(--dark-surface);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--dark-text-secondary);
+    border-right: 1px solid var(--dark-border);
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+    .toggle-btn i {
+        font-size: 1.2rem;
+        transition: transform 0.2s ease;
+    }
+
+    .toggle-btn.active {
+        background-color: var(--primary);
+        color: white !important;
+    }
+
+    .toggle-btn:hover:not(.active) {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+/* ========== TASKS LIST STYLES ========== */
+.tasks-list.grid-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    animation: fadeIn 0.4s ease;
+}
+
+.tasks-list.list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========== TASK ITEM STYLES ========== */
+.task-item {
+    background-color: var(--dark-surface);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow);
+    padding: 1rem;
+    transition: all 0.3s ease;
+    border: 1px solid var(--dark-border);
+}
+
+    .task-item:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
+
+.task-content {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.task-icon {
+    font-size: 1.5rem;
+    padding: 0.8rem;
+    border-radius: var(--border-radius);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .tasks-list.grid-view {
+        grid-template-columns: 1fr;
+    }
+
+    .toggle-btn {
+        width: 42px;
+        height: 42px;
+    }
+}
