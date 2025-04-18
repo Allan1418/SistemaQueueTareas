@@ -70,10 +70,10 @@
                         <div class="notification-menu" id="notificationMenu">
                             <div class="notification-header">
                                 <h3>Notificaciones</h3>
-                                <button id="markAllRead" class="mark-all-read">Marcar todas como leídas</button>
+                               
                             </div>
                             <div class="notification-list" id="notificationList">
-                                <div class="empty-notifications">No hay notificaciones nuevas</div>
+                                <div class="text-center text-muted">Cargando notificaciones...</div>
                             </div>
                         </div>
                     </div>
@@ -123,7 +123,7 @@
     <script src="~/Scripts/site.js"></script>
     @RenderSection("scripts", required: false)
 
-    <script>
+<script>
         $(document).ready(function () {
             // Toggle sidebar
             $("#toggle-sidebar").click(function () {
@@ -183,46 +183,25 @@
                 });
             }
 
-            // Load notifications
-            function loadNotifications() {
-                $.ajax({
-                    url: '@Url.Action("ObtenerNotificacionesUsuario", "Home")',
-                    type: 'GET',
-                    success: function (notifications) {
-                        var notificationList = $("#notificationList");
-                        notificationList.empty();
-
-                        if (notifications.length === 0) {
-                            notificationList.html('<div class="empty-notifications">No hay notificaciones</div>');
-                            return;
-                        }
-
-                        $.each(notifications, function (i, notification) {
-                            var notificationItem = $('<div class="notification-item"></div>');
-                            if (!notification.leido) {
-                                notificationItem.addClass('unread');
-                            }
-
-                            var date = new Date(notification.fecha_envio);
-                            var formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-
-                            notificationItem.html(`
-                                <div class="notification-content">
-                                    <p class="notification-text">${notification.mensaje}</p>
-                                    <span class="notification-time">${formattedDate}</span>
-                                </div>
-                            `);
-
-                            notificationList.append(notificationItem);
-                        });
-                    }
-                });
-            }
+            
+           function loadNotifications() {
+    $.ajax({
+        url: '@Url.Action("ObtenerNotificacionesUsuario", "Home")',
+        type: 'GET',
+        success: function (data) {
+            $("#notificationList").html(data); 
+        },
+        error: function (error) {
+            console.error("Error al cargar las notificaciones:", error);
+            $("#notificationList").html('<div class="text-center text-danger">Error al cargar las notificaciones.</div>');
+        }
+    });
+}
 
             loadNotificationCount();
 
             setInterval(loadNotificationCount, 30000);
         });
-    </script>
+</script>
 </body>
 </html>
