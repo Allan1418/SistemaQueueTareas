@@ -47,5 +47,12 @@ namespace SistemaQueueTareas.Web.Controllers
             return RedirectToAction("FindUserNotifications");
         }
 
+        public ActionResult ObtenerNotificacionesUsuario()
+        {
+            var userId = User.Identity.GetUserId(); 
+            var notifications = _notificationManager.getNotificationsByUser(userId);
+
+            return PartialView("_NotificationsPartial", notifications);
+        }
     }
 }

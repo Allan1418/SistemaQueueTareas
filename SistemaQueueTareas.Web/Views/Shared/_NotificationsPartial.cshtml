@@ -1,0 +1,17 @@
+﻿@model List<SistemaQueueTareas.Data.Notification> 
+    @if(Model != null && Model.Any())
+{
+    foreach (var notification in Model)
+    {
+<div class= notification-item @notification.leido >
+    <div class="notification-content">
+        <p class="notification-text">@notification.mensaje</p>
+        <span class="notification-time">@notification.fecha_envio)</span>
+    </div>
+</div>
+    }
+}
+else
+{
+<div class="empty-notifications">No hay notificaciones</div>
+}
