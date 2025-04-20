@@ -10,7 +10,16 @@ namespace SistemaQueueTareas.Repository
 {
     public interface IRepositoryTask : IRepositoryBase<Task>
     {
-        List<Task> GetTasksByUserAndFilters(string userId, int? stateId, int? priorityId);
+        //Interface Segregation Principle
+        //Single Responsibility Principle
+        List<Task> FindTaskByUser(string id_user);
+        List<Task> FindTaskByState(int id_state);
+        List<Task> FindTaskByState(string taskState);
+        Task GetUserTaskById(int taskId, string userId);
+        IEnumerable<Task> GetPendingTasks();
+        List<Task> OrderByPriorities(string userId, int? id_state, int? id_priority);
+
+
     }
     public class RepositoryTask : RepositoryBase<Task>, IRepositoryTask
     {
@@ -22,19 +31,11 @@ namespace SistemaQueueTareas.Repository
         {
             return _context.Tasks
                 .Include(t => t.Priority)
-                .Where(t => t.State.name == "Pendiente")
+                .Where(t => t.State.name == "Pendiente")//expression lambda, Open/Close principle
                 .ToList();
         }
 
-        public List<Task> findAllTask()
-        {
-            return _dbSet.Include(t => t.Priority)
-                         .Include(t => t.State)
-                         .ToList();
-
-        }
-
-        public List<Task> findTaskByState(int id_state)
+        public List<Task> FindTaskByState(int id_state)
         {
             return _dbSet.Where(t => t.id_state == id_state)
                          .Include(t => t.Priority)
@@ -42,36 +43,23 @@ namespace SistemaQueueTareas.Repository
                          .ToList();
         }
 
-        public List<Task> findTaskByState(string taskState)
+        public List<Task> FindTaskByState(string taskState)
         {
             return _dbSet.Where(t => t.State.name == taskState).ToList();
         }
 
-        public Task GetById(int id, string userId)
+        //Search a unique task by id and userId
+        public Task GetUserTaskById(int taskId, string userId)
         {
-            return _dbSet.FirstOrDefault(t => t.id == id && t.id_user == userId);
+            return _context.Tasks.FirstOrDefault(t => t.id == taskId && t.id_user == userId);
         }
 
-        public List<Task> findTaskByUser(string id_user)
+        public List<Task> FindTaskByUser(string id_user)
         {
             return _dbSet.Where(t => t.id_user == id_user)
                          .Include(t => t.Priority)
                          .Include(t => t.State)
                          .ToList();
-        }
-        public List<Task> GetTasksByUserAndFilters(string userId, int? stateId, int? priorityId)
-        {
-            var query = _dbSet.Where(t => t.id_user == userId)
-                              .Include(t => t.Priority)
-                              .Include(t => t.State);
-
-            if (stateId.HasValue)
-                query = query.Where(t => t.id_state == stateId.Value);
-
-            if (priorityId.HasValue)
-                query = query.Where(t => t.id_priority == priorityId.Value);
-
-            return query.ToList();
         }
 
         public List<Task> OrderByPriorities(string userId, int? id_state, int? id_priority)
@@ -89,20 +77,6 @@ namespace SistemaQueueTareas.Repository
             return query.ToList();
 
         }
-
-        //Search a unique task by id and userId
-        public Task GetUserTaskById(int taskId, string userId)
-        {
-            return _context.Tasks.FirstOrDefault(t => t.id == taskId && t.id_user == userId);
-        }
-
-
-
-        /*public void ObjectModified(Task task)
-        {
-            _context.Entry(task).State = EntityState.Modified;
-            Save();
-        }*/
 
     }
 }

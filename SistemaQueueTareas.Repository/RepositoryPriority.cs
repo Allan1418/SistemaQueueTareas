@@ -9,6 +9,8 @@ namespace SistemaQueueTareas.Repository
 {
     public interface IRepositoryPriority: IRepositoryBase<Priority>
     {
+        bool PriorityExists(int priorityId);
+        List<Priority> GetAllOrderPriorities();
     }
     public class RepositoryPriority: RepositoryBase<Priority>, IRepositoryPriority
     {

@@ -10,6 +10,7 @@
     using SistemaQueueTareas.Data;
 
     //This class applied the Single Responsability Principle
+    //Only to build the CRUD operations 
     public interface IRepositoryBase<T> where T : class
     {
         IEnumerable<T> GetAll();//take all the registers
