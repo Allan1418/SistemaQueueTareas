@@ -58,6 +58,12 @@ namespace SistemaQueueTareas.Business
                 SendNotification(task.id_user, $"Fallo la ejecucion de la Tarea ({task.name}). Por favor intenta de nuevo.");
             }
 
+            var enColaTasks = _taskRepository.FindTaskByState(_enColaState.id);
+            foreach(var task in enColaTasks)
+            {
+                _taskQueue.Enqueue(task);
+            }
+
 
             _timer = new Timer(ProcessTasks, null, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(5));
             return Task.CompletedTask;
