@@ -156,7 +156,7 @@ namespace SistemaQueueTareas.Web.Controllers
                 return HttpNotFound("La tarea no ha sido encontrada");
             }
 
-            _taskManager.agregarACola(task);
+            _taskManager.AddToQueue(task);
             return RedirectToAction("Index");
         }
 
@@ -171,7 +171,7 @@ namespace SistemaQueueTareas.Web.Controllers
             }
 
             var tasks = ids.Select(id => _taskManager.GetTaskById(id)).Where(t=> t!= null).ToList();
-            _taskManager.agreagarAColaBatch(tasks);
+            _taskManager.AddToQueueBatch(tasks);
             return RedirectToAction("Index");
 
         }
@@ -197,7 +197,7 @@ namespace SistemaQueueTareas.Web.Controllers
             {
                 return HttpNotFound("La tarea no ha sido encontrada");
             }
-            _taskManager.Reintentar(task);
+            _taskManager.Retry(task);
             return RedirectToAction("Index");
         }
 

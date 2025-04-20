@@ -49,7 +49,7 @@ namespace SistemaQueueTareas.Business
         public Task StartAsync(CancellationToken cancellationToken)
         {
 
-            var enProcesoTasks = _taskRepository.findTaskByState(_enProcesoState.id);
+            var enProcesoTasks = _taskRepository.FindTaskByState(_enProcesoState.id);
             foreach (var task in enProcesoTasks)
             {
                 task.id_state = _fallidaState.id;

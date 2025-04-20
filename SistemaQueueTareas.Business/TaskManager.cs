@@ -28,7 +28,7 @@ namespace SistemaQueueTareas.Business
 
         public Task getEnProcesoTask()
         {
-            var retorno = _repositoryTask.findTaskByState("En Proceso");
+            var retorno = _repositoryTask.FindTaskByState("En Proceso");
             if (retorno.Count == 0)
             {
                 return null;
@@ -38,12 +38,7 @@ namespace SistemaQueueTareas.Business
                 return retorno.First();
             }
         }
-        
-        public IEnumerable<Task> GetAllTasks()
-        {
-            var tasks = _repositoryTask.GetAll().ToList();
-            return tasks;
-        }
+
         public Task GetTaskById(int id)
         {
             var task = _repositoryTask.GetById(id);
@@ -103,7 +98,7 @@ namespace SistemaQueueTareas.Business
         public void FindByState(string taskState)
         {
 
-            _repositoryTask.findTaskByState(taskState);
+            _repositoryTask.FindTaskByState(taskState);
 
         }
 
@@ -121,7 +116,7 @@ namespace SistemaQueueTareas.Business
 
 
         
-        public void agregarACola(Task task)
+        public void AddToQueue(Task task)
         {
             if (task.State.name != "En Pausa")
             {
@@ -132,16 +127,16 @@ namespace SistemaQueueTareas.Business
         }
 
 
-        public void agreagarAColaBatch(List<Task> tasks)
+        public void AddToQueueBatch(List<Task> tasks)
         {
             foreach (var task in tasks)
             {
-                agregarACola(task);
+                AddToQueue(task);
             }
         }
 
 
-        public void Reintentar(Task task)
+        public void Retry(Task task)
         {
             if (task.State.name != "Fallida")
             {
