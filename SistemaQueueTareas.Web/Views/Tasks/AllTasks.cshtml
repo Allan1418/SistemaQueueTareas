@@ -1,0 +1,172 @@
+﻿@model IEnumerable<SistemaQueueTareas.Data.Task>
+
+@{
+    ViewBag.Title = "Gestión de Tareas del Sistema";
+}
+
+<link rel="stylesheet" href="~/Content/css/tasks-all-list.css" />
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">@ViewBag.Title</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Listado de todas las tareas</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-filter me-1"></i>
+            Opciones de Filtrado y Búsqueda
+        </div>
+        <div class="card-body">
+            @using (Html.BeginForm("AllTasks", "Tasks", FormMethod.Get, new { @class = "row g-3 align-items-center" }))
+            {
+                <div class="col-12 col-md-4">
+                    <label for="id_state" class="form-label visually-hidden">Filtrar por estado</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-primary text-white"><i class="fas fa-flag"></i></span>
+                        @Html.DropDownList("id_state", ViewBag.StatesFilter as SelectList, "Filtrar por estado...",
+                            new { @class = "form-control form-select" })
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="id_priority" class="form-label visually-hidden">Filtrar por prioridad</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-info text-white"><i class="fas fa-sort-amount-down"></i></span>
+                        @Html.DropDownList("id_priority", ViewBag.PrioritiesFilter as SelectList, "Filtrar por prioridad...",
+                            new { @class = "form-control form-select" })
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="searchString" class="form-label visually-hidden">Buscar tareas</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-secondary text-white"><i class="fas fa-search"></i></span>
+                        @Html.TextBox("searchString", null, new { @class = "form-control", @placeholder = "Buscar por nombre o descripción", @onkeyup = "filterTable()" })
+                    </div>
+                </div>
+                <div class="col-12 mt-3 text-end">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Aplicar Filtros</button>
+                    <a href="@Url.Action("AllTasks")" class="btn btn-outline-secondary ms-2"><i class="fas fa-sync-alt"></i> Resetear Todo</a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-list me-1"></i>
+            Listado Detallado de Tareas
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped" id="tasksTable" width="100%" cellspacing="0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th class="text-center">Prioridad</th>
+                            <th class="text-center">Estado</th>
+                            <th class="text-center">Creación</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.name</td>
+                                <td>@item.description</td>
+                                <td class="text-center">
+                                    <span class="badge rounded-pill @GetPriorityBadgeClass(item.Priority.name)">
+                                        @item.Priority.name
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge rounded-pill @GetStateBadgeClass(item.State.name)">
+                                        @item.State.name
+                                    </span>
+                                </td>
+                                <td class="text-center">@item.fecha_creacion</td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="@Url.Action("Details", new { id = item.id })"
+                                           class="btn btn-sm btn-info rounded-pill"
+                                           title="Ver Detalles">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="@Url.Action("EditTaskModal", new { id = item.id })"
+                                           class="btn btn-sm btn-warning rounded-pill"
+                                           title="Editar Tarea">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="@Url.Action("Delete", new { id = item.id })"
+                                           class="btn btn-sm btn-danger rounded-pill"
+                                           title="Eliminar Tarea">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetPriorityBadgeClass(string priority)
+    {
+        return priority.ToLower() switch
+        {
+            "alta" => "bg-danger",
+            "media" => "bg-warning text-dark",
+            "baja" => "bg-success",
+            _ => "bg-secondary"
+        };
+    }
+
+    public string GetStateBadgeClass(string state)
+    {
+        return state.ToLower() switch
+        {
+            "en proceso" => "bg-primary",
+            "pendiente" => "bg-secondary",
+            "en pausa" => "bg-info",
+            "finalizada" => "bg-success",
+            "fallida" => "bg-danger",
+            _ => "bg-dark"
+        };
+    }
+}
+
+@section Scripts {
+    <script>
+        function filterTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementsByName("searchString")[0];
+            filter = input.value.toUpperCase();
+            table = document.getElementById("tasksTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 1; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td");
+                var shouldShow = false;
+                for (var j = 0; j < td.length - 1; j++) { // Excluir la columna de acciones
+                    if (td[j]) {
+                        txtValue = td[j].textContent || td[j].innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            shouldShow = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldShow) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+}

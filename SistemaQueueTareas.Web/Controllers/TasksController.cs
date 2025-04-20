@@ -8,8 +8,10 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using SistemaQueueTareas.Business;
 using SistemaQueueTareas.Data;
+using SistemaQueueTareas.IdentityData;
 
 namespace SistemaQueueTareas.Web.Controllers
 {
@@ -50,6 +52,25 @@ namespace SistemaQueueTareas.Web.Controllers
             return PartialView("Index", task);
 
 
+        }
+
+        [Authorize]
+        public ActionResult AllTasks(int? id_state, int? id_priority)
+        {
+            // Obtener todas las tareas
+            var tasks = _taskManager.GetAllTasksFiltered(id_state, id_priority);
+
+            // Obtener los usuarios en una sola consulta
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+            var users = userManager.Users.ToList();
+
+            // Crear lista de nombres de usuarios
+            ViewBag.UserNames = users.ToDictionary(u => u.Id, u => u.UserName);
+
+            ViewBag.PrioritiesFilter = new SelectList(_priorityManager.GetAllOrderPriorities(), "id", "name", id_priority);
+            ViewBag.StatesFilter = new SelectList(_stateManager.GetAllStates(), "id", "name", id_state);
+
+            return View(tasks);
         }
 
         //renderiza el formulario de edicion de tareas en blanco

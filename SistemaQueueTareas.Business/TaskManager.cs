@@ -115,7 +115,7 @@ namespace SistemaQueueTareas.Business
         }
 
 
-        
+
         public void AddToQueue(Task task)
         {
             if (task.State.name != "En Pausa")
@@ -144,6 +144,11 @@ namespace SistemaQueueTareas.Business
             }
             task.id_state = _PendienteState.id;
             _repositoryTask.Update(task);
+        }
+
+        public List<Task> GetAllTasksFiltered(int? id_state, int? id_priority)
+        {
+            return _repositoryTask.GetAllTasksWithFilters(id_state, id_priority);
         }
     }
 }

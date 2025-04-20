@@ -306,6 +306,7 @@
     <Content Include="Content\css\task-manager.css" />
     <Content Include="Content\css\task-form.css" />
     <Content Include="Content\css\notificacion.css" />
+    <Content Include="Content\css\tasks-all-list.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -387,6 +388,7 @@
     <Content Include="Views\Tasks\_ActiveTaskPartial.cshtml" />
     <Content Include="Views\Tasks\Edit.cshtml" />
     <Content Include="Views\Shared\_NotificationsPartial.cshtml" />
+    <Content Include="Views\Tasks\AllTasks.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,229 +1,296 @@
 ﻿@model IEnumerable<SistemaQueueTareas.Data.Task>
 
 <div class="content-container">
-    <div class="filters-container">
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" id="taskSearch" placeholder="Buscar tareas..." class="search-input">
+    <!-- Notificaciones -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-
-        <div class="filter-group">
-            <select id="statusFilter" class="form-select">
-                <option value="">Todos los estados</option>
-                <option value="Finalizada">Finalizada</option>
-                <option value="Fallida">Fallida</option>
-                <option value="En Proceso">En Proceso</option>
-                <option value="En Pausa">En Pausa</option>
-                <option value="En Cola">En Cola</option>
-            </select>
-
-            <select id="priorityFilter" class="form-select">
-                <option value="">Todas las prioridades</option>
-                <option value="Alta">Alta</option>
-                <option value="Media">Media</option>
-                <option value="Baja">Baja</option>
-            </select>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
+    }
 
-        <div class="view-toggle-container">
-            <div class="view-toggle">
-                <button type="button" class="toggle-btn @(ViewBag.ViewMode != "grid" ? "active" : "")" id="list-view-btn" title="Vista de lista">
-                    <i class="fas fa-list"></i>
-                </button>
-                <button type="button" class="toggle-btn @(ViewBag.ViewMode == "grid" ? "active" : "")" id="grid-view-btn" title="Vista de cuadrícula">
-                    <i class="fas fa-th-large"></i>
+    @using (Html.BeginForm("ExecuterTaskBatch", "Tasks", FormMethod.Post, new { id = "batchForm" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="filters-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="taskSearch" placeholder="Buscar tareas..." class="search-input">
+            </div>
+
+            <div class="filter-group">
+                <select id="statusFilter" class="form-select">
+                    <option value="">Todos los estados</option>
+                    <option value="Finalizada">Finalizada</option>
+                    <option value="Fallida">Fallida</option>
+                    <option value="En Proceso">En Proceso</option>
+                    <option value="En Pausa">En Pausa</option>
+                    <option value="En Cola">En Cola</option>
+                </select>
+
+                <select id="priorityFilter" class="form-select">
+                    <option value="">Todas las prioridades</option>
+                    <option value="Alta">Alta</option>
+                    <option value="Media">Media</option>
+                    <option value="Baja">Baja</option>
+                </select>
+            </div>
+
+            <div class="batch-actions">
+                <button type="submit" class="btn btn-batch-execute" id="executeBatchBtn" disabled>
+                    <i class="fas fa-play-circle"></i> Agregar a la cola
                 </button>
             </div>
-        </div>
-    </div>
 
-    <div class="tasks-list @(ViewBag.ViewMode == "grid" ? "grid-view" : "list-view")">
-        @if (Model != null && Model.Any())
-        {
-            foreach (var task in Model)
+            <div class="view-toggle-container">
+                <div class="view-toggle">
+                    <button type="button" class="toggle-btn @(ViewBag.ViewMode != "grid" ? "active" : "")" id="list-view-btn" title="Vista de lista">
+                        <i class="fas fa-list"></i>
+                    </button>
+                    <button type="button" class="toggle-btn @(ViewBag.ViewMode == "grid" ? "active" : "")" id="grid-view-btn" title="Vista de cuadrícula">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tasks-list @(ViewBag.ViewMode == "grid" ? "grid-view" : "list-view")">
+            @if (Model != null && Model.Any())
             {
-                <div class="task-item @(ViewBag.TaskEnProceso?.id == task.id ? "active" : "")" data-status="@task.State.name" data-priority="@task.Priority.name">
-                    <div class="task-content">
-                        <div class="task-icon">
-                            @switch (task.State.name)
+                foreach (var task in Model)
+                {
+                    <div class="task-item @(ViewBag.TaskEnProceso?.id == task.id ? "active" : "")" data-status="@task.State.name" data-priority="@task.Priority.name">
+                        <div class="task-checkbox">
+                            @if (task.State.name == "En Pausa")
                             {
-                                case "Finalizada":
-                                    <i class="fas fa-check-circle text-success"></i>
-                                    break;
-                                case "Fallida":
-                                    <i class="fas fa-times-circle text-danger"></i>
-                                    break;
-                                case "En Proceso":
-                                    <i class="fas fa-spinner fa-spin text-warning"></i>
-                                    break;
-                                case "En Pausa":
-                                    <i class="fas fa-pause-circle text-info"></i>
-                                    break;
-                                case "En Cola":
-                                    <i class="fas fa-hourglass-start text-info"></i>
-                                    break;
-                                default:
-                                    <i class="fas fa-tasks text-primary"></i>
-                                    break;
+                                <input type="checkbox" name="ids" value="@task.id" class="task-selector" />
                             }
                         </div>
-                        <div class="task-details">
-                            <h4 class="task-title">@task.name</h4>
-                            <p class="task-desc">@task.description</p>
-                            <div class="task-meta">
-                                <span class="badge">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    @task.fecha_creacion
-                                </span>
-                                <span class="badge priority-@task.Priority.name.ToLower()">
-                                    <i class="fas fa-flag"></i>
-                                    @task.Priority.name
-                                </span>
-                                <span class="badge @(task.State.name switch {
-                                    "Finalizada" => "status-success",
-                                    "Fallida" => "status-danger",
-                                    "En Proceso" => "status-warning",
-                                    "En Pausa" => "status-paused",
-                                    "En Cola" => "status-in-queue",
-                                    _ => "status-info"
-                                })">
-                                    <i class="fas @(task.State.name switch {
-                                        "Finalizada" => "fa-check-circle",
-                                        "Fallida" => "fa-times-circle",
-                                        "En Proceso" => "fa-spinner fa-spin",
-                                        "En Pausa" => "fa-pause-circle",
-                                        "En Cola" => "fa-hourglass-start",
-                                        _ => "fa-tag"
-                                    })"></i>
-                                    @task.State.name
-                                </span>
+
+                        <div class="task-content">
+                            <div class="task-icon">
+                                @switch (task.State.name)
+                                {
+                                    case "Finalizada":
+                                        <i class="fas fa-check-circle text-success"></i>
+                                        break;
+                                    case "Fallida":
+                                        <i class="fas fa-times-circle text-danger"></i>
+                                        break;
+                                    case "En Proceso":
+                                        <i class="fas fa-spinner fa-spin text-warning"></i>
+                                        break;
+                                    case "En Pausa":
+                                        <i class="fas fa-pause-circle text-info"></i>
+                                        break;
+                                    case "En Cola":
+                                        <i class="fas fa-hourglass-start text-info"></i>
+                                        break;
+                                    default:
+                                        <i class="fas fa-tasks text-primary"></i>
+                                        break;
+                                }
+                            </div>
+                            <div class="task-details">
+                                <h4 class="task-title">@task.name</h4>
+                                <p class="task-desc">@task.description</p>
+                                <div class="task-meta">
+                                    <span class="badge">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        @task.fecha_creacion
+                                    </span>
+                                    <span class="badge priority-@task.Priority.name.ToLower()">
+                                        <i class="fas fa-flag"></i>
+                                        @task.Priority.name
+                                    </span>
+                                    <span class="badge @(task.State.name switch {
+                                        "Finalizada" => "status-success",
+                                        "Fallida" => "status-danger",
+                                        "En Proceso" => "status-warning",
+                                        "En Pausa" => "status-paused",
+                                        "En Cola" => "status-in-queue",
+                                        _ => "status-info"
+                                    })">
+                                        <i class="fas @(task.State.name switch {
+                                            "Finalizada" => "fa-check-circle",
+                                            "Fallida" => "fa-times-circle",
+                                            "En Proceso" => "fa-spinner fa-spin",
+                                            "En Pausa" => "fa-pause-circle",
+                                            "En Cola" => "fa-hourglass-start",
+                                            _ => "fa-tag"
+                                        })"></i>
+                                        @task.State.name
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="task-actions">
-                        <a href="@Url.Action("Details", new { id = task.id })" class="btn btn-icon" title="Ver detalles">
-                            <i class="fas fa-eye"></i>
-                        </a>
-
-                        @if (task.State.name == "En Pausa" || task.State.name == "Fallida")
-                        {
-                            <a href="@Url.Action("EditTaskModal", new { id = task.id })" class="btn btn-icon" title="Editar tarea">
-                                <i class="fas fa-edit"></i>
+                        <div class="task-actions">
+                            <a href="@Url.Action("Details", new { id = task.id })" class="btn btn-icon" title="Ver detalles">
+                                <i class="fas fa-eye"></i>
                             </a>
-                        }
 
-                        @if (task.State.name == "En Pausa")
-                        {
-                            using (Html.BeginForm("ExecuteTask", "Tasks", new { id = task.id }, FormMethod.Post, new { @class = "d-inline action-form" }))
+                            @if (task.State.name == "En Pausa" || task.State.name == "Fallida")
                             {
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-icon success" title="Meter en cola">
-                                    <i class="fas fa-play"></i>
-                                </button>
+                                <a href="@Url.Action("EditTaskModal", new { id = task.id })" class="btn btn-icon" title="Editar tarea">
+                                    <i class="fas fa-edit"></i>
+                                </a>
                             }
-                        }
 
-                        @if (task.State.name != "En Proceso")
-                        {
-                            <a href="@Url.Action("Delete", new { id = task.id })" class="btn btn-icon danger" title="Eliminar tarea">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
-                        }
-
-                        @if (task.State.name == "Fallida")
-                        {
-                            using (Html.BeginForm("Retry", "Tasks", new { id = task.id }, FormMethod.Post, new { @class = "d-inline action-form" }))
+                            @if (task.State.name == "En Pausa")
                             {
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-icon warning" title="Reintentar tarea">
-                                    <i class="fas fa-redo"></i>
-                                </button>
+                                using (Html.BeginForm("ExecuteTask", "Tasks", new { id = task.id }, FormMethod.Post, new { @class = "d-inline action-form" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-icon success" title="Meter en cola">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                }
                             }
-                        }
+
+                            @if (task.State.name != "En Proceso")
+                            {
+                                <a href="@Url.Action("Delete", new { id = task.id })" class="btn btn-icon danger" title="Eliminar tarea">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            }
+
+                            @if (task.State.name == "Fallida")
+                            {
+                                using (Html.BeginForm("Retry", "Tasks", new { id = task.id }, FormMethod.Post, new { @class = "d-inline action-form" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-icon warning" title="Reintentar tarea">
+                                        <i class="fas fa-redo"></i>
+                                    </button>
+                                }
+                            }
+                        </div>
                     </div>
+                }
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h4>No hay tareas disponibles</h4>
+                    <p>No se encontraron tareas con los criterios de filtro actuales.</p>
                 </div>
             }
-        }
-        else
-        {
-            <div class="empty-state">
-                <div class="empty-icon">
-                    <i class="fas fa-clipboard-list"></i>
-                </div>
-                <h4>No hay tareas disponibles</h4>
-                <p>No se encontraron tareas con los criterios de filtro actuales.</p>
-            </div>
-        }
-    </div>
+        </div>
+    }
 
-    <!-- Empty state for filtered results (hidden by default) -->
+    <!-- Estado vacío para filtros -->
     <div id="filtered-empty-state" class="empty-state" style="display: none;">
         <div class="empty-icon">
             <i class="fas fa-filter"></i>
         </div>
         <h4>No se encontraron resultados</h4>
-        <p>No hay tareas que coincidan con los criterios de búsqueda. Intente con otros filtros.</p>
+        <p>No hay tareas que coincidan con los criterios de búsqueda.</p>
         <button id="clear-filters" class="btn btn-secondary">
             <i class="fas fa-times-circle"></i> Limpiar filtros
         </button>
     </div>
 </div>
 
+<style>
+    /* Estilos personalizados para el botón de lote */
+    
+</style>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // View toggle functionality
+        // Obtener el botón de ejecución por lote y la lista de tareas
+        const executeBtn = document.getElementById('executeBatchBtn');
+        const taskItems = document.querySelectorAll('.task-item');
+        const batchForm = document.getElementById('batchForm');
+
+        // Eliminar los checkboxes visualmente (opcional, si prefieres ocultarlos con CSS)
+        const checkboxes = document.querySelectorAll('.task-selector');
+        checkboxes.forEach(checkbox => {
+            checkbox.style.display = 'none';
+        });
+
+        // Función para actualizar el estado del botón "Agregar a la cola"
+        function updateExecuteButtonState() {
+            const hasPausedTask = Array.from(taskItems).some(item => item.dataset.status === 'En Pausa' && item.style.display !== 'none');
+            executeBtn.disabled = !hasPausedTask;
+        }
+
+        // Llamar a la función inicialmente y cada vez que se filtre la lista
+        updateExecuteButtonState();
+
+        // Evento al hacer clic en el botón "Agregar a la cola"
+        executeBtn.addEventListener('click', function (e) {
+            const pausedTasks = Array.from(taskItems).filter(item => item.dataset.status === 'En Pausa' && item.style.display !== 'none');
+
+            if (pausedTasks.length > 0) {
+                if (confirm(`¿Agregar ${pausedTasks.length} tarea${pausedTasks.length > 1 ? 's' : ''} en pausa a la cola?`)) {
+                    // Crear campos ocultos para los IDs de las tareas en pausa
+                    pausedTasks.forEach(task => {
+                        const taskId = task.querySelector('.task-checkbox input[name="ids"]')?.value;
+                        if (taskId) {
+                            const hiddenInput = document.createElement('input');
+                            hiddenInput.type = 'hidden';
+                            hiddenInput.name = 'ids';
+                            hiddenInput.value = taskId;
+                            batchForm.appendChild(hiddenInput);
+                        }
+                    });
+                    batchForm.submit(); // Enviar el formulario
+                }
+            } else {
+                alert('No hay tareas con estado "En Pausa" visibles para agregar a la cola.');
+            }
+            e.preventDefault(); // Evitar la acción por defecto del botón (si es un submit)
+        });
+
+        // Mantener funcionalidad existente (cambio de vista y filtrado)
         const listViewBtn = document.getElementById('list-view-btn');
         const gridViewBtn = document.getElementById('grid-view-btn');
         const tasksList = document.querySelector('.tasks-list');
 
-        listViewBtn.addEventListener('click', function () {
-            tasksList.classList.remove('grid-view');
-            tasksList.classList.add('list-view');
-            listViewBtn.classList.add('active');
-            gridViewBtn.classList.remove('active');
+        listViewBtn.addEventListener('click', () => {
+            tasksList.classList.replace('grid-view', 'list-view');
             localStorage.setItem('tasksViewMode', 'list');
         });
 
-        gridViewBtn.addEventListener('click', function () {
-            tasksList.classList.remove('list-view');
-            tasksList.classList.add('grid-view');
-            gridViewBtn.classList.add('active');
-            listViewBtn.classList.remove('active');
+        gridViewBtn.addEventListener('click', () => {
+            tasksList.classList.replace('list-view', 'grid-view');
             localStorage.setItem('tasksViewMode', 'grid');
         });
 
-        // Load saved view preference
-        const savedViewMode = localStorage.getItem('tasksViewMode');
-        if (savedViewMode === 'grid') {
-            gridViewBtn.click();
-        } else {
-            listViewBtn.click();
-        }
+        const savedViewMode = localStorage.getItem('tasksViewMode') || 'list';
+        tasksList.classList.add(savedViewMode + '-view');
+        document.getElementById(savedViewMode + '-view-btn').classList.add('active');
 
-        // Search functionality
         const searchInput = document.getElementById('taskSearch');
         const statusFilter = document.getElementById('statusFilter');
         const priorityFilter = document.getElementById('priorityFilter');
-        const taskItems = document.querySelectorAll('.task-item');
         const filteredEmptyState = document.getElementById('filtered-empty-state');
         const clearFiltersBtn = document.getElementById('clear-filters');
 
         function filterTasks() {
+            let visibleCount = 0;
             const searchTerm = searchInput.value.toLowerCase();
             const statusValue = statusFilter.value;
             const priorityValue = priorityFilter.value;
 
-            let visibleCount = 0;
-
             taskItems.forEach(item => {
-                const taskTitle = item.querySelector('.task-title').textContent.toLowerCase();
-                const taskDesc = item.querySelector('.task-desc').textContent.toLowerCase();
-                const taskStatus = item.getAttribute('data-status');
-                const taskPriority = item.getAttribute('data-priority');
-
-                const matchesSearch = taskTitle.includes(searchTerm) || taskDesc.includes(searchTerm);
-                const matchesStatus = statusValue === '' || taskStatus === statusValue;
-                const matchesPriority = priorityValue === '' || taskPriority === priorityValue;
+                const matchesSearch = item.querySelector('.task-title').textContent.toLowerCase().includes(searchTerm) ||
+                    item.querySelector('.task-desc').textContent.toLowerCase().includes(searchTerm);
+                const matchesStatus = statusValue === '' || item.dataset.status === statusValue;
+                const matchesPriority = priorityValue === '' || item.dataset.priority === priorityValue;
 
                 if (matchesSearch && matchesStatus && matchesPriority) {
                     item.style.display = '';
@@ -233,31 +300,19 @@
                 }
             });
 
-            // Show/hide empty state based on filter results
-            if (visibleCount === 0 && (searchTerm !== '' || statusValue !== '' || priorityValue !== '')) {
-                tasksList.style.display = 'none';
-                filteredEmptyState.style.display = 'flex';
-            } else {
-                tasksList.style.display = '';
-                filteredEmptyState.style.display = 'none';
-            }
+            filteredEmptyState.style.display = visibleCount === 0 ? 'flex' : 'none';
+            tasksList.style.display = visibleCount === 0 ? 'none' : '';
+            updateExecuteButtonState(); // Actualizar el estado del botón después de filtrar
         }
 
         searchInput.addEventListener('input', filterTasks);
         statusFilter.addEventListener('change', filterTasks);
         priorityFilter.addEventListener('change', filterTasks);
-
-        // Clear filters button
-        clearFiltersBtn.addEventListener('click', function () {
+        clearFiltersBtn.addEventListener('click', () => {
             searchInput.value = '';
             statusFilter.value = '';
             priorityFilter.value = '';
             filterTasks();
-        });
-
-        // Add animation to task items
-        taskItems.forEach((item, index) => {
-            item.style.animationDelay = `${index * 0.05}s`;
         });
     });
 </script>
