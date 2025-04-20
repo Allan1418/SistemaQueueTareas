@@ -11,7 +11,6 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
@@ -21,45 +20,29 @@
             </div>
             <nav class="sidebar-nav">
                 <ul>
-                    <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active" : "")">
+                    <li>
                         <a href="@Url.Action("Index", "Home")">
                             <i class="fas fa-home"></i>
-                            <span>Dashboard</span>
+                            <span>Inicio</span>
                         </a>
                     </li>
-                    <li class="dropdown notification-dropdown" style="position: relative;">
-                        <a href="#" id="notificationToggle">
-                            <i class="fas fa-bell"></i>
-                            <span>Notificaciones</span>
+                    <li>
+                        <a href="@Url.Action("Index", "Tasks")">
+                            <i class="fas fa-tasks"></i>
+                            <span>Tareas</span>
                         </a>
-
-                        <!-- Contenedor del panel de notificaciones -->
-                        <div id="notificationPanel" class="notification-panel shadow" style="display: none;">
-                            <div class="p-3">
-                                <input type="text" id="userIdFilter" class="form-control mb-2" placeholder="Filtrar por ID de usuario">
-                                <button class="btn btn-outline-primary btn-sm mb-2 w-100" id="btnFilterNotifications">
-                                    <i class="fas fa-filter"></i> Filtrar
-                                </button>
-                                <div id="notificationsContainer">
-                                    <div class="text-center text-muted">Cargando notificaciones...</div>
-                                </div>
-                            </div>
-                        </div>
                     </li>
-
-                    <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "About" ? "active" : "")">
-                        <a href="@Url.Action("About", "Home")">
-                            <i class="fas fa-info-circle"></i>
-                            <span>Acerca de</span>
+                    <li>
+                        <a href="@Url.Action("Create", "Tasks")">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>Nueva Tarea</span>
                         </a>
                     </li>
                 </ul>
             </nav>
         </aside>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Topbar -->
             <header class="topbar">
                 <div class="topbar-actions">
                     <div class="notification-dropdown">
@@ -68,12 +51,8 @@
                             <span class="notification-badge" id="notificationCount">0</span>
                         </button>
                         <div class="notification-menu" id="notificationMenu">
-                            <div class="notification-header">
-                                <h3>Notificaciones</h3>
-                               
-                            </div>
-                            <div class="notification-list" id="notificationList">
-                                <div class="text-center text-muted">Cargando notificaciones...</div>
+                            <div id="notificationList">
+                                <div class="empty-notifications">Cargando notificaciones...</div>
                             </div>
                         </div>
                     </div>
@@ -104,7 +83,6 @@
                 </div>
             </header>
 
-            <!-- Page Content -->
             <div class="page-content">
                 <div class="page-header">
                     @if (ViewBag.Message != null)
@@ -123,51 +101,68 @@
     <script src="~/Scripts/site.js"></script>
     @RenderSection("scripts", required: false)
 
-<script>
+    <script>
         $(document).ready(function () {
-            // Toggle sidebar
             $("#toggle-sidebar").click(function () {
                 $(".app-container").toggleClass("sidebar-collapsed");
             });
 
-            // Notifications dropdown
             $("#notificationBtn").click(function (e) {
                 e.stopPropagation();
                 $("#notificationMenu").toggleClass("show");
                 loadNotifications();
             });
 
-            // User dropdown
             $(".user-btn").click(function (e) {
                 e.stopPropagation();
                 $(".user-menu").toggleClass("show");
             });
 
-            // Close dropdowns when clicking outside
             $(document).click(function () {
                 $(".notification-menu, .user-menu").removeClass("show");
             });
 
-            // Prevent closing when clicking inside dropdown
             $(".notification-menu, .user-menu").click(function (e) {
                 e.stopPropagation();
             });
 
-            // Mark all notifications as read
-            $("#markAllRead").click(function () {
+            $("#notificationList").on("click", ".notification-item:not(.read)", function () {
+                var notificationItem = $(this);
+                var notificationId = notificationItem.data("notification-id");
+
+                $.ajax({
+                    url: '@Url.Action("MarcarComoLeidaAjax", "Home")',
+                    type: 'POST',
+                    data: { id: notificationId },
+                    success: function (result) {
+                        if (result.success) {
+                            notificationItem.addClass("read");
+                            notificationItem.find(".mark-read-text").remove();
+                            loadNotificationCount();
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error("Error al marcar como leída:", xhr.responseText);
+                    }
+                });
+            });
+
+                        $("#markAllRead").click(function () {
                 $.ajax({
                     url: '@Url.Action("MarcarComoLeidas", "Home")',
                     type: 'POST',
                     success: function (result) {
                         if (result.success) {
-                            $("#notificationCount").text("0");
-                            loadNotifications();
+                            // Actualizar todas las notificaciones visualmente
+                            $(".notification-item").addClass("read");
+                            $(".mark-read-text").remove();
+                            loadNotificationCount();
+                            loadNotifications(); // Recargar si es necesario
                         }
                     }
                 });
             });
 
-            // Load notification count
             function loadNotificationCount() {
                 $.ajax({
                     url: '@Url.Action("ObtenerContadorNoLeidas", "Home")',
@@ -183,25 +178,23 @@
                 });
             }
 
-            
-           function loadNotifications() {
-    $.ajax({
-        url: '@Url.Action("ObtenerNotificacionesUsuario", "Home")',
-        type: 'GET',
-        success: function (data) {
-            $("#notificationList").html(data); 
-        },
-        error: function (error) {
-            console.error("Error al cargar las notificaciones:", error);
-            $("#notificationList").html('<div class="text-center text-danger">Error al cargar las notificaciones.</div>');
-        }
-    });
-}
+            function loadNotifications() {
+                $.ajax({
+                    url: '@Url.Action("FindUserNotifications", "Home")',
+                    success: function (partialView) {
+                        $("#notificationList").html(partialView);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error loading notifications:", error);
+                        $("#notificationList").html('<div class="empty-notifications">Error al cargar las notificaciones.</div>');
+                    }
+                });
+            }
 
             loadNotificationCount();
-
-            setInterval(loadNotificationCount, 30000);
+            setInterval(loadNotificationCount, 2000);
         });
-</script>
+
+    </script>
 </body>
 </html>
