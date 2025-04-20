@@ -32,56 +32,79 @@
                             <span>Tareas</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="@Url.Action("Create", "Tasks")">
-                            <i class="fas fa-plus-circle"></i>
-                            <span>Nueva Tarea</span>
-                        </a>
-                    </li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li>
+                            <a href="@Url.Action("Create", "Tasks")">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>Nueva Tarea</span>
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <a href="@Url.Action("Login", "Account")">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>Iniciar Sesión</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="@Url.Action("Register", "Account")">
+                                <i class="fas fa-user"></i>
+                                <span>Crear Cuenta</span>
+                            </a>
+                        </li>
+                    }
                 </ul>
+
             </nav>
         </aside>
 
         <main class="main-content">
-            <header class="topbar">
-                <div class="topbar-actions">
-                    <div class="notification-dropdown">
-                        <button class="notification-btn" id="notificationBtn">
-                            <i class="fas fa-bell"></i>
-                            <span class="notification-badge" id="notificationCount">0</span>
-                        </button>
-                        <div class="notification-menu" id="notificationMenu">
-                            <div id="notificationList">
-                                <div class="empty-notifications">Cargando notificaciones...</div>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <header class="topbar">
+                    <div class="topbar-actions">
+                        <div class="notification-dropdown">
+                            <button class="notification-btn" id="notificationBtn">
+                                <i class="fas fa-bell"></i>
+                                <span class="notification-badge" id="notificationCount">0</span>
+                            </button>
+                            <div class="notification-menu" id="notificationMenu">
+                                <div id="notificationList">
+                                    <div class="empty-notifications">Cargando notificaciones...</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="user-dropdown">
+                            <button class="user-btn">
+                                <div class="user-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <span class="user-name">@User.Identity.Name</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="user-menu">
+                                <a href="@Url.Action("EditProfile", "Account")" class="user-menu-item">
+                                    <i class="fas fa-user-edit"></i>
+                                    <span>Editar Perfil</span>
+                                </a>
+                                <div class="divider"></div>
+                                @using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { id = "logoutForm" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <a href="javascript:document.getElementById('logoutForm').submit()" class="user-menu-item">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        <span>Cerrar Sesión</span>
+                                    </a>
+                                }
                             </div>
                         </div>
                     </div>
-                    <div class="user-dropdown">
-                        <button class="user-btn">
-                            <div class="user-avatar">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <span class="user-name">@User.Identity.Name</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                        <div class="user-menu">
-                            <a href="#" class="user-menu-item">
-                                <i class="fas fa-user-circle"></i>
-                                <span>Mi Perfil</span>
-                            </a>
-                            <a href="#" class="user-menu-item">
-                                <i class="fas fa-cog"></i>
-                                <span>Configuración</span>
-                            </a>
-                            <div class="divider"></div>
-                            <a href="#" class="user-menu-item">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span>Cerrar Sesión</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </header>
+                </header>
+            }
 
             <div class="page-content">
                 <div class="page-header">
