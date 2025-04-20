@@ -355,6 +355,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\js\task-details.js" />
     <Content Include="Scripts\js\task-manager.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Web.config" />
@@ -386,6 +387,7 @@
     <Content Include="Views\Tasks\_TaskListPartial.cshtml" />
     <Content Include="Views\Tasks\_ActiveTaskPartial.cshtml" />
     <Content Include="Views\Tasks\Edit.cshtml" />
+    <Content Include="Views\Shared\_NotificationsPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

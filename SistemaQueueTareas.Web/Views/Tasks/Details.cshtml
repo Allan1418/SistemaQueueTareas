@@ -12,18 +12,25 @@
 
 <div class="task-details-container">
     <div class="task-details-header">
-        <h2>
-            <i class="fas fa-tasks"></i> Detalles de tareas
-        </h2>
-        <div class="task-actions">
-            @Html.ActionLink("Editar", "EditTaskModal", new { id = Model.id }, new { @class = "btn btn-primary" })
+        <div class="header-left">
+            <h2>
+                <i class="fas fa-tasks"></i> Detalles de tareas
+            </h2>
+            <div class="breadcrumb">
+                <a href="@Url.Action("Index")"><i class="fas fa-home"></i> Inicio</a> /
+                <span>Detalles de tarea</span>
+            </div>
         </div>
     </div>
 
     <div class="task-details-card">
         <div class="task-details-title">
-            <h3>@Html.DisplayFor(model => model.name)</h3>
+            <div class="title-content">
+                <span class="task-id">#@Model.id</span>
+                <h3>@Html.DisplayFor(model => model.name)</h3>
+            </div>
             <span class="task-status @Model.State.name.ToLower().Replace(" ", "-")">
+                <i class="fas fa-circle status-indicator"></i>
                 @Html.DisplayFor(model => model.State.name)
             </span>
         </div>
@@ -31,7 +38,16 @@
         <div class="task-details-section">
             <div class="task-details-description">
                 <h4><i class="fas fa-align-left"></i> Descripción</h4>
-                <p>@Html.DisplayFor(model => model.description)</p>
+                <div class="description-content">
+                    @if (string.IsNullOrEmpty(Model.description))
+                    {
+                        <p class="text-muted">No hay descripción disponible</p>
+                    }
+                    else
+                    {
+                        <p>@Html.DisplayFor(model => model.description)</p>
+                    }
+                </div>
             </div>
         </div>
 
@@ -47,19 +63,10 @@
 
             <div class="task-details-item">
                 <div class="detail-label">
-                    <i class="fas fa-user"></i> Asignado a
-                </div>
-                <div class="detail-value">
-                    @Html.DisplayFor(model => model.id_user)
-                </div>
-            </div>
-
-            <div class="task-details-item">
-                <div class="detail-label">
                     <i class="fas fa-calendar-plus"></i> Fecha de creación
                 </div>
                 <div class="detail-value">
-                    @Html.DisplayFor(model => model.fecha_creacion)
+                    <span class="date-value">@Model.fecha_creacion</span>
                 </div>
             </div>
 
@@ -68,7 +75,7 @@
                     <i class="fas fa-calendar-day"></i> Fecha de ejecución
                 </div>
                 <div class="detail-value">
-                    @Html.DisplayFor(model => model.fecha_ejecucion)
+                    <span class="date-value">@Model.fecha_ejecucion</span>
                 </div>
             </div>
 
@@ -79,7 +86,7 @@
                 <div class="detail-value">
                     @if (Model.fecha_finalizacion.HasValue)
                     {
-                        @Html.DisplayFor(model => model.fecha_finalizacion)
+                        <span class="date-value">@Model.fecha_finalizacion.Value</span>
                     }
                     else
                     {
@@ -88,11 +95,33 @@
                 </div>
             </div>
         </div>
+
+        <!-- Task Log Section -->
+        <div class="task-details-section task-log-section">
+            <h4><i class="fas fa-history"></i> Log de la tarea</h4>
+            <div class="task-log-container">
+                @if (string.IsNullOrEmpty(Model.log))
+                {
+                    <div class="empty-log">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>No hay registros de log para esta tarea</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="log-content-box">
+                        <pre class="log-content-text">@Model.log</pre>
+                    </div>
+                }
+            </div>
+        </div>
     </div>
 
     <div class="task-details-footer">
         <div class="btn-group">
-            @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-outline-secondary" })
+            <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                <i class="fas fa-list"></i> Volver a la lista
+            </a>
         </div>
     </div>
 </div>

@@ -1,57 +1,85 @@
 ﻿@model SistemaQueueTareas.Data.Task
 
+@section Styles {
+    <link rel="stylesheet" href="~/Content/css/task-list.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+}
+
 @if (Model != null && Model.State.name == "En Proceso")
 {
     <div class="active-task-section">
-        <div class="section-header">
-            <div class="header-left">
-                <div class="pulse-indicator"></div>
-                <h3 class="section-title">Tarea en Ejecución</h3>
-            </div>
-            <div class="header-right">
-                <span class="task-time">
-                    <i class="fas fa-clock"></i>
-                    Iniciada: @Model.fecha_ejecucion
-                </span>
-            </div>
-        </div>
         <div class="active-task-card">
-            <div class="task-header">
-                <h4 class="task-name">@Model.name</h4>
-                <div class="task-badges">
-                    <span class="badge priority-@Model.Priority.name.ToLower()">
-                        <i class="fas fa-flag"></i>
-                        @Model.Priority.name
-                    </span>
-                    <span class="badge status-proceso">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        En Proceso
-                    </span>
+            <div class="active-task-header">
+                <div class="active-task-status">
+                    <div class="pulse-indicator"></div>
+                    <span>En ejecución</span>
+                </div>
+                <div class="active-task-time">
+                    <i class="fas fa-clock"></i>
+                    <span>Iniciada: @Model.fecha_ejecucion</span>
                 </div>
             </div>
-            <div class="task-body">
-                <p class="task-description">@Model.description</p>
-                <div class="task-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-calendar-check"></i>
-                        <span>Inicio: @Model.fecha_ejecucion</span>
-                    </div>
-                    @if (Model.fecha_creacion != null)
-                    {
-                        <div class="meta-item">
-                            <i class="fas fa-calendar-plus"></i>
-                            <span>Creación: @Model.fecha_creacion</span>
+
+            <div class="active-task-content">
+                <div class="active-task-info">
+                    <div class="active-task-title-area">
+                        <h3 class="active-task-title">@Model.name</h3>
+                        <div class="active-task-badges">
+                            <span class="badge priority-@Model.Priority.name.ToLower()">
+                                <i class="fas fa-flag"></i>
+                                @Model.Priority.name
+                            </span>
                         </div>
-                    }
+                    </div>
+
+                    <div class="active-task-description">
+                        <p>@Model.description</p>
+                    </div>
+
+                    <div class="active-task-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Inicio: @Model.fecha_ejecucion</span>
+                        </div>
+                        @if (Model.fecha_creacion != null)
+                        {
+                            <div class="meta-item">
+                                <i class="fas fa-calendar-plus"></i>
+                                <span>Creación: @Model.fecha_creacion</span>
+                            </div>
+                        }
+                    </div>
                 </div>
-                <div class="task-timer">
-                    <div class="timer-header">
-                        <i class="fas fa-hourglass-half"></i>
-                        <span>Progreso</span>
+
+                <div class="active-task-progress">
+                    <div class="progress-card">
+                        <div class="progress-card-header">
+                            <h4><i class="fas fa-chart-line"></i> Estado del proceso</h4>
+                        </div>
+                        <div class="progress-card-body">
+                            <div class="activity-indicator">
+                                <div class="activity-pulse"></div>
+                                <div class="activity-pulse"></div>
+                                <div class="activity-pulse"></div>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar"></div>
+                            </div>
+                            <div class="progress-status">
+                                <span id="progress-status-text">Procesando...</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="progress-container">
-                        <div class="progress-bar" id="progress-bar"></div>
-                    </div>
+                </div>
+            </div>
+
+            <div class="active-task-footer">
+                <div class="active-task-actions">
+                    <a href="@Url.Action("Details", "Tasks", new { id = Model.id })" class="btn btn-secondary">
+                        <i class="fas fa-eye"></i>
+                        Ver detalles
+                    </a>
                 </div>
             </div>
         </div>
@@ -59,8 +87,13 @@
 }
 else
 {
-    <div class="alert alert-info">
-        <i class="fas fa-info-circle"></i>
-        <span>No hay tarea en ejecución en este momento.</span>
+    <div class="alert alert-info empty-task-alert">
+        <div class="alert-icon">
+            <i class="fas fa-info-circle"></i>
+        </div>
+        <div class="alert-content">
+            <h4 class="alert-title">No hay tarea en ejecución</h4>
+            <p class="alert-message">En este momento no hay ninguna tarea ejecutándose en el sistema.</p>
+        </div>
     </div>
 }

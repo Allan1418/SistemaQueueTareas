@@ -8,8 +8,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/Content/css/task-manager.css">
-    <link rel="stylesheet" href="~/Content/css/animations.css">
-    <link rel="stylesheet" href="~/Content/css/task-list.css">
+    <link rel="stylesheet" href="~/Content/css/task-manager-enhanced.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 }
@@ -67,15 +66,6 @@
                         <p class="stat-label">Fallidas</p>
                     </div>
                 </div>
-                <div class="stat-card pending">
-                    <div class="stat-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 class="stat-number">@Model.Count(t => t.State.name == "Pendiente")</h3>
-                        <p class="stat-label">Pendientes</p>
-                    </div>
-                </div>
                 <div class="stat-card in-queue">
                     <div class="stat-icon">
                         <i class="fas fa-hourglass-start"></i>
@@ -96,60 +86,36 @@
                 </div>
             </div>
 
-            <div class="filters-section">
-                <div class="filters-header">
-                    <h3 class="filters-title">
-                        <i class="fas fa-filter"></i>
-                        Filtros
+            <div class="section-header">
+                <div class="header-left">
+                    <h3 class="section-title">
+                        <i class="fas fa-cog fa-spin"></i> Tarea en Ejecución
                     </h3>
                 </div>
-                <div class="filters-body">
-                    @using (Html.BeginForm("Index", "Tasks", FormMethod.Get, new { @class = "filters-form", id = "filters-form" }))
-                    {
-                        <div class="filter-group">
-                            <label class="filter-label">
-                                <i class="fas fa-flag"></i>
-                                Prioridad
-                            </label>
-                            @Html.DropDownList("id_priority", ViewBag.PrioritiesFilter as SelectList, "Todas las prioridades", new { @class = "filter-select" })
-                        </div>
-                        <div class="filter-group">
-                            <label class="filter-label">
-                                <i class="fas fa-filter"></i>
-                                Estado
-                            </label>
-                            @Html.DropDownList("id_state", ViewBag.StatesFilter as SelectList, "Todos los estados", new { @class = "filter-select" })
-                        </div>
-                        <div class="filter-group">
-                            <button type="submit" class="btn btn-primary btn-filter">
-                                <i class="fas fa-search"></i>
-                                Filtrar
-                            </button>
-                        </div>
-                    }
+                <div class="section-actions">
+                    <button id="refresh-active-task" class="btn btn-icon" title="Refrescar tarea en ejecución">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
                 </div>
             </div>
-
             <div id="active-task-container">
                 @Html.Action("ActiveTaskPartial", "Tasks")
             </div>
 
             <div class="tasks-section" id="tasks-list-container">
                 <div class="section-header">
-                    <h3 class="section-title">
-                        <i class="fas fa-list-check"></i>
-                        Listado de Tareas
-                    </h3>
+                    <div class="header-left">
+                        <h3 class="section-title">
+                            <i class="fas fa-list-check"></i>
+                            Listado de Tareas
+                        </h3>
+                    </div>
                     <div class="section-actions">
-                        <button id="refresh-active-task" class="btn btn-icon" title="Refrescar tarea en ejecución">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
                         <button id="refresh-tasks" class="btn btn-icon" title="Refrescar lista de tareas">
                             <i class="fas fa-sync-alt"></i>
                         </button>
                     </div>
                 </div>
-
                 <div id="tasks-list">
                     @Html.Action("TaskListPartial", "Tasks")
                 </div>
@@ -162,6 +128,35 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
+            // Initialize view mode from localStorage or default to list
+            const savedViewMode = localStorage.getItem('tasksViewMode') || 'list';
+            setViewMode(savedViewMode);
+
+            // View toggle functionality
+            $('#list-view-btn').click(function() {
+                setViewMode('list');
+                localStorage.setItem('tasksViewMode', 'list');
+            });
+
+            $('#grid-view-btn').click(function() {
+                setViewMode('grid');
+                localStorage.setItem('tasksViewMode', 'grid');
+            });
+
+            function setViewMode(mode) {
+                const tasksList = $('.tasks-list');
+
+                if (mode === 'grid') {
+                    tasksList.addClass('grid-view').removeClass('list-view');
+                    $('#grid-view-btn').addClass('active');
+                    $('#list-view-btn').removeClass('active');
+                } else {
+                    tasksList.addClass('list-view').removeClass('grid-view');
+                    $('#list-view-btn').addClass('active');
+                    $('#grid-view-btn').removeClass('active');
+                }
+            }
+
             $('#refresh-tasks').click(function() {
                 const priorityFilter = $('#id_priority').val();
                 const stateFilter = $('#id_state').val();
@@ -177,12 +172,7 @@
                     },
                     success: function(result) {
                         $('#tasks-list').html(result);
-                        // Re-apply the current view mode after refresh
-                        if (currentViewMode === 'grid') {
-                            $('#tasks-list').addClass('grid-view');
-                        } else {
-                            $('#tasks-list').removeClass('grid-view');
-                        }
+                        setViewMode(currentViewMode);
                     },
                     error: function(xhr, status, error) {
                         console.error('Error al actualizar tareas:', error);
@@ -199,7 +189,7 @@
                         if ($('#countdown').length) {
                             initializeTimer();
                         }
-                        if ($('#dynamic-progress-container').length && $('#active-task-container').find('#dynamic-progress-bar').length) {
+                        if ($('#dynamic-progress-container').length && $('#dynamic-progress-bar').length) {
                             simulateRandomLoading();
                         }
                     },
@@ -237,6 +227,15 @@
                 const progressBar = $('#dynamic-progress-bar');
                 if (progressBar.length) {
                     progressBar.css('width', percentage + '%');
+
+                    // Change color based on progress
+                    if (percentage > 75) {
+                        progressBar.css('background-color', 'var(--success)');
+                    } else if (percentage > 25) {
+                        progressBar.css('background-color', 'var(--primary)');
+                    } else {
+                        progressBar.css('background-color', 'var(--warning)');
+                    }
                 }
             }
 
@@ -259,6 +258,11 @@
                         updateProgressBar(progress);
                     }, intervalTime);
                 }
+            }
+
+            // Initialize progress bar if it exists
+            if ($('#dynamic-progress-container').length && $('#dynamic-progress-bar').length) {
+                simulateRandomLoading();
             }
         });
     </script>
