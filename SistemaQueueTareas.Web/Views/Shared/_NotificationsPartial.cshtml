@@ -1,0 +1,37 @@
+﻿@model List<SistemaQueueTareas.Data.Notification>
+<SistemaQueueTareas.Data.Notification>
+
+    <div class="notifications-container">
+        @if (Model != null && Model.Any())
+    {
+        <div class="notification-header">
+            <h3>Notificaciones</h3>
+        </div>
+        <div class="notification-list">
+            @foreach (var notification in Model)
+            {
+            <button class="notification-item @(notification.leido.HasValue && notification.leido.Value ? "read" : "unread")"
+                    data-notification-id="@notification.id">
+                <div class="notification-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="notification-content">
+                    <p class="notification-message">@notification.mensaje</p>
+                    <div class="notification-meta">
+                        <small class="notification-date">
+                            <i class="fas fa-clock"></i> @notification.fecha_envio
+                        </small>
+                    </div>
+                </div>
+            </button>
+            }
+        </div>
+        }
+            else
+        {
+  ;<div class="empty-notifications">
+            <i class="fas fa-bell-slash"></i>
+            <p>No tienes notificaciones.</p>
+        </div>
+}
+    </div>

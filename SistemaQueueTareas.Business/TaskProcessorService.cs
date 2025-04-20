@@ -48,6 +48,23 @@ namespace SistemaQueueTareas.Business
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+
+            var enProcesoTasks = _taskRepository.FindTaskByState(_enProcesoState.id);
+            foreach (var task in enProcesoTasks)
+            {
+                task.id_state = _fallidaState.id;
+                task.log += "[" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "] Tarea Fallida por error del servidor.\n";
+                _taskRepository.Update(task);
+                SendNotification(task.id_user, $"Fallo la ejecucion de la Tarea ({task.name}). Por favor intenta de nuevo.");
+            }
+
+            var enColaTasks = _taskRepository.FindTaskByState(_enColaState.id);
+            foreach(var task in enColaTasks)
+            {
+                _taskQueue.Enqueue(task);
+            }
+
+
             _timer = new Timer(ProcessTasks, null, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(5));
             return Task.CompletedTask;
         }

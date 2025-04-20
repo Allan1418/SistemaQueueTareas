@@ -9,16 +9,15 @@ namespace SistemaQueueTareas.Repository
 {
     public interface IRepositoryNotification : IRepositoryBase<Notification>
     {
+        //Interface Segregation Principle
+        //Single Responsibility Principle
+        //List<Notification> findAllNotification();
+        List<Notification> findNotificationByUser(string idUser);
     }
     public class RepositoryNotification : RepositoryBase<Notification>, IRepositoryNotification
     {
         public RepositoryNotification() : base()
         {
-        }
-
-        public List<Notification> findAllNotification()
-        {
-            return _dbSet.ToList();
         }
 
         public List<Notification> findNotificationByUser(string idUser)

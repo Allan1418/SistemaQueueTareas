@@ -1,88 +1,98 @@
 ﻿@model SistemaQueueTareas.Data.Task
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Eliminar Tarea";
 }
 
-<h2>Delete</h2>
+@section Styles {
+    <link rel="stylesheet" href="~/Content/css/task-delete.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+}
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Task</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.id_user)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.id_user)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.description)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.description)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_creacion)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.fecha_creacion)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_ejecucion)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.fecha_ejecucion)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.fecha_finalizacion)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.fecha_finalizacion)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Priority.name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Priority.name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.State.name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.State.name)
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+<div class="task-delete-container">
+    <div class="task-delete-card">
+        <div class="task-delete-header">
+            <h2></i> Eliminar Tarea</h2>
         </div>
-    }
+
+        <div class="card-body">
+            <div class="task-delete-warning">
+                <i class="fas fa-exclamation-triangle warning-icon"></i>
+                <div>
+                    <h4>¿Está seguro que desea eliminar esta tarea?</h4>
+                    <p>Esta acción no se puede deshacer. La tarea será eliminada permanentemente del sistema.</p>
+                </div>
+            </div>
+
+            <div class="task-details-container">
+                <div class="task-details-title">
+                    <h4>Detalles de la tarea</h4>
+                </div>
+
+                <div class="task-details-content">
+                    <div class="task-details-row">
+                        <div class="task-detail-label">Nombre</div>
+                        <div class="task-detail-value">@Html.DisplayFor(model => model.name)</div>
+                    </div>
+
+                    <div class="task-details-row">
+                        <div class="task-detail-label">Descripción</div>
+                        <div class="task-detail-value">@Html.DisplayFor(model => model.description)</div>
+                    </div>
+
+                    <div class="task-details-row">
+                        <div class="task-detail-label">Usuario asignado</div>
+                        <div class="task-detail-value">@Html.DisplayFor(model => model.id_user)</div>
+                    </div>
+
+                    <div class="task-details-row">
+                        <div class="task-detail-label">Prioridad</div>
+                        <div class="task-detail-value">
+                            <span class="task-priority-badge @Model.Priority.name.ToLower().Replace(" ", "-")">
+                                @Html.DisplayFor(model => model.Priority.name)
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="task-details-row">
+                        <div class="task-detail-label">Estado</div>
+                        <div class="task-detail-value">
+                            <span class="task-state-badge @Model.State.name.ToLower().Replace(" ", "-")">
+                                @Html.DisplayFor(model => model.State.name)
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="task-details-row">
+                        <div class="task-detail-label">Fecha de creación</div>
+                        <div class="task-detail-value">@Html.DisplayFor(model => model.fecha_creacion)</div>
+                    </div>
+
+                    <div class="task-details-row">
+                        <div class="task-detail-label">Fecha de ejecución</div>
+                        <div class="task-detail-value">@Html.DisplayFor(model => model.fecha_ejecucion)</div>
+                    </div>
+
+                    <div class="task-details-row">
+                        <div class="task-detail-label">Fecha de finalización</div>
+                        <div class="task-detail-value">@Html.DisplayFor(model => model.fecha_finalizacion)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="task-actions">
+                    @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-back" })
+                    <button type="submit" class="btn btn-delete">
+                        <i></i> Eliminar
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
 </div>

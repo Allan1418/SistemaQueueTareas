@@ -5,14 +5,16 @@
 @section Styles {
     <link rel="stylesheet" href="~/Content/css/task-app.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 }
 
 <div class="task-app-container">
     <div class="hero-section">
-        <div class="hero-content">
+        <div class="hero-content fade-in">
             <div class="icon-container">
-                <i class="fas fa-tasks task-icon"></i>
+                <div class="task-icon-wrapper">
+                    <i class="fas fa-tasks task-icon"></i>
+                </div>
             </div>
             <h1 class="app-title">Gestión de Tareas</h1>
             <p class="app-description">Organiza, completa y analiza tus tareas de forma eficiente</p>
@@ -24,7 +26,7 @@
     </div>
 
     <div class="features-section">
-        <div class="feature-card">
+        <div class="feature-card fade-in" style="animation-delay: 0s;">
             <div class="feature-icon organize">
                 <i class="fas fa-list-ul"></i>
             </div>
@@ -32,7 +34,7 @@
             <p>Clasifica y prioriza tus tareas para maximizar tu productividad diaria.</p>
         </div>
 
-        <div class="feature-card">
+        <div class="feature-card fade-in" style="animation-delay: 0.2s;">
             <div class="feature-icon complete">
                 <i class="fas fa-check-circle"></i>
             </div>
@@ -40,7 +42,7 @@
             <p>Marca tus tareas como completadas y visualiza tu progreso en tiempo real.</p>
         </div>
 
-        <div class="feature-card">
+        <div class="feature-card fade-in" style="animation-delay: 0.4s;">
             <div class="feature-icon analyze">
                 <i class="fas fa-chart-line"></i>
             </div>
@@ -49,7 +51,7 @@
         </div>
     </div>
 
-    <div class="tip-section">
+    <div class="tip-section fade-in" style="animation-delay: 0.6s;">
         <div class="tip-content">
             <div class="tip-icon">
                 <i class="fas fa-lightbulb"></i>
@@ -62,21 +64,33 @@
     </div>
 
     <div class="stats-section">
-        <div class="stat-item">
+        <div class="stat-item fade-in" style="animation-delay: 0.8s;">
             <span class="stat-number">25%</span>
             <span class="stat-label">Aumento de productividad</span>
         </div>
-        <div class="stat-item">
+        <div class="stat-item fade-in" style="animation-delay: 1s;">
             <span class="stat-number">15+</span>
             <span class="stat-label">Herramientas de organización</span>
         </div>
-        <div class="stat-item">
+        <div class="stat-item fade-in" style="animation-delay: 1.2s;">
             <span class="stat-number">100%</span>
             <span class="stat-label">Satisfacción de usuarios</span>
         </div>
     </div>
 </div>
 
-<!-- Note: You'll need to include Font Awesome in your layout for the icons -->
-<!-- Add this to your _Layout.cshtml if not already present: -->
-<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> -->
+@section Scripts {
+    <script>
+        // Add fade-in class to elements when they're in viewport
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements already have the fade-in class in the HTML
+            // This script is just for browsers that might not support CSS animations
+            setTimeout(function() {
+                var elements = document.querySelectorAll('.fade-in');
+                elements.forEach(function(element) {
+                    element.style.opacity = '1';
+                });
+            }, 100);
+        });
+    </script>
+}

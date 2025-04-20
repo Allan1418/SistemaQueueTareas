@@ -26,10 +26,11 @@ namespace SistemaQueueTareas.Web.Controllers
         {
             var userId = User.Identity.GetUserId();
             var tasks = _taskManager.OrderByProritiesTask(userId, id_state, id_priority);
-            var taskEnProceso = _taskManager.getEnProcesoTask();
+            var taskEnProceso = _taskManager.GetEnProcesoTask(userId);
 
             ViewBag.PrioritiesFilter = new SelectList(_priorityManager.GetAllOrderPriorities(), "id", "name", id_priority);
-
+            ViewBag.StatesFilter = new SelectList(_stateManager.GetAllStates(), "id", "name", id_state);
+            ViewBag.TaskEnProceso = taskEnProceso;
 
             return View(tasks.ToList());
         }
@@ -56,9 +57,9 @@ namespace SistemaQueueTareas.Web.Controllers
         public ActionResult EditTaskModal(int id)
         {
             var task = _taskManager.GetTaskById(id);
-            
+
             ViewBag.id_priority = new SelectList(_priorityManager.GetAllOrderPriorities(), "id", "name", task.id_priority);
-            return View("Edit",task);
+            return View("Edit", task);
         }
 
         //Metodo de edicion de tareas
@@ -75,7 +76,7 @@ namespace SistemaQueueTareas.Web.Controllers
             }
 
             ViewBag.id_priority = _priorityManager.GetAllOrderPriorities();
-            return View("Edit",task);
+            return View("Edit", task);
 
         }
 
@@ -131,7 +132,7 @@ namespace SistemaQueueTareas.Web.Controllers
             return View(task);
         }
 
-        //Este metodo realiza la eliminacion de la tarea 
+        //Este metodo realiza la eliminacion de la tarea
         //Cuando se selecciona el boton de confirmar
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -155,7 +156,7 @@ namespace SistemaQueueTareas.Web.Controllers
                 return HttpNotFound("La tarea no ha sido encontrada");
             }
 
-            _taskManager.agregarACola(task);
+            _taskManager.AddToQueue(task);
             return RedirectToAction("Index");
         }
 
@@ -170,7 +171,7 @@ namespace SistemaQueueTareas.Web.Controllers
             }
 
             var tasks = ids.Select(id => _taskManager.GetTaskById(id)).Where(t=> t!= null).ToList();
-            _taskManager.agreagarAColaBatch(tasks);
+            _taskManager.AddToQueueBatch(tasks);
             return RedirectToAction("Index");
 
         }
@@ -196,9 +197,31 @@ namespace SistemaQueueTareas.Web.Controllers
             {
                 return HttpNotFound("La tarea no ha sido encontrada");
             }
-            _taskManager.Reintentar(task);
+            _taskManager.Retry(task);
             return RedirectToAction("Index");
         }
 
+        [Authorize]
+        public ActionResult ActiveTaskPartial()
+        {
+            var userId = User.Identity.GetUserId();
+            var taskEnProceso = _taskManager.GetEnProcesoTask(userId);
+            return PartialView("_ActiveTaskPartial", taskEnProceso);
+        }
+
+        // PartialView action to get the list of tasks
+        [Authorize]
+        public ActionResult TaskListPartial(int? id_priority, int? id_state, string[] excludeStates)
+        {
+            var userId = User.Identity.GetUserId();
+            var tasks = _taskManager.OrderByProritiesTask(userId, id_state, id_priority);
+
+            if (excludeStates != null && excludeStates.Any())
+            {
+                tasks = tasks.Where(t => !excludeStates.Contains(t.State.name)).ToList();
+            }
+
+            return PartialView("_TaskListPartial", tasks);
+        }
     }
 }
