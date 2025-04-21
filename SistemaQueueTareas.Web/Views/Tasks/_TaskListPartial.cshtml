@@ -1,5 +1,10 @@
 ﻿@model IEnumerable<SistemaQueueTareas.Data.Task>
 
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+
 <div class="content-container">
     <div class="filters-container">
         <div class="search-box">
@@ -25,6 +30,13 @@
             </select>
         </div>
 
+        <div class="batch-actions">
+            <button id="retryPausedTasks" class="btn-batch-execute" style="display: none;">
+                <i class="fas fa-play-circle"></i>
+                Reanudar tareas en pausa
+            </button>
+        </div>
+
         <div class="view-toggle-container">
             <div class="view-toggle">
                 <button type="button" class="toggle-btn @(ViewBag.ViewMode != "grid" ? "active" : "")" id="list-view-btn" title="Vista de lista">
@@ -42,7 +54,10 @@
         {
             foreach (var task in Model)
             {
-                <div class="task-item @(ViewBag.TaskEnProceso?.id == task.id ? "active" : "")" data-status="@task.State.name" data-priority="@task.Priority.name">
+                <div class="task-item @(ViewBag.TaskEnProceso?.id == task.id ? "active" : "")"
+                     data-task-id="@task.id"
+                     data-status="@task.State.name"
+                     data-priority="@task.Priority.name">
                     <div class="task-content">
                         <div class="task-icon">
                             @switch (task.State.name)
@@ -114,7 +129,7 @@
 
                         @if (task.State.name == "En Pausa")
                         {
-                            using (Html.BeginForm("ExecuteTask", "Tasks", new { id = task.id }, FormMethod.Post, new { @class = "d-inline action-form" }))
+                            using (Html.BeginForm("AddToQueue", "Tasks", new { id = task.id }, FormMethod.Post, new { @class = "d-inline action-form" }))
                             {
                                 @Html.AntiForgeryToken()
                                 <button type="submit" class="btn btn-icon success" title="Meter en cola">
@@ -123,7 +138,7 @@
                             }
                         }
 
-                        @if (task.State.name != "En Proceso")
+                        @if (task.State.name != "En Proceso" && task.State.name != "En Cola")
                         {
                             <a href="@Url.Action("Delete", new { id = task.id })" class="btn btn-icon danger" title="Eliminar tarea">
                                 <i class="fas fa-trash-alt"></i>
@@ -156,7 +171,6 @@
         }
     </div>
 
-    <!-- Empty state for filtered results (hidden by default) -->
     <div id="filtered-empty-state" class="empty-state" style="display: none;">
         <div class="empty-icon">
             <i class="fas fa-filter"></i>
@@ -200,7 +214,7 @@
             listViewBtn.click();
         }
 
-        // Search functionality
+        // Search and filter functionality
         const searchInput = document.getElementById('taskSearch');
         const statusFilter = document.getElementById('statusFilter');
         const priorityFilter = document.getElementById('priorityFilter');
@@ -233,7 +247,6 @@
                 }
             });
 
-            // Show/hide empty state based on filter results
             if (visibleCount === 0 && (searchTerm !== '' || statusValue !== '' || priorityValue !== '')) {
                 tasksList.style.display = 'none';
                 filteredEmptyState.style.display = 'flex';
@@ -247,7 +260,6 @@
         statusFilter.addEventListener('change', filterTasks);
         priorityFilter.addEventListener('change', filterTasks);
 
-        // Clear filters button
         clearFiltersBtn.addEventListener('click', function () {
             searchInput.value = '';
             statusFilter.value = '';
@@ -255,9 +267,52 @@
             filterTasks();
         });
 
-        // Add animation to task items
+        // Batch retry functionality
+        const retryPausedButton = document.getElementById('retryPausedTasks');
+
+        function updateBatchButtonVisibility() {
+            const visiblePausedTasks = document.querySelectorAll('.task-item[data-status="En Pausa"]:not([style*="display: none"])');
+            retryPausedButton.style.display = visiblePausedTasks.length > 0 ? 'flex' : 'none';
+        }
+
+        retryPausedButton.addEventListener('click', function() {
+            const pausedTaskIds = Array.from(document.querySelectorAll('.task-item[data-status="En Pausa"]:not([style*="display: none"])'))
+                .map(task => parseInt(task.dataset.taskId));
+
+            if (confirm(`¿Está seguro que desea reanudar ${pausedTaskIds.length} tareas en pausa?`)) {
+                fetch('@Url.Action("AddToQueueBatch", "Tasks")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify({ ids: pausedTaskIds })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        alert('Error al procesar las tareas');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error en la solicitud');
+                });
+            }
+        });
+
+        // Modify filter function to update button visibility
+        const originalFilterTasks = filterTasks;
+        filterTasks = function() {
+            originalFilterTasks();
+            updateBatchButtonVisibility();
+        };
+
+        // Initial setup
         taskItems.forEach((item, index) => {
             item.style.animationDelay = `${index * 0.05}s`;
         });
+        filterTasks();
     });
 </script>

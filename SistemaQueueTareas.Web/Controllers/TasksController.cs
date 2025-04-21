@@ -8,8 +8,10 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using SistemaQueueTareas.Business;
 using SistemaQueueTareas.Data;
+using SistemaQueueTareas.IdentityData;
 
 namespace SistemaQueueTareas.Web.Controllers
 {
@@ -52,6 +54,25 @@ namespace SistemaQueueTareas.Web.Controllers
 
         }
 
+        [Authorize]
+        public ActionResult AllTasks(int? id_state, int? id_priority)
+        {
+            // Obtener todas las tareas
+            var tasks = _taskManager.GetAllTasksFiltered(id_state, id_priority);
+
+            // Obtener los usuarios en una sola consulta
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+            var users = userManager.Users.ToList();
+
+            // Crear lista de nombres de usuarios
+            ViewBag.UserNames = users.ToDictionary(u => u.Id, u => u.UserName);
+
+            ViewBag.PrioritiesFilter = new SelectList(_priorityManager.GetAllOrderPriorities(), "id", "name", id_priority);
+            ViewBag.StatesFilter = new SelectList(_stateManager.GetAllStates(), "id", "name", id_state);
+
+            return View(tasks);
+        }
+
         //renderiza el formulario de edicion de tareas en blanco
         [HttpGet]
         public ActionResult EditTaskModal(int id)
@@ -65,11 +86,17 @@ namespace SistemaQueueTareas.Web.Controllers
         //Metodo de edicion de tareas
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult EditTaskModal(Task task)
         {
 
             if (ModelState.IsValid)
             {
+                var userId = User.Identity.GetUserId();
+                if (task.id_user != userId)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.Forbidden, "No tiene permiso para editar esta tarea.");
+                }
 
                 _taskManager.UpdateTask(task);
                 return RedirectToAction("Index");
@@ -122,6 +149,12 @@ namespace SistemaQueueTareas.Web.Controllers
             //validacion de tarea
             if (task == null) return HttpNotFound("No se encontro la tarea");
 
+            //validacion de usuario
+            if (task.id_user != userId)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Forbidden, "No tiene permiso para eliminar esta tarea.");
+            }
+
             //Se valida si la tarea aun no ha sido procesada
             if (task.State.name == "En Proceso")
             {
@@ -148,7 +181,7 @@ namespace SistemaQueueTareas.Web.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult ExecuteTask(int id)
+        public ActionResult AddToQueue(int id)
         {
             var task = _taskManager.GetTaskById(id);
             if (task == null)
@@ -162,7 +195,7 @@ namespace SistemaQueueTareas.Web.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult ExecuterTaskBatch(List<int> ids)
+        public ActionResult AddToQueueBatch(List<int> ids)
         {
             if (ids == null)
             {
@@ -170,7 +203,7 @@ namespace SistemaQueueTareas.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            var tasks = ids.Select(id => _taskManager.GetTaskById(id)).Where(t=> t!= null).ToList();
+            var tasks = ids.Select(id => _taskManager.GetTaskById(id)).Where(t => t != null).ToList();
             _taskManager.AddToQueueBatch(tasks);
             return RedirectToAction("Index");
 
@@ -209,7 +242,6 @@ namespace SistemaQueueTareas.Web.Controllers
             return PartialView("_ActiveTaskPartial", taskEnProceso);
         }
 
-        // PartialView action to get the list of tasks
         [Authorize]
         public ActionResult TaskListPartial(int? id_priority, int? id_state, string[] excludeStates)
         {
@@ -222,6 +254,14 @@ namespace SistemaQueueTareas.Web.Controllers
             }
 
             return PartialView("_TaskListPartial", tasks);
+        }
+
+        [Authorize]
+        public ActionResult TasksTablePartial(int? id_priority, int? id_state)
+        {
+            var userId = User.Identity.GetUserId();
+            var tasks = _taskManager.GetAllTasksFiltered(id_state, id_priority);
+            return PartialView("_TasksTablePartial", tasks);
         }
     }
 }

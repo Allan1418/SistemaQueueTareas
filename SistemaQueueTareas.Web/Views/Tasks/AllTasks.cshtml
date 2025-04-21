@@ -1,0 +1,149 @@
+﻿@model IEnumerable<SistemaQueueTareas.Data.Task>
+
+@{
+    ViewBag.Title = "Gestión de Tareas del Sistema";
+}
+
+<link rel="stylesheet" href="~/Content/css/tasks-all-list.css" />
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">@ViewBag.Title</h1>
+
+    <div class="card mb-4 active-task-card">
+        <div class="card-header bg-gradient-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="fas fa-cog fa-spin me-2"></i>
+                    Tarea en Ejecución
+                </div>
+                <button id="refresh-active-task" class="btn btn-sm btn-light">
+                    <i class="fas fa-sync-alt"></i> Actualizar
+                </button>
+            </div>
+        </div>
+        <div id="active-task-container" class="card-body">
+            @Html.Action("ActiveTaskPartial", "Tasks")
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-filter me-1"></i>
+            Opciones de Filtrado y Búsqueda
+        </div>
+        <div class="card-body">
+            @using (Html.BeginForm("AllTasks", "Tasks", FormMethod.Get, new { @class = "row g-3 align-items-center" }))
+            {
+                <div class="col-12 col-md-4">
+                    <label for="id_state" class="form-label visually-hidden">Filtrar por estado</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-primary text-white"><i class="fas fa-flag"></i></span>
+                        @Html.DropDownList("id_state", ViewBag.StatesFilter as SelectList, "Filtrar por estado...",
+                            new { @class = "form-control form-select", id = "id_state" })
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="id_priority" class="form-label visually-hidden">Filtrar por prioridad</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-info text-white"><i class="fas fa-sort-amount-down"></i></span>
+                        @Html.DropDownList("id_priority", ViewBag.PrioritiesFilter as SelectList, "Filtrar por prioridad...",
+                            new { @class = "form-control form-select", id = "id_priority" })
+                    </div>
+                </div>
+                <div class="col-12 mt-3 text-end">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Aplicar Filtros</button>
+                    <a href="@Url.Action("AllTasks")" class="btn btn-outline-secondary ms-2"><i class="fas fa-sync-alt"></i> Resetear Todo</a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-list me-1"></i>
+            Listado Detallado de Tareas
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <button id="refresh-task-list" class="btn btn-outline-info">
+                    <i class="fas fa-sync-alt"></i> Actualizar Lista de Tareas
+                </button>
+            </div>
+            <div class="table-responsive">
+                @Html.Action("TasksTablePartial", "Tasks")
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Actualizar la tarea activa
+            $('#refresh-active-task').on('click', function () {
+                $.ajax({
+                    url: '@Url.Action("ActiveTaskPartial", "Tasks")',
+                    type: 'GET',
+                    dataType: 'html',
+                    success: function (data) {
+                        $('#active-task-container').html(data);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error al actualizar la tarea activa:", error);
+                        // Opcional: Mostrar un mensaje de error al usuario
+                    }
+                });
+            });
+
+            // Actualizar la lista de tareas
+            $('#refresh-task-list').on('click', function () {
+                var stateFilter = $('#id_state').val();
+                var priorityFilter = $('#id_priority').val();
+
+                $.ajax({
+                    url: '@Url.Action("TasksTablePartial", "Tasks")', // Cambia a la PartialView correcta
+                    type: 'GET',
+                    data: { id_state: stateFilter, id_priority: priorityFilter },
+                    dataType: 'html',
+                    success: function (data) {
+                        $('.card-body .table-responsive').html(data); // Selecciona el div .table-responsive dentro de .card-body
+                        // Reinicializar los tooltips después de la actualización
+                        $('[data-bs-toggle="tooltip"]').tooltip();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error al actualizar la lista de tareas:", error);
+                        // Opcional: Mostrar un mensaje de error al usuario
+                    }
+                });
+            });
+
+            // Función para filtrar la tabla por búsqueda (existente)
+            function filterTable() {
+                var input, filter, table, tr, td, i, txtValue;
+                input = document.getElementsByName("searchString")[0];
+                filter = input.value.toUpperCase();
+                table = document.getElementById("tasksTable");
+                tr = table.getElementsByTagName("tr");
+
+                for (i = 1; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName("td");
+                    var shouldShow = false;
+                    for (var j = 0; j < td.length - 1; j++) {
+                        if (td[j]) {
+                            txtValue = td[j].textContent || td[j].innerText;
+                            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                                shouldShow = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (shouldShow) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        });
+    </script>
+}
