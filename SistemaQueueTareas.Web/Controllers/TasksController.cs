@@ -86,11 +86,17 @@ namespace SistemaQueueTareas.Web.Controllers
         //Metodo de edicion de tareas
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult EditTaskModal(Task task)
         {
 
             if (ModelState.IsValid)
             {
+                var userId = User.Identity.GetUserId();
+                if (task.id_user != userId)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.Forbidden, "No tiene permiso para editar esta tarea.");
+                }
 
                 _taskManager.UpdateTask(task);
                 return RedirectToAction("Index");
@@ -143,6 +149,12 @@ namespace SistemaQueueTareas.Web.Controllers
             //validacion de tarea
             if (task == null) return HttpNotFound("No se encontro la tarea");
 
+            //validacion de usuario
+            if (task.id_user != userId)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Forbidden, "No tiene permiso para eliminar esta tarea.");
+            }
+
             //Se valida si la tarea aun no ha sido procesada
             if (task.State.name == "En Proceso")
             {
@@ -169,7 +181,7 @@ namespace SistemaQueueTareas.Web.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult ExecuteTask(int id)
+        public ActionResult AddToQueue(int id)
         {
             var task = _taskManager.GetTaskById(id);
             if (task == null)
@@ -183,7 +195,7 @@ namespace SistemaQueueTareas.Web.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult ExecuterTaskBatch(List<int> ids)
+        public ActionResult AddToQueueBatch(List<int> ids)
         {
             if (ids == null)
             {
