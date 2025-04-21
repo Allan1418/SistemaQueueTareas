@@ -1,0 +1,167 @@
+﻿/* Additional animations for enhanced UI */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 5px rgba(99, 102, 241, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.7);
+    }
+
+    100% {
+        box-shadow: 0 0 5px rgba(99, 102, 241, 0.5);
+    }
+}
+
+/* Apply animations to elements */
+.stat-card {
+    animation: fadeIn 0.5s ease-out;
+    animation-fill-mode: both;
+}
+
+    .stat-card:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .stat-card:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .stat-card:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    .stat-card:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+
+    .stat-card:nth-child(5) {
+        animation-delay: 0.5s;
+    }
+
+    .stat-card:nth-child(6) {
+        animation-delay: 0.6s;
+    }
+
+    .stat-card:nth-child(7) {
+        animation-delay: 0.7s;
+    }
+
+.task-item {
+    animation: fadeIn 0.5s ease-out;
+    animation-fill-mode: both;
+}
+
+    .task-item:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .task-item:nth-child(2) {
+        animation-delay: 0.15s;
+    }
+
+    .task-item:nth-child(3) {
+        animation-delay: 0.2s;
+    }
+
+    .task-item:nth-child(4) {
+        animation-delay: 0.25s;
+    }
+
+    .task-item:nth-child(5) {
+        animation-delay: 0.3s;
+    }
+
+    .task-item:nth-child(6) {
+        animation-delay: 0.35s;
+    }
+
+    .task-item:nth-child(7) {
+        animation-delay: 0.4s;
+    }
+
+    .task-item:nth-child(8) {
+        animation-delay: 0.45s;
+    }
+
+    .task-item:nth-child(9) {
+        animation-delay: 0.5s;
+    }
+
+    .task-item:nth-child(10) {
+        animation-delay: 0.55s;
+    }
+
+.active-task-card {
+    animation: slideInRight 0.5s ease-out;
+}
+
+.btn-primary:hover {
+    animation: glow 1.5s infinite;
+}
+
+/* Hover effects */
+.task-icon {
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.task-item:hover .task-icon {
+    transform: scale(1.1) rotate(5deg);
+    background-color: rgba(99, 102, 241, 0.1);
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.fa-spin {
+    animation: spin 1.5s linear infinite;
+}
+
+/* Shimmer effect for loading states */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.loading-shimmer {
+    background: linear-gradient(to right, var(--dark-surface) 8%, var(--dark-surface-2) 18%, var(--dark-surface) 33%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
+}

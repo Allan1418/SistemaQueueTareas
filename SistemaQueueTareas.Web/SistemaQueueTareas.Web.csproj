@@ -296,11 +296,16 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\css\animations.css" />
+    <Content Include="Content\css\base-styles.css" />
     <Content Include="Content\css\task-app.css" />
+    <Content Include="Content\css\task-delete.css" />
     <Content Include="Content\css\task-details.css" />
+    <Content Include="Content\css\task-edit.css" />
+    <Content Include="Content\css\task-list.css" />
     <Content Include="Content\css\task-manager.css" />
-    <Content Include="Content\css\taskForm.css" />
-    <Content Include="Content\notificacion.css" />
+    <Content Include="Content\css\task-form.css" />
+    <Content Include="Content\css\notificacion.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -349,6 +354,8 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\js\task-details.js" />
+    <Content Include="Scripts\js\task-manager.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -376,9 +383,10 @@
     <Content Include="Views\Tasks\Delete.cshtml" />
     <Content Include="Views\Tasks\Details.cshtml" />
     <Content Include="Views\Tasks\Index.cshtml" />
-    <Content Include="Views\Tasks\Edit.cshtml" />
     <Content Include="Views\Tasks\_TaskListPartial.cshtml" />
     <Content Include="Views\Tasks\_ActiveTaskPartial.cshtml" />
+    <Content Include="Views\Tasks\Edit.cshtml" />
+    <Content Include="Views\Shared\_NotificationsPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

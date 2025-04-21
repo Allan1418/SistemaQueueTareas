@@ -1,0 +1,473 @@
+﻿/* Css task-delete */
+@import url("base-styles.css");
+
+.task-delete-container {
+    max-width: 900px;
+    margin: var(--spacing-lg) auto;
+    padding: 0 var(--spacing);
+    animation: fadeIn 0.5s ease-out;
+}
+
+.task-delete-card {
+    border: none;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+    background-color: var(--dark-surface);
+    color: var(--dark-text);
+    border: 1px solid var(--dark-border);
+}
+
+    .task-delete-card:hover {
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-3px);
+    }
+
+.task-delete-header {
+    background: linear-gradient(135deg, var(--danger-primary), var(--danger));
+    padding: var(--spacing-md);
+    position: relative;
+    overflow: hidden;
+    color: var(--white);
+}
+
+    .task-delete-header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+        transform: rotate(30deg);
+        pointer-events: none;
+    }
+
+    .task-delete-header h2 {
+        font-weight: 600;
+        margin: 0;
+        font-size: var(--font-size-xl);
+        letter-spacing: 0.5px;
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+        .task-delete-header h2::before {
+            content: "\f2ed";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            margin-right: var(--spacing-sm);
+            font-size: var(--font-size-lg);
+            opacity: 0.9;
+        }
+
+.card-body {
+    padding: var(--spacing-lg);
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+}
+
+.task-delete-warning {
+    border-left: 4px solid var(--warning);
+    background-color: rgba(245, 158, 11, 0.1);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition-normal);
+    color: var(--dark-text);
+}
+
+    .task-delete-warning:hover {
+        transform: translateX(5px);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .task-delete-warning::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 30%;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 100%);
+        pointer-events: none;
+    }
+
+.warning-icon {
+    color: var(--warning);
+    font-size: var(--font-size-lg);
+    margin-right: var(--spacing-sm);
+    animation: pulse 2s infinite;
+}
+
+.task-details-container {
+    background-color: var(--dark-surface);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    border: 1px solid var(--dark-border);
+    position: relative;
+    transition: all var(--transition-normal);
+    color: var(--dark-text);
+}
+
+    .task-details-container:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+    }
+
+.task-details-title {
+    color: var(--dark-text);
+    font-size: var(--font-size-md);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing);
+    border-bottom: 1px solid var(--dark-border);
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+    .task-details-title::before {
+        content: "\f05a";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        margin-right: var(--spacing-xs);
+        color: var(--dark-text-secondary);
+    }
+
+.task-details-row {
+    margin-bottom: var(--spacing-sm);
+    transition: all var(--transition-fast);
+    padding: var(--spacing-xs);
+    border-radius: var(--border-radius-sm);
+    color: var(--dark-text);
+}
+
+    .task-details-row:hover {
+        background-color: rgba(255, 255, 255, 0.02);
+    }
+
+.task-detail-label {
+    font-weight: 500;
+    color: var(--dark-text-secondary);
+    text-transform: uppercase;
+    font-size: var(--font-size-sm);
+    letter-spacing: 0.5px;
+}
+
+.task-detail-value {
+    color: var(--dark-text);
+    font-weight: 400;
+}
+
+.task-priority-badge {
+    font-size: var(--font-size-sm);
+    padding: 0.4em 0.8em;
+    font-weight: 500;
+    border-radius: 50px;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+    color: var(--white);
+}
+
+    .task-priority-badge:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+.task-state-badge {
+    font-size: var(--font-size-sm);
+    padding: 0.4em 0.8em;
+    font-weight: 500;
+    border-radius: 50px;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+    color: var(--white);
+}
+
+    .task-state-badge:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+.task-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing);
+    margin-top: var(--spacing-lg);
+    position: relative;
+}
+
+    .task-actions::before {
+        content: "";
+        position: absolute;
+        top: -0.5rem;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(51, 65, 85, 0) 0%, rgba(51, 65, 85, 1) 50%, rgba(51, 65, 85, 0) 100%);
+    }
+
+.btn-back {
+    color: var(--dark-text-secondary);
+    background-color: var(--dark-surface-2);
+    border-color: var(--dark-border);
+    box-shadow: var(--shadow-sm);
+}
+
+    .btn-back:hover {
+        background-color: var(--dark-surface);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow);
+        color: var(--dark-text);
+    }
+
+    .btn-back:active {
+        transform: translateY(0);
+    }
+
+.btn-delete {
+    background-color: var(--danger);
+    color: var(--white);
+    box-shadow: var(--shadow);
+}
+
+    .btn-delete:hover {
+        background-color: #dc2626;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-delete:active {
+        transform: translateY(0);
+    }
+
+.btn-icon {
+    margin-right: var(--spacing-xs);
+    transition: transform var(--transition-fast);
+}
+
+.btn:hover .btn-icon {
+    transform: translateX(-2px);
+}
+
+.btn-delete:hover .btn-icon {
+    animation: shake 0.5s ease;
+}
+.task-priority-badge.high {
+    background-color: var(--danger);
+}
+
+.task-priority-badge.medium {
+    background-color: var(--warning);
+}
+
+.task-priority-badge.low {
+    background-color: var(--info);
+}
+
+/* Additional styles for state badges */
+.task-state-badge.pending {
+    background-color: var(--pending);
+}
+
+.task-state-badge.completed {
+    background-color: var(--success);
+}
+
+.task-state-badge.in-progress {
+    background-color: var(--info);
+}
+
+.task-state-badge.paused {
+    background-color: var(--paused);
+}
+
+.task-state-badge.in-queue {
+    background-color: var(--in-queue);
+}
+
+/* Animation for warning icon */
+@keyframes pulse {
+    0% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-3px);
+    }
+    75% {
+        transform: translateX(3px);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Improve task details content layout */
+.task-details-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xs);
+}
+
+.task-details-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    align-items: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .task-details-row {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-xs);
+    }
+    
+    .task-detail-label {
+        margin-bottom: 0;
+    }
+    
+    .task-actions {
+        flex-direction: column-reverse;
+        gap: var(--spacing-sm);
+    }
+    
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+.task-priority-badge.high {
+    background-color: var(--danger);
+}
+
+.task-priority-badge.medium {
+    background-color: var(--warning);
+}
+
+.task-priority-badge.low {
+    background-color: var(--info);
+}
+
+/* Additional styles for state badges */
+.task-state-badge.pending {
+    background-color: var(--pending);
+}
+
+.task-state-badge.completed {
+    background-color: var(--success);
+}
+
+.task-state-badge.in-progress {
+    background-color: var(--info);
+}
+
+.task-state-badge.paused {
+    background-color: var(--paused);
+}
+
+.task-state-badge.in-queue {
+    background-color: var(--in-queue);
+}
+
+/* Animation for warning icon */
+@keyframes pulse {
+    0% {
+        opacity: 0.7;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-3px);
+    }
+
+    75% {
+        transform: translateX(3px);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Improve task details content layout */
+.task-details-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xs);
+}
+
+.task-details-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    align-items: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .task-details-row {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-xs);
+    }
+
+    .task-detail-label {
+        margin-bottom: 0;
+    }
+
+    .task-actions {
+        flex-direction: column-reverse;
+        gap: var(--spacing-sm);
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+}

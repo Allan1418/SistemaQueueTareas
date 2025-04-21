@@ -54,7 +54,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\State.cs" />
-    <Compile Include="Entities\Execution.cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\Notification.cs" />
     <Compile Include="Entities\Priority.cs" />

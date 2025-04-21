@@ -12,84 +12,116 @@
 
 <div class="task-details-container">
     <div class="task-details-header">
-        <h2>
-            <i class="fas fa-tasks"></i> Detalles de tareas
-        </h2>
+        <div class="header-left">
+            <h2>
+                <i class="fas fa-tasks"></i> Detalles de tareas
+            </h2>
+            <div class="breadcrumb">
+                <a href="@Url.Action("Index")"><i class="fas fa-home"></i> Inicio</a> /
+                <span>Detalles de tarea</span>
+            </div>
+        </div>
     </div>
 
     <div class="task-details-card">
         <div class="task-details-title">
-            <h3>@Html.DisplayFor(model => model.name)</h3>
-            <span class="task-status @Model.State.name.ToLower()">
+            <div class="title-content">
+                <span class="task-id">#@Model.id</span>
+                <h3>@Html.DisplayFor(model => model.name)</h3>
+            </div>
+            <span class="task-status @Model.State.name.ToLower().Replace(" ", "-")">
+                <i class="fas fa-circle status-indicator"></i>
                 @Html.DisplayFor(model => model.State.name)
             </span>
         </div>
 
         <div class="task-details-section">
             <div class="task-details-description">
-                <h4><i class="fas fa-align-left"></i> Descripcion</h4>
-                <p>@Html.DisplayFor(model => model.description)</p>
+                <h4><i class="fas fa-align-left"></i> Descripción</h4>
+                <div class="description-content">
+                    @if (string.IsNullOrEmpty(Model.description))
+                    {
+                        <p class="text-muted">No hay descripción disponible</p>
+                    }
+                    else
+                    {
+                        <p>@Html.DisplayFor(model => model.description)</p>
+                    }
+                </div>
             </div>
         </div>
 
         <div class="task-details-grid">
-
             <div class="task-details-item">
                 <div class="detail-label">
                     <i class="fas fa-flag"></i> Prioridad
                 </div>
-                <div class="detail-value priority-badge @Model.Priority.name.ToLower()">
+                <div class="detail-value priority-badge @Model.Priority.name.ToLower().Replace(" ", "-")">
                     @Html.DisplayFor(model => model.Priority.name)
                 </div>
             </div>
 
             <div class="task-details-item">
                 <div class="detail-label">
-                    <i class="fas fa-calendar-plus"></i> Fecha de creacion
+                    <i class="fas fa-calendar-plus"></i> Fecha de creación
                 </div>
                 <div class="detail-value">
-                    @Html.DisplayFor(model => model.fecha_creacion)
+                    <span class="date-value">@Model.fecha_creacion</span>
                 </div>
             </div>
 
             <div class="task-details-item">
                 <div class="detail-label">
-                    <i class="fas fa-calendar-day"></i> Fecha de ejecucion
+                    <i class="fas fa-calendar-day"></i> Fecha de ejecución
                 </div>
                 <div class="detail-value">
-                    @Html.DisplayFor(model => model.fecha_ejecucion)
+                    <span class="date-value">@Model.fecha_ejecucion</span>
                 </div>
             </div>
 
             <div class="task-details-item">
                 <div class="detail-label">
-                    <i class="fas fa-calendar-check"></i> Fecha de finalizacion
+                    <i class="fas fa-calendar-check"></i> Fecha de finalización
                 </div>
                 <div class="detail-value">
                     @if (Model.fecha_finalizacion.HasValue)
                     {
-                        @Html.DisplayFor(model => model.fecha_finalizacion)
+                        <span class="date-value">@Model.fecha_finalizacion.Value</span>
                     }
                     else
                     {
-                        <span class="text-muted">Not completed yet</span>
+                        <span class="text-muted">Pendiente de finalizar</span>
                     }
                 </div>
+            </div>
+        </div>
+
+        <!-- Task Log Section -->
+        <div class="task-details-section task-log-section">
+            <h4><i class="fas fa-history"></i> Log de la tarea</h4>
+            <div class="task-log-container">
+                @if (string.IsNullOrEmpty(Model.log))
+                {
+                    <div class="empty-log">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>No hay registros de log para esta tarea</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="log-content-box">
+                        <pre class="log-content-text">@Model.log</pre>
+                    </div>
+                }
             </div>
         </div>
     </div>
 
     <div class="task-details-footer">
         <div class="btn-group">
-            @Html.ActionLink("Editar la tarea", "Edit", new { id = Model.id }, new { @class = "btn btn-primary" })
-            @Html.ActionLink("Devolverse a la lista", "Index", null, new { @class = "btn btn-outline-secondary" })
+            <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                <i class="fas fa-list"></i> Volver a la lista
+            </a>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        $(document).ready(function () {
-        });
-    </script>
-}

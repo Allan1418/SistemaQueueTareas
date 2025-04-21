@@ -356,29 +356,141 @@ input, select, textarea {
     }
 
 .notification-list {
-    max-height: 350px;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: 400px; /* Establece una altura máxima para el scroll */
+    overflow-y: auto; /* Agrega la barra de scroll vertical cuando sea necesario */
 }
 
+.notification-item:not(.read) {
+    border-left: 4px solid #2196F3;
+    font-weight: 500;
+}
+
+.notification-item.read {
+    opacity: 0.75;
+}
+
+    .notification-item.read .notification-icon {
+        color: var(--dark-text-muted);
+        background-color: rgba(203, 213, 225, 0.1);
+    }
+
+
+.notification-item:not(.read):hover {
+    background: #e3f2fd;
+    transform: translateX(4px);
+}
+
+.mark-read-text {
+    color: var(--primary);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.2s ease;
+}
+
+    .mark-read-text:hover {
+        color: var(--primary-light);
+        text-decoration: underline;
+    }
+
+.notification-footer {
+    display: flex;
+    justify-content: center;
+    padding: var(--spacing-sm);
+    border-top: 1px solid var(--dark-border);
+    margin-top: var(--spacing-xs);
+}
+
+#markAllRead {
+    background-color: transparent;
+    color: var(--dark-text-secondary);
+    border: 1px solid var(--dark-border);
+    padding: var(--spacing-xs) var(--spacing);
+    font-size: var(--font-size-sm);
+    transition: all 0.2s ease;
+}
+
+    #markAllRead:hover {
+        background-color: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
 .notification-item {
-    padding: var(--spacing) var(--spacing-md);
-    border-bottom: 1px solid var(--dark-border);
-    transition: var(--transition);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing);
+    width: 100%;
+    text-align: left;
+    padding: var(--spacing);
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease;
+    border: none;
+    background-color: var(--dark-surface);
 }
 
     .notification-item:hover {
-        background-color: var(--dark-card-hover);
+        transform: translateX(4px);
+        background-color: rgb(234, 59, 246, 0.1)
     }
 
     .notification-item.unread {
-        background-color: rgba(99, 102, 241, 0.1);
+        background-color: rgba(59, 130, 246, 0.1);
     }
 
+        .notification-item.unread:hover {
+            background-color: rgba(59, 130, 246, 0.2);
+        }
+
 .notification-content {
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xs);
 }
+
+.notification-message {
+    color: var(--dark-text);
+    font-size: var(--font-size);
+    line-height: 1.5;
+}
+
+.notification-item.read .notification-message {
+    color: var(--dark-text-secondary);
+}
+
+.notification-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--font-size-xs);
+}
+
+.notification-date {
+    color: var(--dark-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.notification-icon {
+    color: var(--primary);
+    font-size: 1.2rem;
+    padding: var(--spacing-xs);
+    background-color: rgba(99, 102, 241, 0.1);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
 
 .notification-text {
     color: var(--dark-text);
@@ -390,10 +502,20 @@ input, select, textarea {
 }
 
 .empty-notifications {
-    padding: var(--spacing-md);
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
     color: var(--dark-text-muted);
+    text-align: center;
+    gap: var(--spacing);
 }
+
+    .empty-notifications i {
+        font-size: 2rem;
+        opacity: 0.5;
+    }
 
 /* User Dropdown */
 .user-dropdown {
@@ -425,6 +547,7 @@ input, select, textarea {
 }
 
 .user-name {
+    color: white;
     font-weight: 500;
 }
 
@@ -772,6 +895,12 @@ tr:hover {
 
 .task-card-actions {
     display: flex;
+    gap: var(--spacing-sm);
+}
+
+.notifications-container {
+    display: flex;
+    flex-direction: column;
     gap: var(--spacing-sm);
 }
 

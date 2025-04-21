@@ -30,6 +30,11 @@ namespace SistemaQueueTareas.Business
                 _repositoryNotification.Update(notification);
             }
         }
+        public int getUnreadNotificationsCountByUser(string userId)
+        {
+            return _repositoryNotification.findNotificationByUser(userId).Count(n => !n.leido.HasValue || !n.leido.Value);
+        }
+
 
     }
 }
