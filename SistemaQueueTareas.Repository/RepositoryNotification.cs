@@ -22,7 +22,7 @@ namespace SistemaQueueTareas.Repository
 
         public List<Notification> findNotificationByUser(string idUser)
         {
-            return _dbSet.Where(n => n.id_user == idUser).ToList();
+            return _dbSet.Where(n => n.id_user == idUser).OrderByDescending(n => n.fecha_envio).ToList();
         }
     }
 }
