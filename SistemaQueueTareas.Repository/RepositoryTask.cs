@@ -65,8 +65,12 @@ namespace SistemaQueueTareas.Repository
         public List<Task> OrderByPriorities(string userId, int? id_state, int? id_priority)
         {
             var query = _dbSet.Include(t => t.Priority)
-                              .Include(t => t.State)
-                              .Where(t => t.id_user == userId);
+                              .Include(t => t.State);
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                query = query.Where(t => t.id_user == userId);
+            }
 
             if (id_state.HasValue)
                 query = query.Where(t => t.id_state == id_state.Value);
@@ -74,7 +78,7 @@ namespace SistemaQueueTareas.Repository
             if (id_priority.HasValue)
                 query = query.Where(t => t.id_priority == id_priority.Value);
 
-            return query.ToList();
+            return query.OrderBy(t => t.Priority.order).ToList();
         }
 
         // Find tasks by state and user ID
@@ -91,5 +95,16 @@ namespace SistemaQueueTareas.Repository
                            .ToList() : new List<Task>();
         }
 
+        public List<Task> GetAllTasksWithFilters(int? id_state, int? id_priority)
+        {
+            return _context.Tasks
+                .Include(t => t.Priority)
+                .Include(t => t.State)
+                .Where(t =>
+                    (!id_state.HasValue || t.id_state == id_state.Value) &&
+                    (!id_priority.HasValue || t.id_priority == id_priority.Value))
+                .OrderBy(t => t.Priority.order)
+                .ToList();
+        }
     }
 }

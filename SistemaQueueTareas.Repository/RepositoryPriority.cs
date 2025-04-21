@@ -9,7 +9,6 @@ namespace SistemaQueueTareas.Repository
 {
     public interface IRepositoryPriority: IRepositoryBase<Priority>
     {
-        bool PriorityExists(int priorityId);
         List<Priority> GetAllOrderPriorities();
     }
     public class RepositoryPriority: RepositoryBase<Priority>, IRepositoryPriority
@@ -18,11 +17,6 @@ namespace SistemaQueueTareas.Repository
         {
         }
 
-
-        public bool PriorityExists(int priorityId)
-        {
-            return _context.Priorities.Any(p => p.id == priorityId);
-        }
 
         //Show priority in a logic order "High>Medium>Low" 
         public List<Priority> GetAllOrderPriorities()
