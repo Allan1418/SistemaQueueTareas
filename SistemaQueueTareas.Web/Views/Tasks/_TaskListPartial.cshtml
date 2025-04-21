@@ -129,7 +129,7 @@
 
                         @if (task.State.name == "En Pausa")
                         {
-                            using (Html.BeginForm("ExecuteTask", "Tasks", new { id = task.id }, FormMethod.Post, new { @class = "d-inline action-form" }))
+                            using (Html.BeginForm("AddToQueue", "Tasks", new { id = task.id }, FormMethod.Post, new { @class = "d-inline action-form" }))
                             {
                                 @Html.AntiForgeryToken()
                                 <button type="submit" class="btn btn-icon success" title="Meter en cola">
@@ -280,7 +280,7 @@
                 .map(task => parseInt(task.dataset.taskId));
 
             if (confirm(`¿Está seguro que desea reanudar ${pausedTaskIds.length} tareas en pausa?`)) {
-                fetch('@Url.Action("ExecuterTaskBatch", "Tasks")', {
+                fetch('@Url.Action("AddToQueueBatch", "Tasks")', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

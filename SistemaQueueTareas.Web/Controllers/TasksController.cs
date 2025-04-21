@@ -203,7 +203,7 @@ namespace SistemaQueueTareas.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            var tasks = ids.Select(id => _taskManager.GetTaskById(id)).Where(t=> t!= null).ToList();
+            var tasks = ids.Select(id => _taskManager.GetTaskById(id)).Where(t => t != null).ToList();
             _taskManager.AddToQueueBatch(tasks);
             return RedirectToAction("Index");
 
@@ -242,7 +242,6 @@ namespace SistemaQueueTareas.Web.Controllers
             return PartialView("_ActiveTaskPartial", taskEnProceso);
         }
 
-        // PartialView action to get the list of tasks
         [Authorize]
         public ActionResult TaskListPartial(int? id_priority, int? id_state, string[] excludeStates)
         {
@@ -255,6 +254,14 @@ namespace SistemaQueueTareas.Web.Controllers
             }
 
             return PartialView("_TaskListPartial", tasks);
+        }
+
+        [Authorize]
+        public ActionResult TasksTablePartial(int? id_priority, int? id_state)
+        {
+            var userId = User.Identity.GetUserId();
+            var tasks = _taskManager.GetAllTasksFiltered(id_state, id_priority);
+            return PartialView("_TasksTablePartial", tasks);
         }
     }
 }

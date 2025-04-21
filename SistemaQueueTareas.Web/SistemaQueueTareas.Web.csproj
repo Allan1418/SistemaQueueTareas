@@ -297,7 +297,6 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\css\animations.css" />
-    <Content Include="Content\css\base-styles.css" />
     <Content Include="Content\css\task-app.css" />
     <Content Include="Content\css\task-delete.css" />
     <Content Include="Content\css\task-details.css" />
@@ -389,6 +388,7 @@
     <Content Include="Views\Tasks\Edit.cshtml" />
     <Content Include="Views\Shared\_NotificationsPartial.cshtml" />
     <Content Include="Views\Tasks\AllTasks.cshtml" />
+    <Content Include="Views\Tasks\_TasksTablePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
