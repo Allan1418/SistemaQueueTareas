@@ -16,10 +16,6 @@ namespace SistemaQueueTareas.Business
             _repositoryPriority = new RepositoryPriority();
         }
 
-        public bool PriorityExists(int priorityId)
-        {
-            return _repositoryPriority.PriorityExists(priorityId);
-        }
 
         public List<Priority> GetAllOrderPriorities()
         {
